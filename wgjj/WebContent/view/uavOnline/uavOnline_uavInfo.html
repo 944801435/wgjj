@@ -1,0 +1,621 @@
+<%@page pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<style type="text/css">
+.block {
+	padding: 2% 2%;
+	background: #fff;
+}
+
+.block tr td:nth-child(1) {
+	line-height: 26px;
+	text-align: right;
+	width: 100px;
+}
+
+.block tr td:nth-child(2) {
+	padding-left: 2%;
+	line-height: 26px;
+	word-wrap: break-word;
+    word-break: break-all;
+}
+
+hr {
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+table {
+	width: 100%;
+}
+
+.uavLvlImg {
+    width: 60px;
+    margin: 10px 0 10px 20px;
+}
+
+.bottomButton {
+	cursor: pointer;
+}
+
+.bottomButton img{
+	width: 16px;
+	height: 16px;
+}
+.bottomButton span{
+	font-size: 12px;
+}
+
+.bottomButton:not(:last-child ){
+	border-right: 1px solid #f1f1f1;
+}
+</style>
+<div id="uavInfoDiv" style="display: none;position: absolute;width: 20%;top: 55px; left:10px;background-color: white;border-radius: 5px;padding: 10px 0;box-shadow: 0 1px 3px rgba(0,0,0,0.4);">
+	<!-- 关闭按钮 -->
+	<a onclick="closeUavInfo()" style="position: absolute;right: 10px;top: 10px; cursor: pointer;">
+		<i class="glyphicon glyphicon-remove"></i>&nbsp;
+	</a>
+	<!-- 无人机等级图片 -->
+	<img src="${pageContext.request.contextPath }/view/uavOnline/big/uav_0.png" id="uavLvl_0" class="uavLvlImg" style="display: none;" />
+	<img src="${pageContext.request.contextPath }/view/uavOnline/big/uav_1.png" id="uavLvl_1" class="uavLvlImg" style="display: none;" /> 
+	<img src="${pageContext.request.contextPath }/view/uavOnline/big/uav_2.png" id="uavLvl_2" class="uavLvlImg" style="display: none;" /> 
+	<img src="${pageContext.request.contextPath }/view/uavOnline/big/uav_3.png" id="uavLvl_3" class="uavLvlImg" style="display: none;" /> 
+	<img src="${pageContext.request.contextPath }/view/uavOnline/big/uav_4.png" id="uavLvl_4" class="uavLvlImg" style="display: none;" /> 
+	<img src="${pageContext.request.contextPath }/view/uavOnline/big/uav_5.png" id="uavLvl_5" class="uavLvlImg" style="display: none;" /> 
+	<img src="${pageContext.request.contextPath }/view/uavOnline/big/uav_0.png" id="uavLvl_6" class="uavLvlImg" style="display: none;" />
+	<div style="display: inline-block; margin-left: 15px; vertical-align: middle;">
+		<!-- 无人机编号 -->
+		<span id="uavSn" class="neadClear"></span><span id="whiteFlag" class="neadClear"></span><span id="blackFlag" class="neadClear"></span><a style="cursor: pointer;margin-left: 10px;color:#337ab7;" onclick="positionUav()">定位</a> <br />
+		<div id="knownUav" style="display: none;">
+			<!-- 无人机类型 -->
+			<span id="uavTypeDesc" class="neadClear"></span>&nbsp;|&nbsp;
+			<!-- 无人机等级描述 -->
+			<span id="uavLevelDesc" class="neadClear"></span>&nbsp;|&nbsp;
+			<!-- 无人机来源 -->
+			<span id="uavSrc" class="neadClear"></span>
+		</div>
+		<div>
+			<!-- 无人机型号 -->
+			<span id="uavModel" class="neadClear"></span>
+		</div>
+		<div>
+			<!-- 无人机厂商 -->
+			<span id="uavVendor" class="neadClear"></span>
+		</div>
+		<div id="unKnownUav" style="display: none;">
+			<!-- 未登记 -->
+			<span><font color="red"><b>未实名登记</b></font></span>
+		</div>
+	</div>
+	<hr />
+	<div id="canScrollDiv" style="overflow: auto;overflow-x: hidden;margin-left: 10px;">
+		<div class="block">
+			<div style="margin-bottom:5px;">
+				<b>所有者</b>
+			</div>
+			<table>
+				<tr>
+					<td>所有人：</td>
+					<td id="uavOwner" class="neadClear"></td>
+				</tr>
+				<tr>
+					<td>联系电话：</td>
+					<td id="uavPhone" class="neadClear"></td>
+				</tr>
+			</table>
+		</div>
+		<div class="block">
+			<div style="margin-bottom:5px;">
+				<b>飞行动态</b>
+			</div>
+			<table>
+				<tr>
+					<td>相对高度：</td>
+					<td id="uavHei" class="neadClear"></td>
+				</tr>
+				<tr>
+					<td>飞行速度：</td>
+					<td id="uavSpe" class="neadClear"></td>
+				</tr>
+				<tr>
+					<td>飞行航向：</td>
+					<td id="uavDir" class="neadClear"></td>
+				</tr>
+				<tr>
+					<td>当前坐标：</td>
+					<td id="uavLngLat" class="neadClear"></td>
+				</tr>
+				<tr>
+					<td>起飞坐标：</td>
+					<td id="reportPlanLngLat" class="neadClear"></td>
+				</tr>
+				<tr>
+					<td>起飞时间：</td>
+					<td id="reportPlanCurTime" class="neadClear"></td>
+				</tr>
+				<tr id="relSnTr" class="hide">
+					<td>关联无人机：</td>
+					<td id="relSn" class="neadClear"></td>
+				</tr>
+			</table>
+		</div>
+		<div class="block">
+			<div style="margin-bottom:5px;">
+				<b>告警</b>
+			</div>
+			<table id="uavInfoWarnTable" style="display: none;">
+				<tr style="display: none;">
+					<td></td>
+					<td id="uavWarnSeq" class="neadClear"></td>
+				</tr>
+				<tr>
+					<td>告警时间：</td>
+					<td id="uavWarnBegTime" class="neadClear"></td>
+				</tr>
+				<tr>
+					<td style="vertical-align: top;">告警信息：</td>
+					<td id="uavWrnDesc" class="neadClear"></td>
+				</tr>
+			</table>
+			<table id="uavInfoWarnNoneTable" style="display: visibility;">
+				<tr>
+					<td style="padding-right:30px;">无告警</td>
+					<td>&nbsp;</td>
+				</tr>
+			</table>
+		</div>
+		<div class="block hide">
+			<div style="margin-bottom:5px;">
+				<b>未处置事件</b>
+			</div>
+			<table id="uavInfoEventTable" style="display: none;">
+				<tr>
+					<td>创建时间：</td>
+					<td id="uavEventTime" class="neadClear"></td>
+				</tr>
+				<tr>
+					<td>创建人：</td>
+					<td id="uavEventUser" class="neadClear"></td>
+				</tr>
+				<tr>
+					<td style="vertical-align: top;">事件描述：</td>
+					<td id="uavEventDesc" class="neadClear"></td>
+				</tr>
+			</table>
+			<table id="uavInfoEventNoneTable" style="display: visibility;">
+				<tr>
+					<td style="padding-left:30px;text-align: left;">无未处置事件</td>
+				</tr>
+			</table>
+		</div>
+		<div class="block">
+			<div style="margin-bottom:5px;">
+				<b>飞行计划</b>
+			</div>
+			<table id="uavInfoPlanTable" style="display: none;">
+				<!--
+				<tr>
+					<td>计划编号：</td>
+					<td id="uavPlanId" class="neadClear"></td>
+				</tr>
+				-->
+				<tr>
+					<td>任务名称：</td>
+					<td id="planTaskName" class="neadClear"></td>
+				</tr>
+				<tr>
+					<td>任务单位：</td>
+					<td id="planUnitName" class="neadClear"></td>
+				</tr>
+				<tr>
+					<td>任务性质：</td>
+					<td id="planTaskMission" class="neadClear"></td>
+				</tr>
+				<tr>
+					<td>联系人：</td>
+					<td id="planContactPersonName" class="neadClear"></td>
+				</tr>
+				<tr>
+					<td>联系电话：</td>
+					<td id="planContactPersonTel" class="neadClear"></td>
+				</tr>
+				<tr>
+					<td style="vertical-align: top;">空域：</td>
+					<td id="planSpace" class="neadClear"></td>
+				</tr>
+			</table>
+			<table id="uavInfoPlanNoneTable" style="display: visibility;">
+				<tr>
+					<td style="padding-right:0px;">无飞行计划</td>
+					<td>&nbsp;</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+	<hr />
+	<table style="width: 100%; text-align: center;">
+		<tr>
+			<td onclick="showWeiji()" class="bottomButton">
+				<div>
+					<img src="${pageContext.request.contextPath }/view/uavOnline/image/showWeiji.png">
+				</div> <span>飞行轨迹</span>
+			</td>
+			<td onclick="sendGoBack()" class="bottomButton hide">
+				<div>
+					<img src="${pageContext.request.contextPath }/view/uavOnline/image/uavGoBack.png">
+				</div> <span>　返航　</span>
+			</td>
+			<td onclick="sendDown()" class="bottomButton hide">
+				<div>
+					<img src="${pageContext.request.contextPath }/view/uavOnline/image/uavDown.png">
+				</div> <span>　降落　</span>
+			</td>
+		</tr>
+	</table>
+</div>
+<script type="text/javascript">
+	$(function(){
+		var width = "415px";
+		$("#uavInfoDiv").css({
+			"width":width
+		}); 
+		$(window).resize(function() {
+			$("#canScrollDiv").css({
+				"max-height" : $("#mapIframe").height() - 260
+			});
+		});
+	})
+	//设置面板上的无人机信息
+	function setUavInfoByRedisUav(uavObj){
+		if(!$("#uavInfoDiv").is(':hidden')){
+			//点击无人机后显示
+			if(uavObj.pn == $("#uavSn").html()){
+				// 同源无人机
+				var uavSrc = uavObj.src;
+				if(uavSrc!=null && uavSrc!="" && uavSrc.charAt(0)=='2'){
+					// 来源于查打设备：判断是否存在同源数据
+					if(uavObj.relSn!=null && uavObj.relSn!=""){
+						$("#relSn").html(uavObj.relSn);
+						$("#relSnTr").removeClass("hide");							
+					}
+				}else{
+					$("#relSnTr").addClass("hide");
+				}
+				$("#uavHei").html(uavObj.hei);
+				$("#uavSpe").html(uavObj.spe);
+				var dirImg = "<img src=\""+ctx+"/view/uavOnline/image/hx.png\" style=\"-webkit-transform: rotate("+uavObj.dir+"deg);margin-left:10px;width:18px;height:18px;\">";
+				$("#uavDir").html(uavObj.dir + dirImg);
+				$("#uavLngLat").html("("+jwd_to_dfm(uavObj.lng,"LNG") + " , " + jwd_to_dfm(uavObj.lat,"LAT")+")");
+				if(uavObj.wrn!=null&&uavObj.wrn!=''){
+					$("#uavWarnBegTime").html(uavObj.warnBegTime);
+					$("#uavWrnDesc").html(uavObj.wrnDesc.replaceAll("\\|","<br/>"));
+					$("#uavInfoWarnTable").show();
+					$("#uavInfoWarnNoneTable").hide();
+				}else{
+					$("#uavInfoWarnTable").hide();
+					$("#uavInfoWarnNoneTable").show();
+				}
+				var eventFlag = isHaveEvent(uavObj.pn);//无人机是否存在事件
+				if(!eventFlag){
+					//不存在事件
+					$("#uavInfoEventTable").hide();
+					$("#uavInfoEventNoneTable").show();
+				}else{
+					$("#uavInfoEventTable").show();
+					$("#uavInfoEventNoneTable").hide();
+				}
+				updateUavGuijiArry(uavObj.lng+","+uavObj.lat);
+			}
+		}
+	}
+	//无人机计划空域
+	var uavPlanSpaceArry = [];
+	//无人机当前架次的轨迹
+	var uavGuijiArry = [];
+	//显示无人机信息
+	function showUavInfo(pn, planid, bizFlyId) {
+		closePanel();
+		if($("#uavInfoDiv").is(':hidden')){
+			$.ajax({
+				url : ctx + "/uavOnlineGetUavInfo.action",
+				type : "post",
+				data : {
+					pn : pn,
+					planid : planid,
+					bizFlyId: bizFlyId,
+					replayTime: $("#replayTimeStr").html()
+				},
+				dataType : "json",
+				async : false,
+				success : function(data) {
+					if (data.errCode == "0") { //失败
+						alert("获取无人机详情失败");
+						return;
+					} else { //成功
+						var infoUav = data.data.infoUav; //无人机信息
+						var bizFly = data.data.bizFly; //无人机报备信息
+						var flyPlan = data.data.flyPlan; //计划信息
+						var flyPlanSpaceList = data.data.flyPlanSpaceList; //计划空域信息
+						var guijiJwdList = data.data.guijiJwdList;//无人机轨迹的经纬度
+						var eventList = data.data.eventList;//无人机的所有未处置事件
+						$("#uavSn").html(pn);
+						$("#uavVendor").html(infoUav.vender);
+						var regNo = infoUav.regNo;
+						if(regNo == 'UAS_DEFAULT' || regNo == 'UAS-DEFAULT' || regNo == null || regNo == ''){
+							// 未实名登记的无人机
+							$("#knownUav").hide();
+							$("#unKnownUav").show();
+						}else{
+							$("#knownUav").show();
+							$("#unKnownUav").hide();
+						}
+						$("#reportPlanLngLat").html("(" + jwd_to_dfm(bizFly.begLoc.split(",")[0],"LNG") + " , " + jwd_to_dfm(bizFly.begLoc.split(",")[1],"LAT") + ")");
+						$("#reportPlanCurTime").html(bizFly.begTime);
+						if(planid!=null&&planid!=''){
+							//$("#uavPlanId").html(planid);
+							$("#planUnitName").html((flyPlan.unitName == null || flyPlan.unitName =='') ? "个人" : flyPlan.unitName);
+							$("#planTaskName").html(flyPlan.taskName);
+							$("#planTaskMission").html(flyPlan.mission);
+							$("#planContactPersonName").html(flyPlan.contactPersonName);
+							$("#planContactPersonTel").html(flyPlan.contactPersonTel);
+							uavPlanSpaceArry = [];
+							var planSpaceText = "";
+							for(var i=0;i<flyPlanSpaceList.length;i++){
+								var flyPlanSpace = flyPlanSpaceList[i];
+								//var spaceName = flyPlanSpace.spcNo !='' && flyPlanSpace.spcNo !=null ? flyPlanSpace.spcNo : flyPlanSpace.spcName;
+								var spaceText = "";
+								spaceText += "<div style='padding-left:0px;'>"+flyPlanSpace.times
+								+ "<a style=\"cursor: pointer;margin-left:10px;color:#337ab7;\" onclick=\"positionPlanSpace('"+flyPlanSpace.srsSeq+"')\">查看</a><br>"+"</div>" ;
+								planSpaceText += spaceText;
+								drawUavPlanSpace(flyPlanSpace);//画无人机的计划空域
+							}
+							$("#planSpace").html(planSpaceText);
+							$("#uavInfoPlanTable").show();
+							$("#uavInfoPlanNoneTable").hide();
+						}
+						uavGuijiArry = [];
+						for(var i=0;i<guijiJwdList.length;i++){
+							var guijiJwd = guijiJwdList[i];
+							uavGuijiArry.push(guijiJwd.lng+","+guijiJwd.lat);
+						}
+						//解析无人机事件
+						if(eventList.length>0){
+							$("#uavEventTime").html(eventList[0].eventCrtTime);
+							$("#uavEventUser").html(eventList[0].crtSysDept.deptName+" / "+eventList[0].crtSysUser.userName);
+							$("#uavEventDesc").html(eventList[0].eventDesc);
+							$("#uavInfoEventTable").show();
+							$("#uavInfoEventNoneTable").hide();
+						}else{
+							$("#uavInfoEventNoneTable").show();
+							$("#uavInfoEventTable").hide();
+						}
+					}
+				}
+			});
+			$("#canScrollDiv").css({
+				"max-height" : $("#mapIframe").height() - 260
+			}); //设置中间面板的最大高度
+			$("#uavInfoDiv").show(); //显示信息面板
+			$("#uavInfoDiv").css({"z-index": getMaxZIndex()});
+			for(var i=0;i<uavCache.length;i++){
+				if(uavCache[i].pn==pn){
+					var uavObj = uavCache[i].uav;
+					$(".uavLvlImg").hide();
+					var uavLvl = uavObj.lvl;
+					$("#uavLvl_" + uavLvl).show();//根据无人机级别，显示无人机的图标
+					$("#uavLevelDesc").html(uavObj.lvlDesc);
+					$("#uavTypeDesc").html(uavObj.typeDesc);
+					var oname = uavObj.ownname;
+					if(oname == null || oname == '' || oname == "无"){
+						$("#uavOwner").html("");
+					}else{
+						$("#uavOwner").html(oname);
+					}
+					$("#uavPhone").html(uavObj.phone);// 联系电话
+					$("#uavModel").html(uavObj.model);// 型号
+					$("#uavSrc").html(uavObj.srcDesc);// 来源
+					setUavInfoByRedisUav(uavObj);
+				}
+			}
+		}
+	}
+	
+	//更新无人机数组数据
+	function updateUavGuijiArry(jwd){
+		uavGuijiArry.push(jwd);
+		drawUavGuijiLine();
+	}
+	//无人机轨迹
+	var uavGuijiLine = null;
+	//画无人机的轨迹：线缓冲区
+	function drawUavGuijiLine(){
+		if(!isClickShowWeiji){
+			return;
+		}
+		if(uavGuijiArry.length>0){
+			var jwdWgs84 = "";
+			for(var i=0;i<uavGuijiArry.length;i++){
+				if(i>0){
+					jwdWgs84 += "|" ;
+				}
+				jwdWgs84 += uavGuijiArry[i];
+			}
+			if(uavGuijiLine){
+				mapIframe.updateLineJwd(uavGuijiLine,jwdWgs84);
+			}else{
+				uavGuijiLine = mapIframe.drawLine(jwdWgs84,1);
+			}
+		}
+	}
+	
+	//删除无人机的轨迹
+	function clearUavGuijiLine(){
+		if(uavGuijiLine!=null){
+			mapIframe.clearPointOverlay(uavGuijiLine);
+		}
+		uavGuijiLine = null;
+		isClickShowWeiji = false;//不显示轨迹
+	}
+	
+	//定位无人机
+	function positionUav(){
+		var founded = false;
+		var pn = $("#uavSn").html();
+		for(var i=0;i<uavCache.length;i++){
+			if(uavCache[i].pn==pn){
+				mapIframe.positionUavMarker(uavCache[i].lastMark);
+				founded = true;
+				break;
+			}
+		}
+		if(!founded){
+			alert("该无人机已降落！");
+		}
+	}
+	
+	//点击列表上的空域定位空域
+	function positionPlanSpace(srsSeq){
+		for (var i = 0; i < uavPlanSpaceArry.length; i++) {
+			if (srsSeq == uavPlanSpaceArry[i].srsSeq) {
+				mapIframe.positionPointOverlayArray(uavPlanSpaceArry[i].overlayArry);
+				break;
+			}
+		}
+	}
+	//关闭面板
+	function closeUavInfo(){
+		$("#uavInfoDiv").hide(); //隐藏信息面板
+		clearUavInfo();//还原面板上的内容
+		clearUavPlanSpace();//清除计划使用空域
+		clearUavGuijiLine();//清除无人机的运行轨迹
+	}
+	
+	//清空uavInfo面板中的数据
+	function clearUavInfo(){
+		$(".uavLvlImg").hide();//隐藏无人机的图标
+		$(".neadClear").html("");//清空需要清空的内容
+		$("#dealWarnButton").hide();//隐藏处理记录按钮
+		$("#upToEventButton").hide();//隐藏升级事件按钮
+		$("#uavInfoWarnTable").hide();//隐藏无人机告警面板
+		$("#uavInfoWarnNoneTable").show();//隐藏无人机告警面板
+		$("#uavInfoEventTable").hide();//隐藏无人机事件面板
+		$("#uavInfoEventNoneTable").show();//隐藏无人机事件面板
+		$("#uavInfoPlanTable").hide();//隐藏无人机计划面板
+		$("#uavInfoPlanNoneTable").show();//隐藏无人机计划面板
+		$("#relSnTr").addClass("hide");//关联无人机
+	}
+	
+	//点击无人机画计划空域
+	function drawUavPlanSpace(flyPlanSpace){
+		var overlayArry = [];						
+		var labelMarkerPoint = mapIframe.getMsgPointByPolygonWgs84(flyPlanSpace.polygonWgs84);
+		var labelMsg = flyPlanSpace.spcBottom + " - " +flyPlanSpace.spcTop + "m";
+		if(flyPlanSpace.spcShape=="${fns:findKey('space_shape_wg')}"){
+			var wgs84 = flyPlanSpace.polygonWgs84.split(';');
+			for(var k=0;k<wgs84.length;k++){
+				if(wgs84[k]!='undefined'){
+					var overlayObj = mapIframe.drawCustomColorPolygonNoClear(wgs84[k],'${backColor}','${borderColor}',0.3,1,true,labelMsg,labelMarkerPoint);
+					overlayArry.push(overlayObj);
+				}
+			}
+		}else{
+			var overlayObj=mapIframe.drawCustomColorPolygonNoClear(flyPlanSpace.polygonWgs84,'${backColor}','${borderColor}',0.3,1,true,labelMsg,labelMarkerPoint);
+			overlayArry.push(overlayObj);
+		}
+		uavPlanSpaceArry.push({srsSeq:flyPlanSpace.srsSeq,overlayArry:overlayArry});
+	}
+	
+	//移除无人机计划空域
+	function clearUavPlanSpace(){
+		for(var i=0;i<uavPlanSpaceArry.length;i++){
+			for(var j=0;j<uavPlanSpaceArry[i].overlayArry.length;j++){
+				mapIframe.clearPointOverlay(uavPlanSpaceArry[i].overlayArry[j]);
+			}
+		}
+		uavPlanSpaceArry = [];
+	}
+	
+	//点击显示飞行轨迹
+	var isClickShowWeiji = false;
+	
+	//显示飞行轨迹
+	function showWeiji() {
+		var sn = $("#uavSn").html();
+		console.info("显示飞行轨迹===========" + sn);
+		isClickShowWeiji = true;
+		drawUavGuijiLine();
+	}
+	//返航
+	function sendGoBack() {
+		var sn = $("#uavSn").html();
+		console.info("返航===========" + sn);
+		sendUavGoback(sn)
+	}
+	//降落
+	function sendDown() {
+		var sn = $("#uavSn").html();
+		console.info("降落===========" + sn);
+		sendUavDown(sn);
+	}
+	//升级事件
+	function upToEvent() {
+		/* var warnSeq = $("#uavWarnSeq").html();
+		console.info("升级成事件================" + warnSeq);
+		clickMakeEventA(warnSeq); */
+	}
+	//处理记录
+	function dealWarn() {
+		/* var warnSeq = $("#uavWarnSeq").html();
+		console.info("处理记录================" + warnSeq);
+		clickDealA(warnSeq); */
+	}
+	
+	function isNum(str) {
+	    var patrn = /^[0-9]*$/;
+	    var bool = true;
+	    if (!patrn.exec(str)) {
+	        bool = false;
+	    }
+	    return bool;
+	}
+	
+	//发送无人机降落指令
+	function sendUavDown(pn){
+		$.ajax({
+			url:"${ctx}/uavOnlineSendUavCmd.action",//发送命令
+			data:{
+				pn:pn,
+				ctrlCmd:'1'//降落
+			},
+			type:"post",
+			dataType:"json",
+			async:false,
+			success:function(data){
+				if(data.errCode=="0"){   //失败
+					alert("对编号为" + pn +"的无人机下达降落指令失败，请重试");
+				}else{ //成功
+					alert("对编号为" + pn +"的无人机下达降落指令成功");
+				}
+			}
+		});
+	}
+	//发送无人机返航指令
+	function sendUavGoback(pn){
+		$.ajax({
+			url:"${ctx}/uavOnlineSendUavCmd.action",//发送命令
+			data:{
+				pn:pn,
+				ctrlCmd:'2'//返航
+			},
+			type:"post",
+			dataType:"json",
+			async:false,
+			success:function(data){
+				if(data.errCode=="0"){   //失败
+					alert("对编号为" + pn +"的无人机下达返航指令失败，请重试");
+				}else{ //成功
+					alert("对编号为" + pn +"的无人机下达返航指令成功");
+				}
+			}
+		});
+	}
+</script>

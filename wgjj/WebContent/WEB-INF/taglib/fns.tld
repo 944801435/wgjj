@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
+  version="2.0">
+    
+  <description>Tools functions library</description>
+  <display-name>Tools functions</display-name>
+  <tlib-version>1.0</tlib-version>
+  <short-name>fns</short-name>
+  <uri>fns</uri>
+ 
+  <function>
+  	<description>获取常量Map</description>
+  	<name>findMap</name>
+  	<function-class>com.uav.base.common.Constants</function-class>
+  	<function-signature>java.util.Map findMap(java.lang.String)</function-signature>
+  	<example>${fns:findMap('plan_type_map')}</example>
+  </function>
+  <function>
+  	<description>获取常量Map的JSON</description>
+  	<name>findJSONMap</name>
+  	<function-class>com.uav.base.common.Constants</function-class>
+  	<function-signature>java.util.Map findJSONMap(java.lang.String)</function-signature>
+  	<example>${fns:findJSONMap('plan_type_map')}</example>
+  </function>
+  <function>
+  	<description>翻译</description>
+  	<name>findValue</name>
+  	<function-class>com.uav.base.common.Constants</function-class>
+  	<function-signature>java.lang.String findValue(java.lang.String,java.lang.String)</function-signature>
+  	<example>${fns:findValue('plan_type_map','1')}</example>
+  </function>
+  <function>
+  	<description>获取常量</description>
+  	<name>findKey</name>
+  	<function-class>com.uav.base.common.Constants</function-class>
+  	<function-signature>java.lang.String findKey(java.lang.String)</function-signature>
+  	<example>${fns:findKey('plan_state_edit')}</example>
+  </function>
+  
+  <function>
+  	<description>时间格式化</description>
+  	<name>formatStr</name>
+  	<function-class>com.uav.base.util.DateUtil</function-class>
+  	<function-signature>java.lang.String formatStr(java.lang.String,java.lang.String,java.lang.String)</function-signature>
+  	<example>${fns:formatStr(dateStr,fromPattern,toPattern)}</example>
+  </function>
+  <function>
+  	<description>权限验证</description>
+  	<name>hasPms</name>
+  	<function-class>com.uav.base.common.Constants</function-class>
+  	<function-signature>java.lang.Boolean hasPms(java.util.List,java.lang.String)</function-signature>
+  	<example>${fns:hasPms('[1401,4401]','4401')}</example>
+  </function>
+</taglib>

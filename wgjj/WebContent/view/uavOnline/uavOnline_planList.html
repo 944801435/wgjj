@@ -1,0 +1,325 @@
+<%@page pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<style type="text/css">
+/*计划图标样式*/
+.planBgImgStyle{
+    width: 60px;
+    margin: 10px 0 10px 15px;
+}
+/*计划列表button样式*/
+.plan_bottomButtonStyle {
+	cursor: pointer;
+}
+.plan_bottomButtonStyle img{
+	width: 16px;
+	height: 16px;
+}
+.plan_bottomButtonStyle span{
+	font-size: 12px;
+}
+/*计划列表button的table样式*/
+.plan_bottomTableStyle{
+	width: 280px; 
+	text-align: center;
+	margin-top: 10px;
+	font-size: 14px;
+}
+/*计划信息外部样式*/
+.barSeqDivStyle{
+	margin: 0 10px 10px 5px;
+}
+/*计划面板右侧样式*/
+.planRightStyle{
+	float: right;
+}
+.planRightTopStyle{
+	margin-left: 20px;
+}
+/*计划面板右侧第一行样式*/
+.planRightOneStyle{
+	height: 30px;
+	line-height: 30px;
+	width: 305px;
+}
+/*无人机sn样式*/
+.planUavSnStyle{
+	font-size: 14px;
+	color: #333333;
+	font-weight:600;
+	float: left;
+	margin-left: 1px;
+}
+/*详情样式*/
+.planUavDetailStyle{
+	cursor: pointer;
+	font-size:12px;
+	font-weight:400;
+	color:rgba(56,125,215,1);
+	float: right;
+	margin-right: 15px;
+}
+/*计划信息样式*/
+.planInfoStyle{
+	font-size: 12px;
+	display: block;
+}
+.planInfoStyle td {
+	padding: 2px;
+}
+</style>
+<div id="planListDiv" style="display: none;position: absolute;width: 20%;top: 55px; left:10px;background-color: white;border-radius: 5px;box-shadow: 0 1px 3px rgba(0,0,0,0.4);">
+	<!-- 关闭按钮 -->
+	<a onclick="closePlanList()" style="position: absolute;right: 10px;top: 10px; cursor: pointer;">
+		<i class="glyphicon glyphicon-remove"></i>&nbsp;
+	</a>
+	<div id="noPlanListDiv" style="overflow: auto;overflow-x: hidden;margin: 30px;text-align:center;display: none;">无计划信息</div>
+	<div id="planListCanScrollDiv" style="overflow: auto;overflow-x: hidden;margin-top: 30px;">
+	</div>
+</div>
+<script type="text/javascript">
+	//计划panel在地图上所画的空域
+	var planSpaceArray = new Array();
+	$(function(){
+		var width = "415px";
+		$("#planListDiv").css({
+			"width":width
+		}); 
+		$(window).resize(function() {
+			$("#planListCanScrollDiv").css({
+				"max-height" : $("#mapIframe").height() - 120
+			});
+		});
+		
+		$("#mapIframe").load(function(){
+			//获取计划信息
+			getReqPlanList();
+		});
+	});
+	
+	//关闭计划面板
+	function closePlanList(){
+		if(planSpaceArray.length>0){
+			for(var i=0;i<planSpaceArray.length;i++){
+				for(var j=0;j<planSpaceArray[i][1].length;j++){
+					mapIframe.clearPointOverlay(planSpaceArray[i][1][j]);
+				}
+			}
+			planSpaceArray = [];
+		}
+		//隐藏计划面板
+		$("#planListDiv").hide();
+	}
+	
+	//显示计划面板
+	function showPlanList(){
+		$("#planListDiv").css({"z-index": getMaxZIndex()});
+		if($("#planListDiv").is(':hidden')){
+			$("#planListDiv").show();
+			if(parseInt($("#planNum").text()) > 0){//计划数量大于0时
+				$("#planListCanScrollDiv").css({
+					"max-height" : $("#mapIframe").height() - 120
+				});
+				$("#noPlanListDiv").hide();
+				$("#planListCanScrollDiv").show();
+			}else{
+				$("#noPlanListDiv").show();
+				$("#planListCanScrollDiv").hide();
+			}
+		}
+	}
+	
+	//计划列表点击详情
+	function planDetail(barSeq){
+		var founded = false;
+		if(planSpaceArray.length>0){
+			for(var i=0;i<planSpaceArray.length;i++){
+				if(planSpaceArray[i][0] == barSeq){
+					founded = true;
+				}
+			}
+		}
+		if(!founded){
+			var obj = {"value":barSeq,"checked":true,"title":"显示"};
+			changePlanSpace(obj);
+		}
+		clickPlanTr(barSeq);
+	}
+		
+	//点击计划table的tr定位到空域
+	function clickPlanTr(barSeq){
+		if(planSpaceArray.length>0){
+			for(var i=0;i<planSpaceArray.length;i++){
+				if(planSpaceArray[i][0] == barSeq){
+					mapIframe.positionPointOverlayArray(planSpaceArray[i][1]);
+					break;
+				}
+			}
+		}
+	}
+	
+	//计划panel显示空域change事件
+	function changePlanSpace(obj){
+		var barSeq = obj.value;
+		if(obj.checked){
+			//选中，发送ajax到后台获取空域，并将空域画在地图上
+			$.ajax({
+				url:"${ctx}/uavOnlineGetReqSpaceList.action",
+				data:{barSeq:barSeq},
+				type:"post",
+				dataType:"json",
+				async:false,
+				success:function(data){
+					if(data.errCode=="0"){   //失败
+						alert(data.errMsg);
+					}else{ //成功
+						var reqSpaceList = data.data.reqSpaceList;
+						var overlays = [];
+						for(var i=0;i<reqSpaceList.length;i++){
+							var item = reqSpaceList[i];
+							var infoSpaceTimes = [];//空域的有效时间
+							if(reqSpaceList[i].infoSpaceTimeList != null && reqSpaceList[i].infoSpaceTimeList.length > 0) {
+								for(var j = 0;j < reqSpaceList[i].infoSpaceTimeList.length;j++) {
+									var infoSpaceTime = {
+											begDatetime:reqSpaceList[i].infoSpaceTimeList[j].begDatetime,//开始日期
+											endDatetime:reqSpaceList[i].infoSpaceTimeList[j].endDatetime//开始日期
+									};
+									infoSpaceTimes.push(infoSpaceTime);
+								}
+							}
+							
+							var item1={
+									spcId:item.spcId,//空域id	
+									spcType:'8',//空域类型
+									spcName:item.spcName,//空域名称
+									spcShape:item.spcShape,//空域形状
+									polygonWgs84:item.polygonWgs84,//空域转多边形
+									spcTop:item.spcTop,//顶高
+									spcBottom:item.spcBottom,//底高
+									spcSts:item.spcSts,//状态
+									spcKind:item.spcKind,//空域分类
+									infoSpaceTimes:infoSpaceTimes//有效时间
+							};
+						
+							if(reqSpaceList[i].polygonWgs84){
+								var labelMarkerPoint = mapIframe.getMsgPointByPolygonWgs84(reqSpaceList[i].polygonWgs84);
+								var labelMsg = reqSpaceList[i].spcBottom + " - " +reqSpaceList[i].spcTop + "m";
+								if('0' == item.spcShape){
+									for(var j=0;j<item.polygonWgs84.split(";").length;j++){
+										var polygonOverlay = mapIframe.drawCustomColorPolygonNoClear(item.polygonWgs84.split(";")[j],'${backColor}','${borderColor}',0.3,1,(j == 0 ? true : false),labelMsg,labelMarkerPoint);
+										clickInfoSpacePolygonToShowMsg(polygonOverlay,item1);
+										overlays.push(polygonOverlay);
+									}
+								}else{
+									var polygonOverlay = mapIframe.drawCustomColorPolygonNoClear(reqSpaceList[i].polygonWgs84,'${backColor}','${borderColor}',0.3,1,true,labelMsg,labelMarkerPoint);
+									clickInfoSpacePolygonToShowMsg(polygonOverlay,item1);
+									overlays.push(polygonOverlay);
+								}
+							}
+						}
+						planSpaceArray.push([barSeq,overlays]);
+						obj.title="不显示";
+					}
+				}
+			})
+		}else{
+			//未选中，将画在地图上的空域去掉
+			for(var i=0;i<planSpaceArray.length;i++){
+				if(planSpaceArray[i][0] == barSeq){
+					for(var j=0;j<planSpaceArray[i][1].length;j++){
+						mapIframe.clearPointOverlay(planSpaceArray[i][1][j]);
+					}
+					planSpaceArray.splice(i,1);
+					obj.title="显示";
+					break;
+				}
+			}
+		}
+	}
+	
+	//获取计划信息
+	function getReqPlanList(){
+		$.ajax({
+			url:"${ctx}/uavOnlineGetReqPlanList.action",
+			data:{},
+			type:"post",
+			dataType:"json",
+			//async:false,
+			success:function(data){
+				if(data.errCode=="0"){   //失败
+					//alert(data.errMsg);
+				}else{ //成功
+					var planList = data.data.planList;
+					$("#planListCanScrollDiv").empty();
+					$("#planNum").text(planList.length);
+					for(var i=0;i<planList.length;i++){
+						var item = planList[i];
+						var divDom = 
+							"<div id=\"barSeqDiv_"+item.barSeq+"\" class=\"barSeqDivStyle\">"+
+							"	<table>                                                                                                                                "+
+							"		<tr>                                                                                                                               "+
+							"			<td class=\"vertical-align-top\">                                                                                               "+
+							"				<img class=\"planBgImgStyle\" id=\"planBg_"+item.barSeq+"\" src=\""+ctx+"/view/uavOnline/image/plan_bg.png\"/>"+
+							"			</td>                                                                                                                          "+
+							"			<td>                                                                                                                           "+
+							"				<div class=\"planRightStyle\">                                                                                               "+
+							"					<div class=\"planRightTopStyle\">                                                                                                                  "+
+							"						<div class=\"planRightOneStyle\">                                                                                    "+
+							"							<div class=\"planUavSnStyle\">"+
+							"								<span id=\"taskName_"+item.barSeq+"\">"+item.taskName+"</span>"+
+							"							</div>                           "+
+							"							<a class=\"planUavDetailStyle\" onclick=\"planDetail('"+item.barSeq+"')\">查看＞</a>"+ 
+							"						</div>                                                                                                             "+
+							"						<table class=\"planInfoStyle\">                                                                                      "+
+							"							<tr>                                                                                                           "+
+							"								<td style='width:65px;'>任务单位：</td>                                                                                        "+
+							"								<td id=\"unitName_"+item.barSeq+"\">"+item.unitName+"</td>                   "+
+							"							</tr>                                                                                                          "+
+							"							<tr>                                                                                                           "+
+							"								<td style='width:65px;'>任务性质：</td>                                                                                        "+
+							"								<td id=\"taskMission_"+item.barSeq+"\">"+item.mission+"</td>                   "+
+							"							</tr>                                                                                                          "+
+							"							<tr>                                                                                                           "+
+							"								<td>联系人：</td>                                                                                        "+
+							"								<td id=\"appUserName_"+item.barSeq+"\">"+item.appUser.usrName+"</td>                   "+
+							"							</tr>                                                                                                          "+
+							"							<tr>                                                                                                           "+
+							"								<td>联系电话：</td>                                                                                        "+
+							"								<td id=\"appUserPhoneNo_"+item.barSeq+"\">"+item.appUser.phoneNo+"</td>                   "+
+							"							</tr>                                                                                                          "+
+							"							<tr>                                                                                                           "+
+							"								<td class=\"vertical-align-top\">空域详情：</td>                                                            "+
+							"								<td id=\"planSpaces_"+item.barSeq+"\">"+item.spaceStr+"</td>          "+
+							"							</tr>                                                                                                          "+
+							"						</table>                                                                                                           "+
+							"					</div>                                                                                                                 "+
+							"				</div>                                                                                                                     "+
+							"			</td>                                                                                                                          "+
+							"		</tr>                                                                                                                              "+
+							"	</table>                                                                                                                               "+
+							"	<hr>                                                                                                                                   "+
+							"</div>";
+						$("#planListCanScrollDiv").append(divDom);
+					}
+					if(planSpaceArray.length > 0){
+						var checkedBarSeqArry = [];
+						for(var i=0;i<planSpaceArray.length;i++){
+							checkedBarSeqArry.push(planSpaceArray[i][0]);
+							for(var j=0;j<planSpaceArray[i][1].length;j++){
+								mapIframe.clearPointOverlay(planSpaceArray[i][1][j]);
+							}
+						}
+						planSpaceArray = [];
+						for(var i=0;i<checkedBarSeqArry.length;i++){
+							$("input[name='reqPlanSpaces']").each(function(index,item){
+								if($(item).attr("value") == checkedBarSeqArry[i]){
+									$(item).prop("checked",true);
+									changePlanSpace($(item)[0]);
+								}
+							});
+						}
+					}
+				}
+			}
+		});
+	}
+</script>

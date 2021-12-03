@@ -1,0 +1,565 @@
+<%@page pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<style type="text/css">
+/*分页样式*/
+.right_content_pagination{
+    position: absolute;
+    bottom: 10px;
+    height: 28px;
+    padding: 0;
+    left: 15px;
+    width: 95%;
+}
+.pagination>li>a, .pagination>li>span{
+	padding: 3px 6px;
+}
+.pagination_pager{
+	float: left;
+}
+.pagination{
+	margin: 0;
+}
+.pagination_sub{
+    position: absolute;
+    padding: 0;
+    right: 10px;
+    line-height: 34px;
+    float: none;
+}
+/*空域图标样式*/
+.spaceBgImgStyle{
+    width: 60px;
+}
+/*空域图标背景样式*/
+.spaceBgDivStyle{
+    margin: 10px 0 10px 15px;
+	width: 60px;
+	height: 60px;
+	border-radius: 5px;
+}
+/*空域列表button样式*/
+.space_bottomButtonStyle {
+	cursor: pointer;
+}
+.space_bottomButtonStyle img{
+	width: 16px;
+	height: 16px;
+}
+.space_bottomButtonStyle span{
+	font-size: 12px;
+}
+/*空域列表button的table样式*/
+.space_bottomTableStyle{
+	width: 280px; 
+	text-align: center;
+	margin-top: 10px;
+	font-size: 14px;
+}
+/*空域信息外部样式*/
+.spcIdDivStyle{
+	margin: 0 10px 10px 5px;
+}
+/*空域面板右侧样式*/
+.spaceRightStyle{
+	float: right;
+}
+.spaceRightTopStyle{
+	margin-left: 20px;
+}
+/*空域面板右侧第一行样式*/
+.spaceRightOneStyle{
+	height: 30px;
+	line-height: 30px;
+	width: 305px;
+}
+/*无人机sn样式*/
+.spaceUavSnStyle{
+	font-size: 14px;
+	color: #333333;
+	font-weight:600;
+	float: left;
+	margin-left: 1px;
+}
+/*详情样式*/
+.spaceUavDetailStyle{
+	cursor: pointer;
+	font-size:12px;
+	font-weight:400;
+	color:rgba(56,125,215,1);
+	float: right;
+	margin-right: 15px;
+}
+/*空域信息样式*/
+.spaceInfoStyle{
+	font-size: 12px;
+	display: block;
+}
+.spaceInfoStyle td {
+	padding: 2px;
+}
+</style>
+<div id="spaceListDiv" style="display: none;position: absolute;width: 20%;top: 55px; left:10px;background-color: white;border-radius: 5px;box-shadow: 0 1px 3px rgba(0,0,0,0.4);">
+	<!-- 关闭按钮 -->
+	<a onclick="closeSpaceList()" style="position: absolute;right: 10px;top: 10px; cursor: pointer;">
+		<i class="glyphicon glyphicon-remove"></i>&nbsp;
+	</a>
+	<div id="noSpaceListDiv" style="overflow: auto;overflow-x: hidden;margin: 30px;text-align:center;display: none;">无空域信息</div>
+	<div id="spaceListCanScrollDiv" style="overflow: auto;overflow-x: hidden;margin-top: 30px;">
+	</div>
+	<div class="right_content_pagination">
+		<div class="pagination_pager">
+		</div>
+		<span class="pagination_sub">
+		</span>
+	</div>
+</div>
+<script type="text/javascript">
+	//初始化空域信息
+	var infoSpaceList = [];
+	//所有画的空域
+	var drawSpaceList = [];
+	
+	$(function(){
+		var width = "415px";
+		$("#spaceListDiv").css({
+			"width":width
+		}); 
+		$(window).resize(function() {
+			$("#spaceListCanScrollDiv").css({
+				"max-height" : $("#mapIframe").height() - 120 - 50
+			});
+			$("#spaceListDiv").css({
+				"height" : $("#mapIframe").height() - 120 + 30
+			});
+		});
+		$("#mapIframe").load(function(){
+			//获取空域信息
+			getInfoSpaceList();
+		});
+			
+		//给显示全部空域类型checkbox绑定事件
+		$("#allSpaceType").change(function(){
+			if(this.checked){
+				$("input[name='spaceTypes']").each(function(index,item){
+					$(item).prop("checked",true);
+					checkedSpaceType(item);
+				});
+			}else{
+				$("input[name='spaceTypes']").each(function(index,item){
+					$(item).removeAttr("checked");
+					uncheckedSpaceType(item);
+				});
+			}
+		});
+		//给空域类型checkbox绑定事件
+		$("input[name='spaceTypes']").change(function(){
+			if(this.checked){
+				checkedSpaceType(this);
+				if($("input[name='spaceTypes']:checked").length == $("input[name='spaceTypes']").length){
+					$("#allSpaceType").prop("checked",true);
+				}
+			}else{
+				uncheckedSpaceType(this);
+				$("#allSpaceType").removeAttr("checked");
+			}
+		});
+	});
+	
+	//关闭空域面板
+	function closeSpaceList(){
+		//隐藏空域面板
+		$("#spaceListDiv").hide();
+	}
+	
+	//显示空域面板
+	function showSpaceList(){
+		$("#spaceListDiv").css({"z-index": getMaxZIndex()});
+		if($("#spaceListDiv").is(':hidden')){
+			$("#spaceListDiv").show();
+			if(parseInt($("#spaceNum").text()) > 0){//空域数量大于0时
+				$("#spaceListCanScrollDiv").css({
+					"max-height" : $("#mapIframe").height() - 120 - 50
+				});
+				$("#spaceListDiv").css({
+					"height" : $("#mapIframe").height() - 120 + 30
+				});
+				$("#noSpaceListDiv").hide();
+				$("#spaceListCanScrollDiv").show();
+			}else{
+				$("#noSpaceListDiv").show();
+				$("#spaceListCanScrollDiv").hide();
+			}
+		}
+	}
+	
+	//空域列表点击详情
+	function spaceDetail(spcId,spcType){
+		clickSpaceTr(spcId,spcType);
+	}
+	
+	//获取空域信息
+	function getInfoSpaceList(){
+		$.ajax({
+			url:"${ctx}/spaceQueryList_.action",
+			data:{},
+			type:"post",
+			dataType:"json",
+			//async:false,
+			success:function(data){
+				if(data.errCode=="0"){   //失败
+					//alert(data.errMsg);
+				}else{ //成功
+			 		$("input[name='spaceTypes']").each(function(index,item){
+			 			uncheckedSpaceType(item);
+					});
+					infoSpaceList = data.data.infoSpaceList;
+					//必须这样写，不然画上的覆盖物需要拖动一下地图才能看得到
+				 	setTimeout(function(){
+				 		$("input[name='spaceTypes']:checked").each(function(index,item){
+							checkedSpaceType(item);
+						});
+				 	},1500); 
+					sendListAjaxQuery(1);
+				}
+			}
+		});
+	}
+	
+	//点击分页的按钮触发查询
+	function page_submit(pageParam,page){
+		sendListAjaxQuery(page);//发送ajax请求
+	}
+	//获取数组对象的分页数据
+	function pagination(pageNo, pageSize, array) {  
+	  var offset = (pageNo - 1) * pageSize;  
+	  return (offset + pageSize >= array.length) ? array.slice(offset, array.length) : array.slice(offset, offset + pageSize);  
+	}  
+	//查询列表
+	function sendListAjaxQuery(curPage){
+		$("#spaceNum").text(infoSpaceList.length);
+		var pageSize = 10;
+		var page_infoSpaceList = pagination(curPage,pageSize,infoSpaceList);
+		$("#spaceListCanScrollDiv").empty();
+		$(page_infoSpaceList).each(function(index,item){
+			var spcColor = "";
+			<c:forEach var="spaceType" items="${infoSpaceTypeList }">
+				if(item.spcType == '${spaceType.spcType}'){
+			  		spcColor = '${spaceType.colorBack}';
+				}
+			</c:forEach>
+			var spcShapeDesc = "";
+			<c:forEach var="shapeMap" items="${fns:findMap('space_shape_map') }">
+			  	if('${shapeMap.key}' == item.spcShape){
+			  		spcShapeDesc = '${shapeMap.value}';
+			    }
+			</c:forEach>
+			var spcKindDesc = "";
+			<c:forEach var="kindMap" items="${fns:findMap('spc_kind_map') }">
+			  	if('${kindMap.key}' == item.spcKind){
+			  		spcKindDesc = '${kindMap.value}';
+			    }
+			</c:forEach>
+			var spcTopAndBottom = item.spcBottom + " - " + item.spcTop + "m";
+			var spcTimes = "";
+			if(item.infoSpaceTimes!= null && item.infoSpaceTimes.length>0){
+				for(var i=0;i<item.infoSpaceTimes.length;i++){
+					spcTimes += (item.infoSpaceTimes[i].begDatetime +" 至 "+ item.infoSpaceTimes[i].endDatetime + "<br>");
+				}
+			}else{
+				spcTimes = "永久有效";
+			}
+			var whiteUavClass = "hide";
+			var whiteUavMsg = "";
+			if(("${fns:findKey('space_type_bmdky')}" == item.spcType)){
+				whiteUavClass = "";
+				var whiteUavList = item.whiteUavList;
+				if(whiteUavList !=null && whiteUavList.length>0){
+					for(var i=0;i<whiteUavList.length;i++){
+						var whiteUav = whiteUavList[i];
+						var relType = whiteUav.relType;
+						var infoUav = whiteUav.infoUav;
+						var runTerminal = whiteUav.runTerminal;
+						var oneMsg = "";
+						if("${fns:findKey('rel_type_uav')}" == relType && infoUav!=null){
+							oneMsg = "编号：" + infoUav.uavSn + " 厂商：" + infoUav.vender + " 型号：" + infoUav.model;
+						}else if("${fns:findKey('rel_type_tmn')}" == relType && runTerminal!=null){
+							oneMsg = "编号：" + runTerminal.tmnCode + " 厂商：" + runTerminal.brand + " 型号：" + runTerminal.model;
+						}
+						whiteUavMsg += (i+1) + ".<span style='max-width: 200px; word-break: break-all; white-space: break-spaces; margin-left:5px;'>"+ oneMsg +"</span><br>";
+					}
+				}else{
+					whiteUavMsg = "未设置";
+				}
+			}
+			var divDom = 
+				"<div id=\"spcIdDiv_"+item.spcId+"\" class=\"spcIdDivStyle\">     "+
+				"	<table>                                                                                                                                "+
+				"		<tr>                                                                                                                               "+
+				"			<td class=\"vertical-align-top\">                                                                                               "+
+				"				<div style=\"background-color:"+spcColor+"\" class=\"spaceBgDivStyle\" id=\"spaceBgDiv_"+item.spcId+"\">"+
+				"					<img class=\"spaceBgImgStyle\" id=\"spaceBg_"+item.spcId+"\" src=\""+ctx+"/view/uavOnline/image/space_bg.png\"/>"+
+				"				</div>"+
+				"			</td>                                                                                                                          "+
+				"			<td>                                                                                                                           "+
+				"				<div class=\"spaceRightStyle\">                                                                                               "+
+				"					<div class=\"spaceRightTopStyle\">                                                                                                                  "+
+				"						<div class=\"spaceRightOneStyle\">                                                                                    "+
+				"							<div class=\"spaceUavSnStyle\">"+
+				"								空域名称：<span id=\"spcName_"+item.spcId+"\">"+item.spcName+"</span>"+
+				"							</div>                           "+
+				"							<a class=\"spaceUavDetailStyle\" onclick=\"spaceDetail('"+item.spcId+"','"+item.spcType+"')\">查看＞</a>"+ 
+				"						</div>                                                                                                             "+
+				"						<table class=\"spaceInfoStyle\">                                                                                      "+
+				"							<tr>                                                                                                           "+
+				"								<td>空域分类：</td>                                                                                        "+
+				"								<td id=\"spcKind_"+item.spcId+"\">"+spcKindDesc+"</td>                   "+
+				"							</tr>                                                                                                          "+
+				"							<tr>                                                                                                           "+
+				"								<td>空域形状：</td>                                                                                        "+
+				"								<td id=\"spcShape_"+item.spcId+"\">"+spcShapeDesc+"</td>                   "+
+				"							</tr>                                                                                                          "+
+				"							<tr>                                                                                                           "+
+				"								<td>高度范围：</td>                                                                                        "+
+				"								<td id=\"spcTopAndBottom_"+item.spcId+"\">"+spcTopAndBottom+"</td>                   "+
+				"							</tr>                                                                                                          "+
+				"							<tr>                                                                                                           "+
+				"								<td class=\"vertical-align-top\">时间范围：</td>                                                            "+
+				"								<td id=\"spcTimes_"+item.spcId+"\">"+spcTimes+"</td>          "+
+				"							</tr>                                                                                                          "+
+				"						</table>                                                                                                           "+
+				"						<table class=\"spaceInfoStyle\">                                                                                      "+
+				"							<tr class=\""+whiteUavClass+"\">                                                                                                           "+
+				"								<td class=\"vertical-align-top\">白名单无人机：</td>                                                            "+
+				"							</tr>                                                                                                          "+
+				"							<tr class=\""+whiteUavClass+"\">                                                                                                           "+
+				"								<td id=\"spcUavs_"+item.spcId+"\" stype=\"padding-left:10px;\">"+whiteUavMsg+"</td>          "+
+				"							</tr>                                                                                                          "+
+				"						</table>                                                                                                           "+
+				"					</div>                                                                                                                 "+
+				"				</div>                                                                                                                     "+
+				"			</td>                                                                                                                          "+
+				"		</tr>                                                                                                                              "+
+				"	</table>                                                                                                                               "+
+				"	<hr>                                                                                                                                   "+
+				"</div>";
+			$("#spaceListCanScrollDiv").append(divDom);
+		});
+		
+		var pager = Pager({
+			totalCount : infoSpaceList.length, //总条数
+			pageSize : pageSize, //每页显示n条内容，默认10
+			buttonSize : 4, //显示6个按钮，默认10
+			pageParam : 'curPage', //页码的参数名为'curPage'，默认为'page'
+			pageValue : curPage,
+			className : 'pagination', //分页的样式
+			prevButton : '＜', //上一页按钮
+			nextButton : '＞', //下一页按钮
+			firstButton : '|＜', //第一页按钮
+			lastButton : '＞|', //最后一页按钮
+			pageForm : $('form')[0]  //提交的form
+		}); 
+		$(".pagination_pager").html(pager);//设置分页
+		var pagerDesc = "<span>"+((curPage-1)*pageSize+1 )+"</span>-<span>"+curPage*pageSize +"</span>条，共<span>"+infoSpaceList.length+"</span>条";
+		$(".pagination_sub").html(pagerDesc);
+	}
+	
+	//点击空域table的tr定位到空域
+	function clickSpaceTr(spcId,spcType){
+		if(drawSpaceList.length>0){
+			for(var i=0;i<drawSpaceList.length;i++){
+				if(drawSpaceList[i].spaceType==spcType){
+					var spaceBySpcIdList = [];
+					for(var j=0;j<drawSpaceList[i].polygonOverlayList.length;j++){
+						if(drawSpaceList[i].polygonOverlayList[j].spcId==spcId){
+							spaceBySpcIdList.push(drawSpaceList[i].polygonOverlayList[j].polygonOverlay);
+	
+						}
+					}
+					mapIframe.positionPointOverlayArray(spaceBySpcIdList);
+					break;
+				}
+			}
+		}
+	}
+	
+	//根据空域类型获取空域
+	function getInfoSpaceListBySpaceType(spaceType){
+		var resultList = [];
+		for(var i=0;i<infoSpaceList.length;i++){
+			var spcType = infoSpaceList[i].spcType;
+			if(spcType == spaceType){
+				resultList.push(infoSpaceList[i]);
+			}
+		}
+		return resultList;
+	}
+	
+	//为多边形绑定click事件并提供展示信息内容
+	function clickInfoSpacePolygonToShowMsg(polygonOverlay,infoSpaceObj){
+		var infoWindowMsg = 
+			"<table class='table table-bordered'>"+
+				"<tr>"+
+					"<td>空域名称</td>"+
+					"<td colspan='3' style='max-width: 220px;text-align:left;padding-left:5px;'>"+infoSpaceObj.spcName+"</td>"+
+				"</tr>"+
+				"<tr>"+
+					"<td>空域类型</td>"+
+					"<td colspan='3' style='max-width: 220px;'>";
+						<c:forEach var="type" items="${infoSpaceTypeList}">
+							if(infoSpaceObj.spcType == '${type.spcType}'){
+								infoWindowMsg += '${type.typeName}';
+							}
+						</c:forEach>
+					infoWindowMsg+="</td>"+
+				"</tr>"+
+				"<tr>"+
+					"<td>空域分类</td>"+
+					"<td colspan='3' style='max-width: 220px;'>";
+						<c:forEach var="spcKindMap" items="${fns:findMap('spc_kind_map') }">
+						  	if('${spcKindMap.key}' == infoSpaceObj.spcKind){
+						  		infoWindowMsg += '${spcKindMap.value}';
+						    }
+						</c:forEach>
+					infoWindowMsg+="</td>"+
+				"</tr>"+
+				"<tr>"+
+					"<td style='width:20%'>形状</td>"+
+					"<td style='width:30%'>";
+					  	<c:forEach var="shapeMap" items="${fns:findMap('space_shape_map') }">
+						  	if('${shapeMap.key}' == infoSpaceObj.spcShape){
+						  		infoWindowMsg += '${shapeMap.value}';
+						    }
+						</c:forEach>
+					infoWindowMsg+="</td>"+
+					"<td>高度</td>"+
+					"<td>"+infoSpaceObj.spcBottom+"-"+infoSpaceObj.spcTop+"</td>"+
+				"</tr>";
+				infoWindowMsg+="<tr>";
+				infoWindowMsg+="<td colspan='4' style='text-align:left;padding-left:5px;'>时段";
+				infoWindowMsg+="</td>";
+				infoWindowMsg+="</tr>";
+				if(infoSpaceObj.infoSpaceTimeList && infoSpaceObj.infoSpaceTimeList.length>0){
+					for(var i = 0;i<infoSpaceObj.infoSpaceTimeList.length;i++) {
+						infoWindowMsg+="<tr>";
+						infoWindowMsg+="<td colspan='4' style='text-align:left;padding-left:5px;'>";
+						infoWindowMsg+=infoSpaceObj.infoSpaceTimeList[i].begDatetime+"&nbsp;至&nbsp;"+infoSpaceObj.infoSpaceTimeList[i].endDatetime;
+						infoWindowMsg+="</td>";
+						infoWindowMsg+="</tr>";
+					}
+				}else{
+					infoWindowMsg+="<tr>";
+					infoWindowMsg+="<td colspan='4' style='text-align:left;padding-left:5px;'>";
+					infoWindowMsg+="永久有效";
+					infoWindowMsg+="</td>";
+					infoWindowMsg+="</tr>";
+				}
+				if("${fns:findKey('space_type_bmdky')}" == infoSpaceObj.spcType){
+					// 白名单空域，显示其白名单的无人机/定位终端
+					infoWindowMsg+="<tr>";
+					infoWindowMsg+="<td colspan='4' style='text-align:left;padding-left:5px;'>白名单无人机";
+					infoWindowMsg+="</td>";
+					infoWindowMsg+="</tr>";
+					var whiteUavList = infoSpaceObj.whiteUavList;
+					if(whiteUavList!=null && whiteUavList.length>0){
+						var whiteUavMsg = "";
+						for(var i=0;i<whiteUavList.length;i++){
+							var whiteUav = whiteUavList[i];
+							var relType = whiteUav.relType;
+							var infoUav = whiteUav.infoUav;
+							var runTerminal = whiteUav.runTerminal;
+							var oneMsg = "";
+							if("${fns:findKey('rel_type_uav')}" == relType && infoUav!=null){
+								oneMsg = "编号：" + infoUav.uavSn + " 厂商：" + infoUav.vender + " 型号：" + infoUav.model;
+							}else if("${fns:findKey('rel_type_tmn')}" == relType && runTerminal!=null){
+								oneMsg = "编号：" + runTerminal.tmnCode + " 厂商：" + runTerminal.brand + " 型号：" + runTerminal.model;
+							}
+							whiteUavMsg += (i+1) + ".<span style='max-width: 264px; word-break: break-all; white-space: break-spaces; margin-left:5px;'>"+ oneMsg +"</span><br>";
+						}
+						infoWindowMsg+="<tr>";
+						infoWindowMsg+="<td colspan='4' style='text-align:left;padding-left:5px;max-width: 264px;'>";
+						infoWindowMsg+=whiteUavMsg;
+						infoWindowMsg+="</td>";
+						infoWindowMsg+="</tr>";
+					}else{
+						infoWindowMsg+="<tr>";
+						infoWindowMsg+="<td colspan='4' style='text-align:left;padding-left:5px;'>";
+						infoWindowMsg+="未设置";
+						infoWindowMsg+="</td>";
+						infoWindowMsg+="</tr>";
+					}
+				}
+		infoWindowMsg+=	"</table>";
+		mapIframe.polygonClickOpenMsg(polygonOverlay,infoWindowMsg);
+	}
+	
+	//选中空域类型
+	function checkedSpaceType(item){
+		var spaceType = item.id.split("_")[1];
+		var spaceListByType = getInfoSpaceListBySpaceType(spaceType);
+		var polygonOverlayList = [];
+		for(var i=0;i<drawSpaceList.length;i++){
+			if(drawSpaceList[i].spaceType == spaceType){
+				polygonOverlayList = drawSpaceList[i].polygonOverlayList;
+				break;
+			} 
+		}
+		if(polygonOverlayList.length==0){
+			for(var i=0;i<spaceListByType.length;i++){
+				var labelMarkerPoint = mapIframe.getMsgPointByPolygonWgs84(spaceListByType[i].polygonWgs84);
+				var labelMsg = spaceListByType[i].spcBottom + " - " +spaceListByType[i].spcTop + "m";
+				if('0' == spaceListByType[i].spcShape){
+					for(var j=0;j<spaceListByType[i].polygonWgs84.split(";").length;j++){
+						var polygonOverlay = mapIframe.drawCustomColorPolygonNoClear(spaceListByType[i].polygonWgs84.split(";")[j],$(item).attr("colorBack"),$(item).attr("colorBorder"),0.3,1,(j == 0 ? true : false),labelMsg,labelMarkerPoint);
+						clickInfoSpacePolygonToShowMsg(polygonOverlay,spaceListByType[i]);
+						var spaceObj={
+							spcId:spaceListByType[i].spcId,
+							polygonOverlay:polygonOverlay
+						};
+						polygonOverlayList.push(spaceObj);
+					}
+				}else{
+					var polygonWgs84 = spaceListByType[i].polygonWgs84;
+					if(polygonWgs84){
+						var polygonOverlay = mapIframe.drawCustomColorPolygonNoClear(polygonWgs84,$(item).attr("colorBack"),$(item).attr("colorBorder"),0.3,1,true,labelMsg,labelMarkerPoint);
+						clickInfoSpacePolygonToShowMsg(polygonOverlay,spaceListByType[i]);
+						var spaceObj={
+							spcId:spaceListByType[i].spcId,
+							polygonOverlay:polygonOverlay
+						};
+						
+						polygonOverlayList.push(spaceObj);
+					}
+				}
+			}
+		}
+		var isFind = false;
+		for(var i=0;i<drawSpaceList.length;i++){
+			if(drawSpaceList[i].spaceType == spaceType){
+				isFind = true;
+				drawSpaceList[i].polygonOverlayList = polygonOverlayList;
+				break;
+			} 
+		}
+		if(!isFind){
+			var typeArrayObj = {
+				spaceType:spaceType,
+				polygonOverlayList:polygonOverlayList
+			};
+			drawSpaceList.push(typeArrayObj);
+		}
+	}
+	//未选中空域类型
+	function uncheckedSpaceType(item){
+		var spaceType = item.id.split("_")[1];
+		var polygonOverlayList = [];
+		for(var i=0;i<drawSpaceList.length;i++){
+			if(drawSpaceList[i].spaceType == spaceType){
+				polygonOverlayList = drawSpaceList[i].polygonOverlayList;
+				for(var j=0;j<polygonOverlayList.length;j++){
+					mapIframe.clearPointOverlay(polygonOverlayList[j].polygonOverlay);
+				}
+				drawSpaceList[i].polygonOverlayList = [];
+			} 
+		}
+	}
+</script>
