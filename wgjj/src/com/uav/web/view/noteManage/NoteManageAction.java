@@ -14,6 +14,7 @@ import com.uav.base.common.SystemWebLog;
 import com.uav.base.listener.LoginAccess;
 import com.uav.base.model.internetModel.NoteCivilMessage;
 import com.uav.base.model.internetModel.NotePlanInfo;
+import com.uav.base.model.internetModel.NoteReport;
 
 /**
  * 照会文书管理
@@ -81,5 +82,38 @@ public class NoteManageAction extends BaseAction {
 			return "/view/sysFlightNote/noteManage/civilMessageManage";
 		}
 	}
-
+	/**
+	 * 
+	 * 描述 获取审批许可列表
+	 * @Title: findList 
+	 * @author 
+	 * @Modified By gl
+	 * @param curPage 当前页面
+	 * @param sysUser 查询参数
+	 * @param request HTTP请求
+	 * @param model 返回封装类
+	 * @return    
+	 * String 返回类型 
+	 * @throws
+	 */
+	@RequestMapping("/noteReportList.action")
+	public String findReportList(Integer curPage, NoteReport noteReport, HttpServletRequest request, Model model) {
+		if (curPage == null) {
+			curPage = 1;
+		}
+		try {
+			if (noteReport == null) {
+				noteReport = new NoteReport();
+			}
+			PagerVO pv = noteManageService.findReportList(noteReport, curPage, pageSize);
+			model.addAttribute("noteReportList", pv.getDatas());
+			model.addAttribute("totalCount", pv.getTotal());
+			model.addAttribute("curPage", curPage);
+			model.addAttribute("pageSize", pageSize);
+		} catch (Exception e) {
+			log.error("获取审批许可失败！", e);
+			this.setMessage(request, "获取审批许可失败！", "red");
+		}
+		return "/view/sysFlightNote/noteManage/noteReportManage";
+	}
 }

@@ -15,6 +15,7 @@ import com.uav.base.model.SysOptLog;
 import com.uav.base.model.SysUser;
 import com.uav.base.model.internetModel.NoteCivilMessage;
 import com.uav.base.model.internetModel.NotePlanInfo;
+import com.uav.base.model.internetModel.NoteReport;
 
 /**
  * 照会文书管理
@@ -98,5 +99,8 @@ public class NoteManageService {
 //		String sql = "SELECT nc.* FROM note_civil_message nc WHERE nc.create_time=(SELECT MAX(create_time) FROM note_civil_message) AND nc.note_id=? ";
 		NoteCivilMessage civilMessage = (NoteCivilMessage) noteManageDao.findUnique(sql,  new Object[] {noteId});
 		return civilMessage;
+	}
+	public PagerVO findReportList(NoteReport noteReport, Integer curPage, int pagesize) {
+		return noteManageDao.findReportList(noteReport,curPage,pagesize);
 	}
 }

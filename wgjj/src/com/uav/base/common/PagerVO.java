@@ -8,7 +8,7 @@ import java.util.List;
  * @author Lee
  *
  */
-public class PagerVO {
+public class PagerVO<T> {
 	
 	/**
 	 * 总记录数
@@ -18,7 +18,7 @@ public class PagerVO {
 	/**
 	 * 分页查询到的数据
 	 */
-	private List<Object> datas = new ArrayList<Object>();
+	private List<T> datas = new ArrayList<T>();
 	
 	public int getTotal() {
 		return total;
@@ -26,10 +26,10 @@ public class PagerVO {
 	public void setTotal(int total) {
 		this.total = total;
 	}
-	public List<Object> getDatas() {
+	public List<T> getDatas() {
 		return datas;
 	}
-	public void setDatas(List<Object> datas) {
+	public void setDatas(List<T> datas) {
 		this.datas = datas;
 	}
 }

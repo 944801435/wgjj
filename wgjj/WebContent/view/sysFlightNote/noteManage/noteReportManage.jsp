@@ -50,8 +50,7 @@ function reset(){
 				<span>检索条件</span>
 			</div>
 			<div class="right_content_select">
-			<form id="myNoteform" action="${pageContext.request.contextPath }/noteManageList.action" method="post">
-			<input id="action" name="action" value="2" type="hidden"/>
+			<form id="myNoteform" action="${pageContext.request.contextPath }/noteReportList.action" method="post">
 					<div style="width: 23%;float: left;" class="span4 right_content_select_box">
 						<span class="right_content_select_name">民航许可号：</span> 
 						<input style="width: 120px;" class="right_content_select_ctt right_content_select_cttt"
@@ -67,7 +66,7 @@ function reset(){
 							<option value="4">驳回</option>
 						</select>
 					</div>
-					<div style="width: 46%;float: left;" class="span8 right_content_select_box">
+					<div style="width: 46%;float: left;" class="span4 right_content_select_box">
 						<span class="right_content_select_name">操作时间：</span> 
 						<input style="width: 120px;" class="span3 right_content_select_ctt right_content_select_cttt"
 							placeholder="请输入起始时间" type="text" id="beginTime" readonly="readonly" name="beginTime" value="${sysoptlog.beginTime }" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'});" />
@@ -78,17 +77,11 @@ function reset(){
 	      		</form>	
 			</div>
 			<div class="right_content_btnbox">
-				<div onclick="javascript:goDelete()"
-					class="right_content_btnbox_btn right_content_btnbox_delete2"
-					style="cursor:pointer;">
-					<img src="${pageContext.request.contextPath }/images/delete2_btn.png" />
-					<span>删除</span>
-				</div>
 				<div class="right_content_btnbox_btn right_content_btnbox_add"
 					style="cursor:pointer;"
 					onclick="javascript:window.location.href='${ctx }/to_add.action?userId=${userId}';">
 					<img src="${pageContext.request.contextPath }/images/add_btn.png" />
-					<span>添加</span>
+					<span>导入</span>
 				</div>
 				<div onclick="reset()" class="right_content_btnbox_btn right_content_btnbox_resize">
 					<img src="${ctx }/images/resize_btn.png"/>
@@ -107,38 +100,33 @@ function reset(){
 								<th width="4%"></th>
 								<th width="12%">照会编号</th>
 								<th width="12%">民航许可号</th>
-								<th width="14%">回复内容</th>
-								<th width="14%">航线信息</th>
-								<th width="11%">国家</th>
-								<th width="11%">照会号</th>
-								<th width="9%">机型</th>
-								<th width="9%">状态</th>
-								<th width="5%">操作</th>
+								<th width="10%">呼号</th>
+								<th width="10%">国家</th>
+								<th width="10%">照会号</th>
+								<th width="12%">文件名</th>
+								<th width="10%">状态</th>
+								<th width="10%">创建时间</th>
+								<th width="8%">操作</th>
 							</tr>
 						</thead>
 						<tbody>
-							<c:forEach var="item" items="${noteList }">
+							<c:forEach var="item" items="${noteReportList }">
 								<tr>
 									<td width="10px">
-									<c:if test="${item.status!=null && item.status==1}">
+									<c:if test="${item.status!=null && item.status==4}">
 										<input value="${item.noteId }" name="noteId" type="checkbox">
 									</c:if>
 									</td>
 									<td>${item.documentNum }</td>
 									<td>${item.permitNumber }</td>
-									<td>${item.replyContent }</td>
-									<td>${item.routeInfo }</td>
+									<td>${item.callNumber }</td>
 									<td>${item.nationality }</td>
 									<td>${item.noteNo }</td>
-									<td>${item.model }</td>
+									<td>${item.fileName }</td>
+									<td>${item.status }</td>
+									<td>${item.createTime }</td>
 									<td>
-										<c:if test="${item.status!=null && item.status==1}">待申请</c:if>
-										<c:if test="${item.status!=null && item.status==2}">审核中</c:if>
-										<c:if test="${item.status!=null && item.status==3}">批准</c:if>
-										<c:if test="${item.status!=null && item.status==4}">驳回</c:if>
-									</td>
-									<td>
-										<a href="${pageContext.request.contextPath }/to_edit.action?userId=${item.noteId}">编辑</a>
+										<a href="${pageContext.request.contextPath }/to_edit.action?userId=${item.noteId}">下载</a>
 									</td>
 								</tr>
 							</c:forEach>

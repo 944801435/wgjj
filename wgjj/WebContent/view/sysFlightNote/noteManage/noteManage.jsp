@@ -41,17 +41,17 @@
 		<div class="right_content_all">
 			<%--列表展示--%>
 			<div class="right_content_btnbox">
-				<div class="right_content_btnbox_btn right_content_btnbox_add"
-					style="cursor:pointer;"
-					onclick="javascript:window.location.href='${ctx }/to_add.action?userId=${userId}';">
-					<img src="${pageContext.request.contextPath }/images/add_btn.png" />
-					<span>添加</span>
-				</div>
 				<div onclick="javascript:goDelete()"
 					class="right_content_btnbox_btn right_content_btnbox_delete2"
 					style="cursor:pointer;">
 					<img src="${pageContext.request.contextPath }/images/delete2_btn.png" />
 					<span>删除</span>
+				</div>
+				<div class="right_content_btnbox_btn right_content_btnbox_add"
+					style="cursor:pointer;"
+					onclick="javascript:window.location.href='${ctx }/to_add.action?userId=${userId}';">
+					<img src="${pageContext.request.contextPath }/images/add_btn.png" />
+					<span>添加</span>
 				</div>
 			</div>
 			<form action="${pageContext.request.contextPath }/noteManageList.action" method="post">

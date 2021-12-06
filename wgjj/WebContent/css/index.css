@@ -174,12 +174,13 @@ body{
 
 
 .right_content_btnbox_btn{
+	float:right;
 	cursor: pointer;
 	display: inline-block;
 	color: #fff;
 	padding: 2.5px 11px;
 	border-radius: 2px;
-	margin: 6.1px 0 0 10px;
+	margin: 6.1px 10px 0 0;
 }
 .right_content_btnbox_btn span{
 	display: inline-block;
