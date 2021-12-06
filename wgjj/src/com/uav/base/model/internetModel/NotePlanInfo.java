@@ -72,18 +72,6 @@ public class NotePlanInfo implements Serializable {
 	@Column(name="flight_plan")
 	private String flightPlan;//飞行计划
 	
-	@Column(name="departure_airport")
-	private String departureAirport; //起飞机场
-	
-	@Column(name="land_airport")
-	private String land_airport; //降落机场
-	
-	@Column(name="entry_name")
-	private String entryName; //入境点名称
-	
-	@Column(name="exit_name")
-	private String exitName; //出境点名称
-	
 	@Column(name = "create_time")
 	private String createTime;// 创建时间
 	
@@ -102,6 +90,10 @@ public class NotePlanInfo implements Serializable {
 	private String replyContent;//回复内容
 	@Transient
 	private String routeInfo;// 航线信息
+	@Transient
+	private String entryName; //入境点名称
+	@Transient
+	private String exitName; //出境点名称
 	@Transient
 	private String action;
 	@Transient

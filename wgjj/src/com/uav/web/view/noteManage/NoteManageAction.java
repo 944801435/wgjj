@@ -46,6 +46,40 @@ public class NoteManageAction extends BaseAction {
 	 * String 返回类型 
 	 * @throws
 	 */
+	@RequestMapping("/noteInfoManageList.action")
+	public String findNoteInfoList(Integer curPage, NotePlanInfo planInfo, HttpServletRequest request, Model model) {
+		if (curPage == null) {
+			curPage = 1;
+		}
+		try {
+			if (planInfo == null) {
+				planInfo = new NotePlanInfo();
+			}
+			PagerVO pv = noteManageService.findNoteInfoList(planInfo, curPage, pageSize);
+			model.addAttribute("noteList", pv.getDatas());
+			model.addAttribute("totalCount", pv.getTotal());
+			model.addAttribute("curPage", curPage);
+			model.addAttribute("pageSize", pageSize);
+		} catch (Exception e) {
+			log.error("获取照会信息失败！", e);
+			this.setMessage(request, "获取照会信息失败！", "red");
+		}
+		return "/view/sysFlightNote/noteManage/noteManage";
+	}
+	/**
+	 * 
+	 * 描述 获取照会信息列表
+	 * @Title: findList 
+	 * @author 
+	 * @Modified By gl
+	 * @param curPage 当前页面
+	 * @param sysUser 查询参数
+	 * @param request HTTP请求
+	 * @param model 返回封装类
+	 * @return    
+	 * String 返回类型 
+	 * @throws
+	 */
 	@RequestMapping("/noteManageList.action")
 	public String findList(Integer curPage, NotePlanInfo planInfo, HttpServletRequest request, Model model) {
 		if (curPage == null) {

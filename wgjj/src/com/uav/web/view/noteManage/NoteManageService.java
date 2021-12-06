@@ -103,4 +103,7 @@ public class NoteManageService {
 	public PagerVO findReportList(NoteReport noteReport, Integer curPage, int pagesize) {
 		return noteManageDao.findReportList(noteReport,curPage,pagesize);
 	}
+	public PagerVO findNoteInfoList(NotePlanInfo planInfo, Integer curPage, int pagesize) {
+		return noteManageDao.findNoteInfoList(planInfo,curPage,pagesize);
+	}
 }
