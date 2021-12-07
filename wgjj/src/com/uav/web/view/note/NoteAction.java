@@ -94,7 +94,6 @@ public class NoteAction extends BaseAction {
 			obj.setCrtDept(getCurDeptid(request));
 			obj.setCrtUser(getCurUserid(request));
 			obj.setCrtTime(DateUtil.getNowFullTimeString());
-			obj.setCanDelSts(Constants.sys_default_yes);
 			noteService.save(obj, file);
 			vo = new MessageVo(MessageVo.SUCCESS, "导入外交照会文件成功！", null);
 		} catch (FlightException e) {
@@ -123,9 +122,6 @@ public class NoteAction extends BaseAction {
 		MessageVo vo = null;
 		try {
 			Note obj = noteService.findById(noteSeq);
-			if (Constants.sys_default_no.equals(obj.getCanDelSts())) {
-				return new MessageVo(MessageVo.FAIL, "该外交照会已经存在民航已经，不可再删除！", null);
-			}
 			noteService.del(noteSeq);
 			vo = new MessageVo(MessageVo.SUCCESS, "删除外交照会成功！", null);
 		} catch (Exception e) {

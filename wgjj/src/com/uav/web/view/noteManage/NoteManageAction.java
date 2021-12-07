@@ -12,6 +12,8 @@ import com.uav.base.common.BaseAction;
 import com.uav.base.common.PagerVO;
 import com.uav.base.common.SystemWebLog;
 import com.uav.base.listener.LoginAccess;
+import com.uav.base.model.SysPms;
+import com.uav.base.model.SysUser;
 import com.uav.base.model.internetModel.NoteCivilMessage;
 import com.uav.base.model.internetModel.NotePlanInfo;
 import com.uav.base.model.internetModel.NoteReport;
@@ -32,6 +34,11 @@ public class NoteManageAction extends BaseAction {
 	protected static final Logger log = Logger.getLogger(NoteManageAction.class);
 	@Autowired
     private NoteManageService noteManageService;
+	
+	@RequestMapping("/to_note_info_add")
+	public String toAdd(NotePlanInfo planInfo, Model model, HttpServletRequest request) {
+		return "/view/sysFlightNote/noteManage/addNote";
+	}
 	/**
 	 * 
 	 * 描述 获取照会信息列表
@@ -65,6 +72,35 @@ public class NoteManageAction extends BaseAction {
 			this.setMessage(request, "获取照会信息失败！", "red");
 		}
 		return "/view/sysFlightNote/noteManage/noteManage";
+	}
+	/**
+	 * 
+	 * 描述照会信息
+	 * @Title: del 
+	 * @author 
+	 * @param sysUser
+	 * @param userIds
+	 * @param request
+	 * @return    
+	 * String 返回类型 
+	 * @throws
+	 */
+	@RequestMapping("/noteInfoDel.action")
+	@SystemWebLog(methodName = "删除照会信息")
+	public String del(NotePlanInfo planInfo, Integer[] noteIds, HttpServletRequest request) {
+		if (noteIds == null) {
+			log.error("删除照会信息失败：参数错误！");
+			this.setMessage(request, "删除照会信息失败：参数错误！", "red");
+			return "redirect:/noteInfoManageList.action";
+		}
+		try {
+			noteManageService.delete(noteIds);
+			this.setMessage(request, "删除照会信息成功！", "green");
+		} catch (Exception e) {
+			e.printStackTrace();
+			this.setMessage(request, "删除照会信息失败！", "red");
+		}
+		return "redirect:/noteInfoManageList.action";
 	}
 	/**
 	 * 

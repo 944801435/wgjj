@@ -83,6 +83,8 @@ public class NotePlanInfo implements Serializable {
 	
 	@Column(name = "status")
 	private Integer status; //状态
+	@Column(name = "del_status")
+	private Integer delStatus; //删除状态
 	// 页面参数
 	@Transient
 	private String permitNumber;// 许可号

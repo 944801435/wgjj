@@ -106,4 +106,9 @@ public class NoteManageService {
 	public PagerVO findNoteInfoList(NotePlanInfo planInfo, Integer curPage, int pagesize) {
 		return noteManageDao.findNoteInfoList(planInfo,curPage,pagesize);
 	}
+	public void delete(Integer[] noteIds) {
+		for (Integer noteId : noteIds) {
+			noteManageDao.executeHql("update NotePlanInfo set delStatus=0 where noteId=? ", new Object[] {noteId });
+		}
+	}
 }

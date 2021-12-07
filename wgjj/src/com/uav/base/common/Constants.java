@@ -103,7 +103,15 @@ public class Constants {
 		else
 			return STR_BLANK;
 	}
-
+	  public static final String NOTE_STS_CREATE = "0";
+	  public static final String NOTE_STS_AUDIT = "1";
+	  public static final String NOTE_STS_APPROVE = "2";
+	  public static final String NOTE_STS_REJECT = "3";
+	  public static final String NOTE_STS_CREATE_DESC = "待流转";
+	  public static final String NOTE_STS_AUDIT_DESC = "流转中";
+	  public static final String NOTE_STS_APPROVE_DESC = "批准";
+	  public static final String NOTE_STS_REJECT_DESC = "驳回";
+	  public static Map<String, String> note_sts_map;
 	// 计划申请状态
 	public static final String BIZ_SPACE_REQ_CREATE = "0";
 	public static final String BIZ_SPACE_REQ_AUDIT = "1";

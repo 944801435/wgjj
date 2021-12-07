@@ -2,10 +2,12 @@ package com.uav.base.util;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.FileNameMap;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -16,6 +18,10 @@ import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 import javax.activation.MimetypesFileTypeMap;
+
+import org.springframework.web.multipart.MultipartFile;
+
+import com.uav.base.model.SysFile;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -174,5 +180,90 @@ public class FileZipUtil {
 		}
 		return file;
 	}
+	public static File zipFileByMulti(String fileName, List<MultipartFile> fileList)
+		    throws IOException
+		  {
+		    String uuid = UUID.randomUUID().toString();
+		    String tempPath = realPath + File.separator + uuid + File.separator;
+		    File tempPathFile = new File(tempPath);
+		    if (!tempPathFile.exists()) {
+		      tempPathFile.mkdir();
+		    }
+		    File file = new File(tempPath + fileName);
+		    FileOutputStream bos = null;
+		    ZipOutputStream zos = null;
+		    InputStream fin = null;
+		    try {
+		      bos = new FileOutputStream(file);
+		      zos = new ZipOutputStream(bos);
+		      for (MultipartFile sysFile : fileList) {
+		        zos.putNextEntry(new ZipEntry(sysFile.getOriginalFilename()));
+		        fin = sysFile.getInputStream();
 
+		        byte[] buffer = new byte[1024];
+		        int length;
+		        while ((length = fin.read(buffer)) > 0)
+		        {
+		          zos.write(buffer, 0, length);
+		        }
+		        fin.close();
+		        zos.closeEntry();
+		      }
+		      zos.close();
+		      bos.close();
+		    } catch (IOException e) {
+		      log.error("打包压缩包失败！", e);
+		      throw e;
+		    } finally {
+		      try {
+		        if (fin != null) {
+		          fin.close();
+		        }
+		        if (zos != null) {
+		          zos.close();
+		        }
+		        if (bos != null)
+		          bos.close();
+		      }
+		      catch (Exception e) {
+		        log.error("打包压缩包失败！", e);
+		      }
+		    }
+		    return file;
+		  }
+
+		  public static byte[] zipSysFile(List<SysFile> fileList)
+		    throws IOException
+		  {
+		    byte[] b = new byte[0];
+		    ByteArrayOutputStream bos = null;
+		    ZipOutputStream zos = null;
+		    try {
+		      bos = new ByteArrayOutputStream();
+		      zos = new ZipOutputStream(bos);
+		      for (SysFile sysFile : fileList) {
+		        zos.putNextEntry(new ZipEntry(sysFile.getFileName()));
+		        zos.write(sysFile.getFileBytes());
+		        zos.closeEntry();
+		      }
+		      zos.close();
+		      b = bos.toByteArray();
+		      bos.close();
+		    } catch (IOException e) {
+		      log.error("打包压缩包失败！", e);
+		      throw e;
+		    } finally {
+		      try {
+		        if (zos != null) {
+		          zos.close();
+		        }
+		        if (bos != null)
+		          bos.close();
+		      }
+		      catch (Exception e) {
+		        log.error("打包压缩包失败！", e);
+		      }
+		    }
+		    return b;
+		  }
 }

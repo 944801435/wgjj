@@ -207,7 +207,7 @@ public class CaacApproveService {
 			baseDAO.save(caac);
 
 			note.setLicenseNo(caac.getLicenseNo());
-			note.setCanDelSts(Constants.sys_default_no);
+//			note.setCanDelSts(Constants.sys_default_no);
 			baseDAO.update(note);
 
 			JSONArray flightDetails = caacJson.getJSONArray("flightDetails");
