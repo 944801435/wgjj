@@ -113,6 +113,16 @@ $(function(){
 	//设置时间轴的样式
 	$(".layui-timeline-content>h3").css("line-height","22px");
 	$(".layui-timeline-content>p").css("margin-top","10px");
+	
+	// 将所有的button放到页面右侧
+	var childrenButtons = $(".right_content_btnbox").children();
+	$(".right_content_btnbox").html("<div style='float:right;'></div>").find("div:first").append(childrenButtons);
+	
+	// 添加控制显隐事件
+	$("body").on("click",".my-collapse",function(){
+		$($(this).attr("href")).slideToggle();
+	});
+	
 });
 
 function jsonToMap(obj){
@@ -209,4 +219,38 @@ form{
 a{
 	cursor: pointer;
 }
+/*显隐*/
+.my-collapse{
+	cursor: pointer;
+}
+.my-collapse>span{
+	font-weight: 600;
+}
+hr{
+	margin: 5px 0;
+}
+/*下划线*/
+.my-underline{
+	text-decoration: underline
+}
 </style>
+<script>
+	// 照会状态
+	var note_sts_map=JSON.parse('${fns:findJSONMap("note_sts_map")}');
+	// 照会状态过滤器
+	Vue.filter('noteStsFilter',function(val){
+		if(val==null || val==''){
+			return val;
+		}
+		return note_sts_map[val];
+	});
+	// 计划状态
+	var biz_space_req_map=JSON.parse('${fns:findJSONMap("biz_space_req_map")}');
+	// 计划状态过滤器
+	Vue.filter('planStsFilter',function(val){
+		if(val==null || val==''){
+			return val;
+		}
+		return biz_space_req_map[val];
+	});
+</script>

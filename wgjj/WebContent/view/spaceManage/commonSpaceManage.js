@@ -193,19 +193,7 @@ $(function(){
 	$("#mapIframe").load(function(){ 
 		//当机构的地图范围不为空时，设置地图的默认显示范围
 		function setMapCenter(){
-console.log("当机构的地图范围不为空时，设置地图的默认显示范围，如果为空设置显示范围为海南省");				
-			if(rangeLoc){
-				var jws = rangeLoc.split("|");
-				var points = [];
-				var jw = "";
-				for(var i=0;i<jws.length;i++){
-					jw = jws[i].split(",");
-					points.push(mapIframe.createPoint(jw[0],jw[1]));
-				}
-				mapIframe.setMapCenter(points);
-			}else{
-				mapIframe.positionCity();//根据所在城市定位地图的中心
-			}
+			mapIframe.positionCity();//根据所在城市定位地图的中心
 		}
 		
 		//如果是新增模式的话

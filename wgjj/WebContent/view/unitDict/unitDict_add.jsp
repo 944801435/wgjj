@@ -7,9 +7,16 @@
 	<script type="text/javascript" src="${pageContext.request.contextPath }/js/validate.js"></script>
 	<script type="text/javascript" src="${pageContext.request.contextPath }/js/md5.min.js"></script>
 	<script type="text/javascript">
+		var deptMap = new Map();
+		$(function(){
+			<c:forEach var="item" items="${deptList }">
+				deptMap.set("${item.deptId}", "${item.deptName}");
+			</c:forEach>
+		});
 		function goSave() {
 			var myForm=document.getElementById("inputForm");
 			if(Validator.Validate(myForm,3)){
+				$("#unitName").val(deptMap.get($("#dictId").val()));
 				$("#inputForm").submit();
 			}
 		}
@@ -26,8 +33,13 @@
 			<div class="right_content_select">
 				<div class="control-group">
 					<label class="control-label">单位名称：</label>
+					<input name="unitName" id="unitName" type="hidden">			
 					<div class="controls">
-						<input id="unitName" autocomplete="off" type="text" dataType="Require,Limit" len="50" msg="请输入(1~20)个字符的单位字典名称！" maxlength="50" class="required" name="unitName" value=""/>
+						<select id="dictId" name="dictId" dataType="Require" msg="请选择通知单位！">
+							<c:forEach var="item" items="${deptList }">
+								<option value="${item.deptId}">${item.deptName}</option>
+							</c:forEach>
+						</select>
 					</div>
 				</div>
 			</div>

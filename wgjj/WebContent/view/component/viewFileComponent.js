@@ -1,3 +1,9 @@
+/**
+ * 查看文件组件
+ * 用法：
+ * 	fileList是SysFile的集合
+ * 	<view-file :filelist="fileList"></view-file>
+ */
 var viewFileTempStyle=`
 	<style>
 		.bigFileDiv{
@@ -20,7 +26,7 @@ var viewFileTemp=`
 		<div style="margin-bottom:5px;"><b>{{title}}</b></div>
 		<table style="width: 100%;">
 			<tr>
-				<td width="70%">
+				<td style="vertical-align: top; width: 80%; text-align: left;">
 					<div v-if="bigFileObj!=null" class="bigFileDiv fileDiv">
 						<a>{{bigFileObj.fileName}}</a>
 						<embed v-if="bigFileObj.fileName.indexOf('.pdf')!=-1" :src="'${ctx}/photo.action?fileId='+bigFileObj.fileId">

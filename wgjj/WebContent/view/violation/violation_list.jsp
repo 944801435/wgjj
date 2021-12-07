@@ -79,9 +79,8 @@
 								<th width="10%">国家</th>
 								<th width="10%">机型</th>
 								<th width="10%">呼号</th>
-								<th width="20%">违规信息</th>
+								<th>违规信息</th>
 								<th width="15%">违规时间</th>
-								<th width="5%">状态</th>
 								<th width="10%">操作</th>
 							</tr>
 						</thead>
@@ -93,26 +92,11 @@
 									</td>
 									<td>${item.nationality }</td>
 									<td>${item.model }</td>
-									<td>${item.acid }</td>
+									<td>${item.callSign }</td>
 									<td>${item.info }</td>
-									<td>${item.createTime }</td>
-									<td>
-										<c:if test="${item.validSts=='1' }">
-											已开启
-										</c:if>
-										<c:if test="${item.validSts!='1' }">
-											已关闭
-										</c:if>
-									</td>
+									<td>${item.planDate }</td>
 									<td>
 										<a href="${pageContext.request.contextPath }/to_violation_edit.action?vioId=${item.vioId}">编辑</a>
-
-                                        <c:if test="${item.validSts=='1' }">
-                                            <a href="javascript:doValidSts(${item.vioId})">关闭</a>
-                                        </c:if>
-                                        <c:if test="${item.validSts!='1' }">
-                                            <a href="javascript:doValidSts(${item.vioId})">开启</a>
-                                        </c:if>
 									</td>
 								</tr>
 							</c:forEach>

@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>照会文书详情</title>
+<title>飞行计划编辑</title>
 <%@ include file="../tool.jsp"%>
 <script type="text/javascript" src="${ctx }/view/component/allComponent.js"></script>
 </head>
@@ -12,12 +12,24 @@
 	<div id="app" class="right_content">
 		<template>
 			<div class="right_content_all">
-				<!-- 照会文书基础信息 -->
-				<note-detail :note="note"></note-detail>
+				<!-- 飞行计划基础信息 -->
+				<note-detail :note="note" :plan="plan" :planbackfilelist="planBackFileList"></note-detail>
 			</div>
 			<div class="right_content_all">
 				<!-- 照会文书原始航线 -->
-				<flight :flightlist="flightList" title="照会文书原始航线"></flight>
+				<flight :flightlist="flightList" :opttime="note.crtTime" title="照会文书原始航线"></flight>
+			</div>
+			<div class="right_content_all" v-for="item in caacList">
+				<!-- 民航调整航线 -->
+				<flight :caac="item" :flightlist="item.flightList" :caac="item" title="民航调整航线"></flight>
+			</div>
+			<div class="right_content_all">
+				<!-- 历史计划航线 -->
+				<flight :flightlist="oldPlanFlightList" title="历史计划航线"></flight>
+			</div>
+			<div class="right_content_all" v-for="item in hisPlanList">
+				<!-- 对应机构航线 -->
+				<flight :flightlist="item.flightList" :opttime="item.optTime" :title="item.sysDept.deptName+'调整航线'"></flight>
 			</div>
 			<div class="right_content_btnbox">
 				<div onclick="parent.closeDetailLayer()" 
@@ -35,14 +47,20 @@
 		data: {
 			ctx: ctx,
 			note: {},
+			plan: {},
 			flightList: [],
-			noteFileList: []
+			caacList: [],
+			oldPlanFlightList: [],
+			hisPlanList: [],
+			noteFileList: [],
+			planBackFileList: [],
+			flightObj: {}
 		},
 		mounted: function(){
 			$.ajax({
-				url: ctx + "/note/detail.action",
+				url: ctx + "/flyPlan/detail.action",
 				data: {
-					noteSeq: parent.vm.selNoteSeq
+					planSeq: parent.vm.selNoteSeq
 				},
 				type: "post",
 				dataType: "json",
@@ -52,8 +70,13 @@
 						return;
 					}
 					this.note = data.data.note;
-					this.flightList = data.data.flightList;
+					this.plan = data.data.plan;
+					this.flightList = data.data.noteFlightList;
+					this.caacList = data.data.caacList;
+					this.oldPlanFlightList = data.data.oldPlanFlightList;
+					this.hisPlanList = data.data.hisPlanList;
 					this.noteFileList = data.data.noteFileList;
+					this.planBackFileList = data.data.planBackFileList;
 				}
 			});
 		},
@@ -61,7 +84,7 @@
 			viewFile(){
 				layer.open({
 					type:2,
-					title:'照会文书扫描件',
+					title:'飞行计划扫描件',
 					content: "${ctx}/view/component/viewFile.jsp",
 					shadeClose: false,    //开启遮罩关闭
 					shade: false,

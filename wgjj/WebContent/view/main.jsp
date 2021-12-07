@@ -1,5 +1,6 @@
+<%@page import="com.uav.base.common.Constants"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8" import="com.uav.base.model.SysUser"%>
+	pageEncoding="UTF-8" import="com.uav.base.model.SysUser,com.uav.base.common.Constants"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
@@ -124,47 +125,15 @@ function logout(){
 </script>
 </head>
 <body class="page-header-fixed">
-	<div id="header" class="header navbar navbar-inverse navbar-fixed-top" style="border-bottom: none;background-image: url('${ctx}/images/header.png') !important;">
-		<div class="header-inner" style="padding-top:1px;">
-			<%if(com.uav.base.common.Constants.SYS_SHOW_LOGO){%>
-			<a href="javascript:void(0);" style="padding-top: 9px; padding-left:10px; padding-right:10px; float: left;"> 
-				<img src="${ctx }/images/logo.png" alt="logo"/>
-			</a>
-			<%}%>
-			<a class="navbar-brand" href="#" style="width:600px;height:48px;padding: 15px 15px;font-size: 20px;margin-top: 0px;"> 
-				<span style="color: #fff;font-size: 22px;">
-						 <%=com.uav.base.common.Constants.SYS_NAME%> 
-				</span>
-			</a> <a href="javascript:;" class="navbar-toggle" data-toggle="collapse"
-				data-target=".navbar-collapse"> <img
-				src="${ctx }/images/sidebar-toggler.png" alt="" />
-			</a>
-			<a href="javascript:void(0);" class="dropdown-toggle" style="float: right;margin-top: 20px;padding-right: 10px;"> 
-				<img alt="" src="${ctx }/images/time.png" width="14px" height="14px" style="margin-top: -1px;"/>&nbsp;
-				<span style="padding-bottom: 100;color: #fff;" id="localtime"></span>
-			</a>
-			<span class="username" id="userName" style="color:#ffffff;float: right;margin-top: 20px;padding-right: 30px;">
-				<a href="#basic" style="color:#ffffff;" onClick="Tool.userInfo()" data-toggle="modal">${userbean.userDesc }(${userbean.userName })&nbsp;&nbsp;|&nbsp;&nbsp;</a>
-				<a href="javascript:logout()" style="color:#CA1E1D;">退出</a>
-<%-- 				<span style="padding-top: 2%;display: block;"><a>${userbean.sysDept.deptName }</a></span> --%>
-			</span>
-		</div>
-
-	</div>
-	<!-- END HEADER -->
-	<!-- <div class="clearfix"></div> -->
-
-
 	<!-- 页面主体page-container开始 -->
-	<div id="main" class="page-container" style="background: linear-gradient(#192943,#1a294f,#1a2958); background-image: url('${ctx}/images/left_bg.png') !important;background-size:200px 610px;">
+	<div id="main" class="" style="background: linear-gradient(#192943,#1a294f,#1a2958); background-image: url('${ctx}/images/left_bg.png') !important;background-size:200px 610px;">
 		<!-- BEGIN SIDEBAR -->
 		<div id="left" class="page-sidebar navbar-collapse collapse" style="position: absolute; z-index: 9999;background-color: transparent;">
 			<!-- BEGIN SIDEBAR MENU -->
+			<div style="height: 50px; margin-left: 10px; line-height: 50px;">
+				<%-- <img id="logo" src="${ctx }/images/logo.png" alt="logo"/> --%>
+			</div>
 			<ul class="page-sidebar-menu">
-				<li style="margin-bottom: 10px"><div
-						class="sidebar-toggler hidden-phone"></div></li>
-
-				
 				<c:forEach var="item" items="${menuList }">
 					<c:if test="${fn:length(item.childMenus)==0 }">
 						<li><a url="${ctx}${item.url}" href="#${item.menuId }" menuid="${item.menuId }" menuName="${obj.menuName }"><i class="fa ${item.note }"></i> ${item.menuName }</a></li>
@@ -196,17 +165,33 @@ function logout(){
 						</li>
 					</c:if>
 				</c:forEach>
-
-
 			</ul>
 		</div>
-
 		<!-- END SIDEBAR -->
 
 
 		<!--EditPwd-->
 		<div class="page-content">
-			<div class="mainbox">
+			<div id="header" class="header navbar navbar-inverse navbar-fixed-top" style="border-bottom: none;background-image: url('${ctx}/images/header.png') !important; width: calc(100% - 200px); margin-left: 200px;">
+				<div class="header-inner" style="padding-top:1px;">
+					<a class="sidebar-toggler hidden-phone navbar-brand" style="margin-top: 10px;margin-left: 8px; width: 30px;"></a>
+					<a class="navbar-brand" href="#" style="width:600px;height:48px;padding: 15px 15px;font-size: 20px;margin-top: 0px;"> 
+						<span style="color: #fff;font-size: 20px;">
+							<%=Constants.SYS_NAME %>
+						</span>
+					</a> 
+					<a href="javascript:logout()" class="dropdown-toggle" style="float: right;margin-top: 20px;padding-right: 20px;color:#CA1E1D;">退出</a>
+					<a href="#basic" onClick="Tool.userInfo()" class="dropdown-toggle" style="float: right;margin-top: 20px;color: #fff;">${userbean.userDesc }(${userbean.userName })&nbsp;&nbsp;|&nbsp;&nbsp;</a>
+					<a href="javascript:void(0);" class="dropdown-toggle" style="float: right;margin-top: 20px;padding-right: 20px;"> 
+						<img alt="" src="${ctx }/images/time.png" width="14px" height="14px" style="margin-top: -1px;"/>&nbsp;
+						<span style="padding-bottom: 100;color: #fff;" id="localtime"></span>
+					</a>
+					
+				</div>
+		
+			</div>
+			<!-- END HEADER -->
+			<div class="mainbox" style="padding-top: 50px;">
 				<div class="contextMenu" id="tabBarMenu" style="display: none">
 					<ul>
 						<li id="item_1">刷新标签页</li>
@@ -244,35 +229,7 @@ function logout(){
 		<!-- 页面结束 -->
 		
 	</div>
-	
-	<%-- <div id="userDiv" class="userDiv">
-		<ul>
-			<li>
-				<img alt="" src="${ctx }/images/fly.png" style="width: 180px;display:none;">
-			</li>
-			<li class="dropdown user">
-				<span class="username" id="userName">
-					<a href="#basic" onClick="Tool.userInfo()" data-toggle="modal">${userbean.userDesc }(${userbean.userName })&nbsp;&nbsp;|&nbsp;&nbsp;</a>
-					<a href="javascript:logout()" style="color:#CA1E1D;">退出</a>
-					<span style="padding-top: 2%;display: block;"><a>${userbean.sysDept.deptName }</a></span>
-				</span>
-			</li>
-		</ul>
-	</div> --%>
 	<!-- 页面主体page-container结束 -->
-
-	<div class="footer,hide">
-
-		<div class="footer-inner">
-			2015-2025 &copy; 
-			<!--技术支持：<a href="http://www.boshang-tech.com" target="_blank">伯尚科技</a>-->
-		</div>
-		<div class="footer-tools">
-			<span class="go-top"> <i class="fa fa-angle-up"></i>
-			</span>
-		</div>
-
-	</div>
 
 	<div class="msg">
 		<i class="fa fa-exclamation-triangle" style="color: yellow"></i>&nbsp;&nbsp;<span></span>
@@ -341,11 +298,11 @@ function logout(){
 		var minHeight=500;
 		var strs = getWindowSize().toString().split(",");
 		htmlObj.css({"overflow-x" : (strs[1]<minWidth ? "auto" : "hidden"),"overflow-y" : (strs[0]<minHeight ? "auto" : "hidden")});
-		iframeHeight=strs[0]- headerObj.height()-$("#main").css("margin-top").replace("px", "");
+		iframeHeight=strs[0]- headerObj.height()-50;
 		iframeHeight = iframeHeight + 12;
 		frameObj.height(iframeHeight);
 		changeAllBodyHeight(iframeHeight);
-		$("#main").css("background-size",leftWidth+"px "+(strs[0]- (headerObj.css('display')=='none' ? 0 : headerObj.height()))+"px");
+		$("#main").css("background-size",leftWidth+"px "+(strs[0])+"px");
 		$('#userDiv').css({"width":leftWidth+"px",'height':'50px'});
 	}
 	//改变iframe的高度同时改变iframe中body的高度
@@ -412,6 +369,7 @@ function logout(){
 	}
 	
 	$(document).ready(function(){
+		message();
 		//初始化首页
 		var initMenuId=userbean.initMenuId;
 		if(initMenuId==null || initMenuId==''){

@@ -27,7 +27,7 @@
 				<div class="control-group">
 					<label class="control-label">国家：</label>
 					<div class="controls">
-						<input id="nationality" autocomplete="off" type="text" dataType="Require,Limit" len="50" msg="请输入(1~50)个字符的违规信息名称！" maxlength="50" class="required" name="nationality" value=""/>
+						<input id="nationality" autocomplete="off" type="text" dataType="Require,Limit" len="50" msg="请输入(1~50)个字符的国家名称！" maxlength="50" class="required" name="nationality" value=""/>
 					</div>
 				</div>
 				<div class="control-group">
@@ -39,13 +39,13 @@
 				<div class="control-group">
 					<label class="control-label">违规时间：</label>
 					<div class="controls">
-                        <input type="text" id="createTime" name="createTime" style="width:150px;" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})"/>
+                        <input type="text" id="planDate" name="planDate" style="width:150px;" onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})"/>
 					</div>
 				</div>
 				<div class="control-group">
 					<label class="control-label">呼号：</label>
 					<div class="controls">
-						<input id="acid" autocomplete="off" type="text" dataType="Limit" len="20" msg="请输入(1~20)个字符！" maxlength="20" class="required" name="acid" value=""/>
+						<input id="callSign" autocomplete="off" type="text" dataType="Limit" len="20" msg="请输入(1~20)个字符！" maxlength="20" class="required" name="callSign" value=""/>
 					</div>
 				</div>
 				<div class="control-group">

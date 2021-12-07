@@ -146,8 +146,6 @@ String.prototype.replaceAll = function (FindText, RepText) {
 	return this.replace(regExp, RepText); 
 }
 var ctx='${ctx}';
-var rangeLoc='${userbean.sysDept.rangeLoc}';//机构默认地理范围
-var user_rangeLoc = '${userbean.rangeLoc}';//用户的管理范围
 var isEdit = "${fns:hasPms(pmsIds,'3202')}";//是否有管理权限
 var maxZIndex = 99;//页面上最大的z-index数
 var flyingEventUavPns = [];//所有未处置事件的在飞的pn
@@ -204,19 +202,7 @@ $(function(){
 	
 	//当机构的地图范围不为空时，设置地图的默认显示范围
 	function setMapCenter(){
-		if(rangeLoc){
-			console.info("当机构的地图范围不为空时，设置地图的默认显示范围，如果为空设置显示范围为海南省");
-			var jws = rangeLoc.split("|");
-			var points = [];
-			var jw = "";
-			for(var i=0;i<jws.length;i++){
-				jw = jws[i].split(",");
-				points.push(mapIframe.createPoint(jw[0],jw[1]));
-			}
-			mapIframe.setMapCenter(points);
-		}else{
-			mapIframe.positionCity();//根据所在城市定位地图的中心
-		}
+		mapIframe.positionCity();//根据所在城市定位地图的中心
 	}
 	$("#mapIframe").load(function(){
 		window.setTimeout(function(){
@@ -231,35 +217,9 @@ $(function(){
 	});
 })
 
-//判断点是否在用户的管理范围内(用户管理范围不存在，则表示true)
-function isLnglatInUserRange(lng,lat){
-	if(user_rangeLoc!=null&&user_rangeLoc!=""&&user_rangeLoc!="null" && lng !=null && lng!="" && lat!=null && lat!=""){
-		var points = [];
-		for(var i=0;i<user_rangeLoc.split("|").length;i++){
-			var jwd = user_rangeLoc.split("|")[i].split(",");
-			points.push({x:parseFloat(jwd[0]),y:parseFloat(jwd[1])});
-		}
-		var point = {x:parseFloat(lng),y:parseFloat(lat)};
-		var c = false;
-		//判断点是否在某个区域范围内
-		for (var i = 0, j = points.length - 1; i < points.length; j = i++) {
-			if (((points[i].y > point.y) != (points[j].y > point.y))
-					&& (point.x < (points[j].x - points[i].x) * (point.y - points[i].y) / (points[j].y - points[i].y) + points[i].x)) {
-				c = !c;
-			}
-		}
-		return c;
-	}else{
-		return true;
-	}
-}
-
 //关闭所有的面板
 function closePanel(){
 	closeUavInfo();
-	closeWarnList();
-	closeSpaceList();
-	closeUavList();
 	closePlanList();
 	closeAdsbList();
 }

@@ -22,13 +22,13 @@
 		<lg:errors />
 		<div class="right_content_all">
 			<div class="right_content_all_top">
-				<span>违规信息权限</span>
+				<span>修改违规信息</span>
 			</div>
 			<div class="right_content_select">
 				<div class="control-group">
 					<label class="control-label">国家：</label>
 					<div class="controls">
-						<input id="nationality" autocomplete="off" type="text" dataType="Require,Limit" len="50" msg="请输入(1~50)个字符的操作权限名称！" maxlength="50" class="required" name="nationality" value="${violation.nationality }"/>
+						<input id="nationality" autocomplete="off" type="text" dataType="Require,Limit" len="50" msg="请输入(1~50)个字符的国家名称！" maxlength="50" class="required" name="nationality" value="${violation.nationality }"/>
 					</div>
 				</div>
 				<div class="control-group">
@@ -40,19 +40,19 @@
 				<div class="control-group">
 					<label class="control-label">违规时间：</label>
 					<div class="controls">
-						<input type="text" id="createTime" name="createTime" style="width:150px;" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" value="${violation.createTime }"/>
+						<input type="text" id="planDate" name="planDate" style="width:150px;" onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})" value="${violation.planDate }"/>
 					</div>
 				</div>
 				<div class="control-group">
 					<label class="control-label">呼号：</label>
 					<div class="controls">
-						<input id="acid" autocomplete="off" type="text" dataType="Limit" len="20" msg="请输入(1~20)个字符！" maxlength="20" class="required" name="acid" value="${violation.acid }"/>
+						<input id="callSign" autocomplete="off" type="text" dataType="Limit" len="20" msg="请输入(1~20)个字符！" maxlength="20" class="required" name="callSign" value="${violation.callSign }"/>
 					</div>
 				</div>
 				<div class="control-group">
 					<label class="control-label">违规信息：</label>
 					<div class="controls">
-						<input id="info" autocomplete="off" type="text" dataType="Limit" len="500" msg="请输入(1~500)个字符！" maxlength="500" class="required" name="info" value="${violation.info }"/>
+						<textarea rows="5" cols="30" id="info" name="info" value="" type="text" dataType="Limit" len="500" msg="请输入(1~500)个字符！" maxlength="500">${violation.info }</textarea>
 					</div>
 				</div>
 			</div>

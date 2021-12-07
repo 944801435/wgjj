@@ -71,17 +71,31 @@ function positionSpace(){
 function positionPointOverlayArray(overlays,zoomNum){
 	var all_points=[];
 	for(var i=0;i<overlays.length;i++){
-		all_points.push(overlays[i].overlayObj.getLatLngs());
+		if(overlays[i].overlayType=='marker'){
+			all_points.push(overlays[i].overlayObj.getLatLng());
+		}else if(overlays[i].overlayType=='polygon'){
+			all_points.push(overlays[i].overlayObj.getLatLngs());
+		}
 	}
-	map.fitBounds(all_points);
-	if(zoomNum != undefined){
-		map.setZoom(zoomNum);
+	if(all_points.length==1){
+		if(zoomNum != undefined){
+			setCenterAndZoom(all_points[0],zoomNum);
+		}else{
+			positionPoint(all_points[0]);
+		}
+	}else{
+		map.fitBounds(all_points);
+		if(zoomNum != undefined){
+			map.setZoom(zoomNum);
+		}
 	}
 }
 
 //定位指定的覆盖物
 function positionPointOverlay(overlay){
-	var all_points=[];
-	all_points.push(overlay.overlayObj.getLatLngs());
-	map.fitBounds(all_points);
+	if(overlay.overlayType=='marker'){
+		positionPoint(overlay.overlayObj.getLatLng());
+	}else if(overlay.overlayType=='polygon'){
+		map.fitBounds(overlay.overlayObj.getLatLngs());
+	}
 }

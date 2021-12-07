@@ -97,7 +97,7 @@
 								<td>{{item.crtTime }}</td>
 								<td>{{item.noteSeq }}</td>
 								<td>{{item.note.nationality }}</td>
-								<td>{{item.note.acid }}</td>
+								<td>{{item.note.callSign }}</td>
 								<td>{{item.note.model }}</td>
 								<td>{{item.note.regNo }}</td>
 								<td>{{item.licenseNo }}</td>

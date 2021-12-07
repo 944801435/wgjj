@@ -25,7 +25,7 @@
 				</div>
 				<div class="right_content_select">
 					<div class="right_content_select_box">
-						<span class="right_content_select_name">创建时间：</span> 
+						<span class="right_content_select_name">创建时间：</span>
 						<input class="span3 right_content_select_ctt right_content_select_cttt"
 							placeholder="请输入起始时间" type="text" readonly="readonly" v-model="queryForm.begTime" v-selected dateFormat="yyyy-MM-dd HH:mm:ss"/>
 							-
@@ -56,7 +56,7 @@
 						<div class="right_content_select_box">
 							<span class="right_content_select_name">呼号：</span> <input
 								class="right_content_select_ctt right_content_select_cttt"
-								placeholder="请输入呼号" type="text" v-model="queryForm.acid"  />
+								placeholder="请输入呼号" type="text" v-model="queryForm.callSign"  />
 						</div>
 					</div>
 				</div>
@@ -88,6 +88,7 @@
 								<th width="">来函单位</th>
 								<th width="6%">联系人</th>
 								<th width="7%">电话</th>
+								<th width="5%">状态</th>
 								<th width="8%">操作</th>
 							</tr>
 						</thead>
@@ -96,18 +97,20 @@
 								<td>{{item.crtTime }}</td>
 								<td>{{item.noteSeq }}</td>
 								<td>{{item.nationality }}</td>
-								<td>{{item.acid }}</td>
+								<td>{{item.callSign }}</td>
 								<td>{{item.model }}</td>
 								<td>{{item.regNo }}</td>
 								<td>{{item.licenseNo }}</td>
 								<td>{{item.letterUnit }}</td>
 								<td>{{item.personName }}</td>
 								<td>{{item.telNo }}</td>
+								<td>{{item.noteSts | noteStsFilter }}</td>
 								<td>
 									<a href="javascript:void(0);" @click="detail(item.noteSeq)">查看</a>
 									<a href="javascript:void(0);" @click="download(item.noteZipFileId)">下载</a>
 									<span v-if="optFlag">
-										<a v-if="item.canDelSts=='1'" href="javascript:void(0);" @click="del(item.noteSeq)">删除</a>
+										<a v-if="item.noteSts==NOTE_STS_CREATE || item.noteSts==NOTE_STS_AUDIT" href="javascript:void(0);" @click="edit(item.noteSeq)">编辑</a>
+										<a v-if="item.noteSts==NOTE_STS_CREATE" href="javascript:void(0);" @click="del(item.noteSeq)">删除</a>
 									</span>
 								</td>
 							</tr>
@@ -140,7 +143,7 @@
 				noteSeq:'',
 				nationality:'',
 				model:'',
-				asid:'',
+				callSign:'',
 				letterUnit:''
 			},
 			list:[],
@@ -148,6 +151,8 @@
 			pageSize:10,
 			totalCount:0,
 			optFlag:'${fns:hasPms(pmsIds,"10102")}'=='true',
+			NOTE_STS_CREATE: "${fns:findKey('NOTE_STS_CREATE')}",
+			NOTE_STS_AUDIT: "${fns:findKey('NOTE_STS_AUDIT')}",
 			selNoteSeq: null
 		},
 		watch:{
@@ -180,37 +185,41 @@
 			},
 			//导入
 			upload: function(){
-				var domStr = 
-					`<form id="saveForm" method="post" enctype="multipart/form-data" >
-			  			<div style="display:inline-flex;margin:20px;width:220px;">
-		  					<input style="width:180px;" dataType="Require" msg="请选择要导入的外交照会压缩包！" type="file" id="file" name="file"/>
-		  				</div>
-			  		</form>`;
-				layer.open({
-					   type: 1
-					  ,title: '导入外交照会压缩包'
-					  ,content: domStr
-					  ,btn: ['确定','取消']
-					  ,yes: function(index,layero){
-						if(!Validator.Validate($('#saveForm')[0],2)){
-							return;
-						}
-						openLoading();
-						$("#saveForm").ajaxSubmit({
-							url:ctx+'/note/upload.action',
-							type:'post',
-							dataType:'json',
-							success:(data)=>{
-								if(data.errCode=='1'){
-									vm.init();
-								}
-								showMsg(data.errCode,data.errMsg);
-								closeLoading();
-							}
-						});
-					    layer.close(index);
+				layerIndex=layer.open({
+					type:2,
+					title:'外交照会详情',
+					content: ctx + '/view/note/to.jsp',
+					shadeClose: true,    //开启遮罩关闭
+					shade:false,
+					area:['800px','500px'],
+					maxmin:false,
+					title:false, //标题不显示
+					closeBtn:0,// 不显示关闭按钮
+					isOutAnim: false,// 关闭关闭图层动画效果
+					anim: -1,// 关闭打开图层动画效果
+					success:function(layero,index){
 					}
 				});
+				layer.full(layerIndex);
+			},
+			//添加
+			add: function(){
+				layerIndex=layer.open({
+					type:2,
+					title:'外交照会添加',
+					content: ctx + '/view/note/add.jsp',
+					shadeClose: true,    //开启遮罩关闭
+					shade:false,
+					area:['800px','500px'],
+					maxmin:false,
+					title:false, //标题不显示
+					closeBtn:0,// 不显示关闭按钮
+					isOutAnim: false,// 关闭关闭图层动画效果
+					anim: -1,// 关闭打开图层动画效果
+					success:function(layero,index){
+					}
+				});
+				layer.full(layerIndex);
 			},
 			//删除
 			del(noteSeq){
@@ -251,10 +260,31 @@
 					}
 				});
 				layer.full(layerIndex);
+			},
+			edit(noteSeq){
+				vm.selNoteSeq = noteSeq;
+				layerIndex=layer.open({
+					type:2,
+					title:'外交照会编辑',
+					content: ctx + '/view/note/edit.jsp',
+					shadeClose: true,    //开启遮罩关闭
+					shade:false,
+					area:['800px','500px'],
+					maxmin:false,
+					title:false, //标题不显示
+					closeBtn:0,// 不显示关闭按钮
+					isOutAnim: false,// 关闭关闭图层动画效果
+					anim: -1,// 关闭打开图层动画效果
+					success:function(layero,index){
+					}
+				});
+				layer.full(layerIndex);
 			}
 		},
 		mounted(){
 			this.init();
+		},
+		filters: {
 		}
 		
 	});
@@ -265,6 +295,7 @@
 			layerIndex = null;
 		}
 		vm.selNoteSeq = null;
+        vm.init();
 	}
   </script>
 </html>

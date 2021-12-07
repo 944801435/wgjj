@@ -74,7 +74,6 @@ function reset(){
 						<input style="width: 120px;" class="span3 right_content_select_ctt right_content_select_cttt"
 							placeholder="请输入截止时间" type="text" id="endTime" readonly="readonly" name="endTime" value="${sysoptlog.endTime }" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'});" />	
 				    </div>
-	      		</form>	
 			</div>
 			<div class="right_content_btnbox">
 				<div class="right_content_btnbox_btn right_content_btnbox_add"
@@ -158,6 +157,5 @@ function reset(){
 				</div>
 			</form>
 		</div>
-	</div>
 </body>
 </html>

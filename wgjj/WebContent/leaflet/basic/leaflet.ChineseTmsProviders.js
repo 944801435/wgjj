@@ -75,6 +75,17 @@ L.TileLayer.ChinaProvider.providers = {
 			Map: "http://192.168.1.116/osm_tiles/{z}/{x}/{y}.png"
 		},
         Subdomains: ['4', '5', '6']
+	},
+	Local:{
+		Normal: {
+			//Map: "http://10.150.74.68:8080/geoserver/gwc/service/tms/1.0.0/gis%3Aguangdong_goo_4326@EPSG%3A4326@png/{z}/{x}/{y}.png" //广东矢量地图
+			Map: leafletLocalNormalMapUrl //广东矢量地图
+		},
+        Satellite: {
+		    //Map: 'http://10.150.74.68:8080/geoserver/gwc/service/tms/1.0.0/DEM%3Achina_4326@EPSG%3A4326@png/{z}/{x}/{y}.png' // 全国卫星影像
+	    	Map: leafletLocalSatelliteMapUrl // 全国卫星影像
+        },
+        Subdomains: []
 	}
 };
 

@@ -12,6 +12,7 @@
 <link href="${pageContext.request.contextPath }/css/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
 
 <script src="${pageContext.request.contextPath }/js/jquery-1.10.2.min.js" type="text/javascript"></script>
+<script src="${pageContext.request.contextPath }/js/common/mapConfig.js" type="text/javascript"></script>
 <script src="${pageContext.request.contextPath }/leaflet/basic/jwd_dfm_transform_tool.js" type="text/javascript"></script>
 <script src="${pageContext.request.contextPath }/leaflet/basic/leaflet.js" type="text/javascript"></script>
 <script src="${pageContext.request.contextPath }/leaflet/basic/leaflet.ChineseTmsProviders.js" type="text/javascript"></script>
@@ -25,30 +26,18 @@
 <script src="${pageContext.request.contextPath }/leaflet/basic/turf.min.js" type="text/javascript"></script>
 
 <script type="text/javascript">
-	var transform_to_wgs84 = true;// 需要坐标系转换
 	var ctx = "${pageContext.request.contextPath }";
-	var locs="${userbean.sysDept.rangeLoc}";
-
 	var map;
-	var maxBounds_default=[[41.0888671,115.3536987], [39.4024658,117.6498413]];
+
+	var transform_to_wgs84 = false;// 需要坐标系转换
 	
 	//底图初始化默认中心点
-	var center_point = [40.0711508499382,116.11285528163073];//北京海淀机场
-	if(locs){//123.3627262,42.3846287|123.3748025,42.3997647|123.3875758,42.3901224|123.3787473,42.3808086
-		center_point=getCenterPointByPolygonWgs84(locs);
-		var wgs84PointsArray = getPointsArrayByPolygonWgs84(locs);
-		if(transform_to_wgs84){
-			maxBounds_default = [];
-			for(var i=0;i<wgs84PointsArray.length;i++){
-				maxBounds_default.push(wgs84_to_gcj02(wgs84PointsArray[i].lng, wgs84PointsArray[i].lat));
-			}
-		}else{
-			maxBounds_default = wgs84PointsArray;
-		}
-	}
+	var center_point = [39.90230506417338,116.40683910269239];
+	// 地图范围
+	var maxBounds_default = [[55.51934167486815,52.99140659159591],[16.527140223094833,158.8803478042568]];
 	
 	//默认地图的缩放比例
-	var dftZoom = 12;
+	var dftZoom = 4;
 	//默认的最小缩放比例
 	var dftMinZoom=4;
 	//默认的最大缩放比例
@@ -74,39 +63,42 @@
 	var RIGHT_BOTTOM = 'bottomright';//右下
 	var LEFT_BOTTOM = 'bottomleft';//左下
 
-	//普通地图
-	var BJSL_layer = L.tileLayer.chinaProvider("GaoDe.Normal.Map",{
-		maxZoom: dftMaxZoom,
-		minZoom: dftMinZoom
-	});
-	//卫星地图
-	var JXWYX_layer = L.tileLayer.chinaProvider("GaoDe.Satellite.Map",{
-		maxZoom: dftMaxZoom,
-		minZoom: dftMinZoom
-	});
-	
-	function showMap(max_bounds,minMapZoom) {
-		var mapName = "";
-	 	if('${param.mapType}' != null && '${param.mapType}' == '1'){
-	 		mapName = "Geoq.Normal.PurplishBlue";
-	 		dftMaxZoom = 18;
-	 		dftMinZoom = 5;
-	 	}else{
-	 		mapName = "GaoDe.Normal.Map";
-			dftMaxZoom = 18;
-	 	}
-		var Lide = L.tileLayer.chinaProvider(mapName,{
+	var tempZoom = 0;
+	function addGaode(){
+		transform_to_wgs84 = true;
+		tempZoom = 0;
+		dftZoom = 7;
+		crs = L.CRS.EPSG900913;
+		BJSL_layer = L.tileLayer.chinaProvider("GaoDe.Normal.Map",{
 			maxZoom: dftMaxZoom,
 			minZoom: dftMinZoom
 		});
-		BJSL_layer = Lide;
-		
-		var maxBounds=null;
-		if(max_bounds==null){
-			maxBounds = L.latLngBounds(maxBounds_default);
-		}else{
-			maxBounds = L.latLngBounds(max_bounds);
-		}
+		JXWYX_layer = L.tileLayer.chinaProvider("GaoDe.Satellite.Map",{
+			maxZoom: dftMaxZoom,
+			minZoom: dftMinZoom
+		});
+	}
+	
+	function addLocal(){
+		transform_to_wgs84 = false;
+		tempZoom = 1;
+		dftZoom = 6;
+		crs = L.CRS.EPSG4326;
+		BJSL_layer = L.tileLayer.chinaProvider("Local.Normal.Map",{
+			maxZoom: dftMaxZoom,
+			minZoom: dftMinZoom,
+			tms:true
+		});
+		JXWYX_layer = L.tileLayer.chinaProvider("Local.Satellite.Map",{
+			maxZoom: dftMaxZoom,
+			minZoom: dftMinZoom,
+			tms:true
+		});
+	}
+	
+	function showMap(max_bounds,minMapZoom) {
+		addGaode();
+		//addLocal();
 		if(minMapZoom!=null){
 			dftMinZoom=minMapZoom;
 		}
@@ -116,6 +108,7 @@
 	        zoom: dftZoom,  
 	        layers: [BJSL_layer],  
 	        zoomControl: false,
+	        crs: crs,
 	       // maxBounds:maxBounds,
 	        doubleClickZoom:false//没找到动态启用和禁用双击放大地图的方法，所以先关闭
 	    });
@@ -123,7 +116,7 @@
 	     * 添加导航菜单 ,可选值有  'topleft', 'topright', 'bottomleft' or 'bottomright'
 	     */
 		//添加地图类型切换控件
-		addMapTypeControl();
+		//addMapTypeControl();
 	    //添加测量控件
 	    addMeasureControl();
 		//添加比例尺控件

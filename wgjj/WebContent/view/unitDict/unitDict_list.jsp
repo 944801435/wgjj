@@ -60,19 +60,19 @@
 					<img src="${pageContext.request.contextPath }/images/add_btn.png" />
 					<span>添加</span>
 				</div>
-				<div onclick="javascript:goDelete()"
+				<%-- <div onclick="javascript:goDelete()"
 					class="right_content_btnbox_btn right_content_btnbox_delete2"
 					style="cursor:pointer;">
 					<img src="${pageContext.request.contextPath }/images/delete2_btn.png" />
 					<span>删除</span>
-				</div>
+				</div> --%>
 			</div>
 			<form action="${pageContext.request.contextPath }/unitDictList.action" method="post">
 				<div class="right_content_table">
 					<table class="table table-bordered table_list table-striped">
 						<thead>
 							<tr class="active blue_active_op">
-								<th width="4%"></th>
+								<!-- <th width="4%"></th> -->
 								<th width="10%">单位名称</th>
 								<th width="5%">状态</th>
 								<th width="5%">操作</th>
@@ -81,9 +81,9 @@
 						<tbody>
 							<c:forEach var="item" items="${ unitDictList }">
 								<tr>
-									<td width="10px">
+								<%-- 	<td width="10px">
 										<input value="${item.dictId }" name="dictIds" type="checkbox">
-									</td>
+									</td> --%>
 									<td>${item.unitName }</td>
 									<td>
 										<c:if test="${item.validSts=='1' }">
@@ -94,12 +94,12 @@
 										</c:if>
 									</td>
 									<td>
-										<a href="${pageContext.request.contextPath }/to_unitDict_edit.action?dictId=${item.dictId}">编辑</a>
+										<%-- <a href="${pageContext.request.contextPath }/to_unitDict_edit.action?dictId=${item.dictId}">编辑</a> --%>
 										<c:if test="${item.validSts=='1' }">
-											<a href="javascript:doValidSts(${item.dictId})">关闭</a>
+											<a href="javascript:doValidSts('${item.dictId}')">关闭</a>
 										</c:if>
 										<c:if test="${item.validSts!='1' }">
-											<a href="javascript:doValidSts(${item.dictId})">开启</a>
+											<a href="javascript:doValidSts('${item.dictId}')">开启</a>
 										</c:if>
 									</td>
 								</tr>
