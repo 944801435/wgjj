@@ -1,5 +1,6 @@
 package com.uav.web.view.noteManage;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.uav.base.common.Constants;
@@ -16,6 +18,7 @@ import com.uav.base.model.SysUser;
 import com.uav.base.model.internetModel.NoteCivilMessage;
 import com.uav.base.model.internetModel.NotePlanInfo;
 import com.uav.base.model.internetModel.NoteReport;
+import com.uav.base.util.FileUtil;
 
 /**
  * 照会文书管理
@@ -28,7 +31,7 @@ import com.uav.base.model.internetModel.NoteReport;
 @Transactional(rollbackFor={RuntimeException.class,Exception.class})
 @SuppressWarnings("unchecked")
 public class NoteManageService {
-	
+	String deposeFilesDir = "D:\\2021XinchenDownload\\uploadFile\\";
 	@Autowired
 	private NoteManageDao noteManageDao;
 	/**
@@ -109,6 +112,21 @@ public class NoteManageService {
 	public void delete(Integer[] noteIds) {
 		for (Integer noteId : noteIds) {
 			noteManageDao.executeHql("update NotePlanInfo set delStatus=0 where noteId=? ", new Object[] {noteId });
+		}
+	}
+	public String addNoteInfo(NotePlanInfo obj, MultipartFile[] file) {
+		if(file!=null){
+		for (MultipartFile multipartFile : file) {
+			try {
+				String url = FileUtil.uploadFile(multipartFile,deposeFilesDir);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+            noteManageDao.saveNoteInfo(obj);
+		}
+			return "success";
+		}else{
+			return "failed";
 		}
 	}
 }

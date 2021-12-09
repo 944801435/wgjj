@@ -1,57 +1,83 @@
 package com.uav.web.view.noteManage;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.uav.base.common.BaseAction;
+import com.uav.base.common.MessageVo;
 import com.uav.base.common.PagerVO;
 import com.uav.base.common.SystemWebLog;
 import com.uav.base.listener.LoginAccess;
+import com.uav.base.model.Note;
 import com.uav.base.model.SysPms;
 import com.uav.base.model.SysUser;
 import com.uav.base.model.internetModel.NoteCivilMessage;
 import com.uav.base.model.internetModel.NotePlanInfo;
 import com.uav.base.model.internetModel.NoteReport;
+import com.uav.base.util.DateUtil;
+import com.uav.base.util.flight.FlightException;
 
 /**
  * 照会文书管理
+ * 
  * @ClassName: NoteManageAction
- * @Description: 
+ * @Description:
  * @author gl
- * @date 
+ * @date
  */
 @Controller
 @LoginAccess
 @SystemWebLog(menuName = "照会文书管理")
 @SuppressWarnings("unchecked")
+//@RestController
+//@RequestMapping("/noteInfo")
 public class NoteManageAction extends BaseAction {
-	
+
 	protected static final Logger log = Logger.getLogger(NoteManageAction.class);
 	@Autowired
-    private NoteManageService noteManageService;
-	
+	private NoteManageService noteManageService;
+
 	@RequestMapping("/to_note_info_add")
 	public String toAdd(NotePlanInfo planInfo, Model model, HttpServletRequest request) {
 		return "/view/sysFlightNote/noteManage/addNote";
 	}
+
+	@RequestMapping("/addNote")
+	@SystemWebLog(methodName = "新增照会文书信息")
+	@ResponseBody
+	public MessageVo add(@RequestParam("file") MultipartFile[] file, NotePlanInfo obj, HttpServletRequest request) throws FlightException {
+		MessageVo vo = null;
+		try {
+			String errMsg = noteManageService.addNoteInfo(obj, file);
+			if (errMsg.equals("success"))
+				vo = new MessageVo("1", "新增照会信息成功！", obj);
+			else
+				vo = new MessageVo("0", "新增照会信息失败！", obj);
+		} catch (Exception e) {
+			log.error("新增照会信息失败！", e);
+			vo = new MessageVo("0", "新增照会信息失败！", null);
+		}
+		return vo;
+	}
+
 	/**
 	 * 
-	 * 描述 获取照会信息列表
-	 * @Title: findList 
-	 * @author 
-	 * @Modified By gl
-	 * @param curPage 当前页面
-	 * @param sysUser 查询参数
-	 * @param request HTTP请求
-	 * @param model 返回封装类
-	 * @return    
-	 * String 返回类型 
-	 * @throws
+	 * 描述 获取照会信息列表 @Title: findList @author @Modified By gl @param curPage
+	 * 当前页面 @param sysUser 查询参数 @param request HTTP请求 @param model 返回封装类 @return
+	 * String 返回类型 @throws
 	 */
 	@RequestMapping("/noteInfoManageList.action")
 	public String findNoteInfoList(Integer curPage, NotePlanInfo planInfo, HttpServletRequest request, Model model) {
@@ -73,17 +99,11 @@ public class NoteManageAction extends BaseAction {
 		}
 		return "/view/sysFlightNote/noteManage/noteManage";
 	}
+
 	/**
 	 * 
-	 * 描述照会信息
-	 * @Title: del 
-	 * @author 
-	 * @param sysUser
-	 * @param userIds
-	 * @param request
-	 * @return    
-	 * String 返回类型 
-	 * @throws
+	 * 描述照会信息 @Title: del @author @param sysUser @param userIds @param
+	 * request @return String 返回类型 @throws
 	 */
 	@RequestMapping("/noteInfoDel.action")
 	@SystemWebLog(methodName = "删除照会信息")
@@ -102,19 +122,12 @@ public class NoteManageAction extends BaseAction {
 		}
 		return "redirect:/noteInfoManageList.action";
 	}
+
 	/**
 	 * 
-	 * 描述 获取照会信息列表
-	 * @Title: findList 
-	 * @author 
-	 * @Modified By gl
-	 * @param curPage 当前页面
-	 * @param sysUser 查询参数
-	 * @param request HTTP请求
-	 * @param model 返回封装类
-	 * @return    
-	 * String 返回类型 
-	 * @throws
+	 * 描述 获取照会信息列表 @Title: findList @author @Modified By gl @param curPage
+	 * 当前页面 @param sysUser 查询参数 @param request HTTP请求 @param model 返回封装类 @return
+	 * String 返回类型 @throws
 	 */
 	@RequestMapping("/noteManageList.action")
 	public String findList(Integer curPage, NotePlanInfo planInfo, HttpServletRequest request, Model model) {
@@ -127,14 +140,16 @@ public class NoteManageAction extends BaseAction {
 			}
 			PagerVO pv = noteManageService.findList(planInfo, curPage, pageSize);
 			for (Object temp : pv.getDatas()) {
-				if(temp instanceof NotePlanInfo){
+				if (temp instanceof NotePlanInfo) {
 					NotePlanInfo planInfo2 = (NotePlanInfo) temp;
-//					NoteCivilMessage message = noteManageService.findCivilMessageById(planInfo2.getNoteId());
-					NoteCivilMessage message = noteManageService.findNoteCivilMessageByCreateTime(planInfo2.getNoteId());
-					if(message!=null){
-					planInfo2.setPermitNumber(message.getPermitNumber());
-					planInfo2.setReplyContent(message.getReplyContent());
-					planInfo2.setRouteInfo(message.getRouteInfo());
+					// NoteCivilMessage message =
+					// noteManageService.findCivilMessageById(planInfo2.getNoteId());
+					NoteCivilMessage message = noteManageService
+							.findNoteCivilMessageByCreateTime(planInfo2.getNoteId());
+					if (message != null) {
+						planInfo2.setPermitNumber(message.getPermitNumber());
+						planInfo2.setReplyContent(message.getReplyContent());
+						planInfo2.setRouteInfo(message.getRouteInfo());
 					}
 				}
 			}
@@ -146,25 +161,18 @@ public class NoteManageAction extends BaseAction {
 			log.error("获取照会信息失败！", e);
 			this.setMessage(request, "获取照会信息失败！", "red");
 		}
-		if(planInfo.getAction()!=null&"1".equals(planInfo.getAction())){
+		if (planInfo.getAction() != null & "1".equals(planInfo.getAction())) {
 			return "/view/sysFlightNote/noteManage/noteManage";
-		}else{
+		} else {
 			return "/view/sysFlightNote/noteManage/civilMessageManage";
 		}
 	}
+
 	/**
 	 * 
-	 * 描述 获取审批许可列表
-	 * @Title: findList 
-	 * @author 
-	 * @Modified By gl
-	 * @param curPage 当前页面
-	 * @param sysUser 查询参数
-	 * @param request HTTP请求
-	 * @param model 返回封装类
-	 * @return    
-	 * String 返回类型 
-	 * @throws
+	 * 描述 获取审批许可列表 @Title: findList @author @Modified By gl @param curPage
+	 * 当前页面 @param sysUser 查询参数 @param request HTTP请求 @param model 返回封装类 @return
+	 * String 返回类型 @throws
 	 */
 	@RequestMapping("/noteReportList.action")
 	public String findReportList(Integer curPage, NoteReport noteReport, HttpServletRequest request, Model model) {

@@ -7,6 +7,8 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.springframework.stereotype.Repository;
 
 import com.uav.base.common.BaseDAO;
@@ -200,6 +202,25 @@ public class NoteManageDao extends BaseDAO{
 		pv.setDatas(data);
 		pv.setTotal(rows);
 		return pv;
+	}
+	public void saveNoteInfo(NotePlanInfo obj) {
+		Session session = null;
+		Transaction transaction = null;
+		try {
+			session = getSessionFactory().openSession();
+			transaction = session.beginTransaction();
+			session.save(obj);
+			transaction.commit();
+			session.flush();
+		} catch (Exception e) {
+			transaction.rollback();
+			e.printStackTrace();
+			logger.error(e.getMessage());
+		}finally{
+			if(session!=null&&session.isOpen()){
+				session.close();
+			}
+		}
 	}
 
 }
