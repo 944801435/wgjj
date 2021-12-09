@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import com.uav.base.common.BaseDAO;
 import com.uav.base.common.PagerVO;
+import com.uav.base.model.internetModel.NoteFiles;
 import com.uav.base.model.internetModel.NotePlanInfo;
 import com.uav.base.model.internetModel.NoteReport;
 
@@ -203,13 +204,18 @@ public class NoteManageDao extends BaseDAO{
 		pv.setTotal(rows);
 		return pv;
 	}
-	public void saveNoteInfo(NotePlanInfo obj) {
+	public void saveNoteInfo(NotePlanInfo obj,List<NoteFiles> list) {
 		Session session = null;
 		Transaction transaction = null;
 		try {
 			session = getSessionFactory().openSession();
 			transaction = session.beginTransaction();
 			session.save(obj);
+			for(int i=0;i<list.size();i++){
+				NoteFiles noteFiles = list.get(i);
+				noteFiles.setNoteId(obj.getNoteId());
+				session.save(noteFiles);
+			}
 			transaction.commit();
 			session.flush();
 		} catch (Exception e) {

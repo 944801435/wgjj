@@ -217,25 +217,12 @@ input[type="text"]{
 						</tr>
 						<tr>
 							<td colspan="3">
-								<!-- <div class="control-group">
-									<label class="control-label">文书扫描件：</label>
-									<input id="file" type="file" name="file" multiple="multiple" @change="getFileOthers">
-									<div class="fileBox">
-										<div class="fileBox_item" v-for="(item,index) in srcList">
-											<img :id="item.id" :src="item.img" alt="" width="100px" height="100px">
-											<div>
-												<span>{{item.name}}</span>
-											</div>
-											<div class="file_i"><i class="fa fa-remove" @click="del(index)"></i></div>
-										</div>
-									</div>
-								</div> -->
 								<div class="control-group">
 								<label class="control-label">文书扫描件：</label>
 								<input type="file" id='files' name="file" multiple="multiple" @change='fileChangeback($event)'>
 							        <label for="files"></label>
 								<div v-if='imgsback.length>0' class="fileBox">
-								    <div class="fileBox_item" v-for="(item, i) in imgsback" :key='i' >
+								    <div class="fileBox_item" v-for="(item, i) in imgsback" >
 								    <img :id="item.id" :src="item.img" alt="" width="100px" height="100px">
 											<div>
 												<span>{{item.name}}</span>
@@ -271,6 +258,7 @@ input[type="text"]{
 		data: {
 			imgsback: [],      // 图片预览地址
 			imgfilesback: [],  // 图片原文件，上传到后台的数据
+			sizeback: 1 , 
 			ctx: ctx,
 			note: {},
 			flight: {},
@@ -306,15 +294,19 @@ input[type="text"]{
 		        var event = event || window.event;
 		        var file = event.target.files
 		        var leng=file.length;
+		            var fileName;
 		        for(var i=0;i<leng;i++){
+		        	var files = event.target.files[i];
 		            var reader = new FileReader();    // 使用 FileReader 来获取图片路径及预览效果
-		            vm.imgfilesback.push(file[i])
+		            vm.imgfilesback.push(file[i]);
+		            reader.file=files;
 		            reader.readAsDataURL(file[i]); 
-		            var fileName=file[i].name;
+		            	fileName=file[i].name;
 		            reader.onload =function(e){
 		            	var obj = {
 		            			img:e.target.result,
-								name:fileName,
+		            			file:this.file,
+								name:this.file.name,
 								id:"img_"+vm.imgsback.length+i
 							};
 		              vm.imgsback.push(obj);   // base 64 图片地址形成预览                                 

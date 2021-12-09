@@ -41,9 +41,6 @@ public class NoteFiles implements Serializable {
 	
 	@Column(name = "file_size")
 	private int fileSize;// 文件大小
-
-	@Column(name = "md5")
-	private String md5;// 文件MD5
 	
 	@Column(name = "file_path")
 	private String filePath;//文件存储地址

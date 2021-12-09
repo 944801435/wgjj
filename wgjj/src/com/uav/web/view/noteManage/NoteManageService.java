@@ -2,6 +2,7 @@ package com.uav.web.view.noteManage;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -16,8 +17,10 @@ import com.uav.base.common.PagerVO;
 import com.uav.base.model.SysOptLog;
 import com.uav.base.model.SysUser;
 import com.uav.base.model.internetModel.NoteCivilMessage;
+import com.uav.base.model.internetModel.NoteFiles;
 import com.uav.base.model.internetModel.NotePlanInfo;
 import com.uav.base.model.internetModel.NoteReport;
+import com.uav.base.util.DateUtil;
 import com.uav.base.util.FileUtil;
 
 /**
@@ -115,16 +118,26 @@ public class NoteManageService {
 		}
 	}
 	public String addNoteInfo(NotePlanInfo obj, MultipartFile[] file) {
+		List<NoteFiles> list = new ArrayList<>();
 		if(file!=null){
 		for (MultipartFile multipartFile : file) {
 			try {
+				NoteFiles noteFiles = new NoteFiles();
 				String url = FileUtil.uploadFile(multipartFile,deposeFilesDir);
+				String fileName = multipartFile.getOriginalFilename();
+				long fileSize = multipartFile.getSize();
+				noteFiles.setFilePath(url);
+				noteFiles.setFileNameCn(fileName);
+				noteFiles.setFileSize(Integer.parseInt(String.valueOf(fileSize)));
+				noteFiles.setCreateTime(DateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+				list.add(noteFiles);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-            noteManageDao.saveNoteInfo(obj);
 		}
-			return "success";
+		obj.setDelStatus(1);
+		noteManageDao.saveNoteInfo(obj,list);
+		return "success";
 		}else{
 			return "failed";
 		}
