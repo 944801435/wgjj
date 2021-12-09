@@ -13,7 +13,6 @@ function reset(){
 	$("input[type='text']").val("");
 }
 	function goDelete() {
-		alert(1);
 		var hasChecked = 0;
 		var frm = document.forms[0];
 		if (frm.noteIds != null) {

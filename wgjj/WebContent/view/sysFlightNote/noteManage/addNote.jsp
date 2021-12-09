@@ -3,7 +3,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Type" content="multipart/form-data; charset=utf-8" />
 <title>照会文书新增</title>
 <%@ include file="../../tool.jsp"%>
 <script type="text/javascript" src="${ctx }/js/validate.js"></script>
@@ -98,7 +98,7 @@ input[type="text"]{
 			<div class="right_content_all_top my-collapse" :href="'#'+panelId1">
 				<span>基本信息</span>
 			</div>
-			<form id="inputForm" method="post" enctype="multipart/form-data" class="form-horizontal" style="margin: 0;">
+			<form id="inputForm" action="addNote.action" method="post" enctype="multipart/form-data" class="form-horizontal" style="margin: 0;">
 				<div :id="panelId1" class="right_content_table">
 					<table class="table" style="width: 100%;">
 						<tr>
@@ -106,7 +106,7 @@ input[type="text"]{
 								<div class="control-group">
 									<label class="control-label">照会编号：</label>
 									<div class="controls">
-										<input id="noteSeq" type="text" name="noteSeq" v-model="note.noteSeq" autocomplete="off" type="text" dataType="Require,Limit" len="50" msg="请输入(1~50)个字符的照会编号！" maxlength="50" class="required" value=""/>
+										<input id="documentNum" type="text" name="documentNum" v-model="note.documentNum" autocomplete="off" type="text" dataType="Require,Limit" len="50" msg="请输入(1~50)个字符的照会编号！" maxlength="50" class="required" value=""/>
 									</div>
 								</div>
 							</td>
@@ -148,7 +148,7 @@ input[type="text"]{
 								<div class="control-group">
 									<label class="control-label">架数：</label>
 									<div class="controls">
-										<input id="planeNumber" name="planeNumber" v-model="note.planeNumber" autocomplete="off" type="text" dataType="Require,Limit" len="11" msg="请输入11位数字的架数！" maxlength="11" class="required" value=""/>
+										<input id="airNumber" name="airNumber" v-model="note.airNumber" autocomplete="off" type="text" dataType="Require,Limit" len="11" msg="请输入11位数字的架数！" maxlength="11" class="required" value=""/>
 									</div>
 								</div>
 							</td>
@@ -158,7 +158,7 @@ input[type="text"]{
 								<div class="control-group">
 									<label class="control-label">呼号：</label>
 									<div class="controls">
-										<input id="callSign" name="callSign" v-model="note.callSign" autocomplete="off" type="text" dataType="Require,Limit" len="500" msg="请输入(1~500)个字符的呼号！" maxlength="500" class="required" value=""/>
+										<input id="callNumber" name="callNumber" v-model="note.callNumber" autocomplete="off" type="text" dataType="Require,Limit" len="500" msg="请输入(1~500)个字符的呼号！" maxlength="500" class="required" value=""/>
 									</div>
 								</div>
 							</td>
@@ -217,7 +217,7 @@ input[type="text"]{
 						</tr>
 						<tr>
 							<td colspan="3">
-								<div class="control-group">
+								<!-- <div class="control-group">
 									<label class="control-label">文书扫描件：</label>
 									<input id="file" type="file" name="file" multiple="multiple" @change="getFileOthers">
 									<div class="fileBox">
@@ -229,6 +229,21 @@ input[type="text"]{
 											<div class="file_i"><i class="fa fa-remove" @click="del(index)"></i></div>
 										</div>
 									</div>
+								</div> -->
+								<div class="control-group">
+								<label class="control-label">文书扫描件：</label>
+								<input type="file" id='files' name="file" multiple="multiple" @change='fileChangeback($event)'>
+							        <label for="files"></label>
+								<div v-if='imgsback.length>0' class="fileBox">
+								    <div class="fileBox_item" v-for="(item, i) in imgsback" :key='i' >
+								    <img :id="item.id" :src="item.img" alt="" width="100px" height="100px">
+											<div>
+												<span>{{item.name}}</span>
+											</div>
+<!-- 							          <img :src="item" alt=""  width="100px" height="100px"> -->
+							          <div class="file_i"><i class="fa fa-remove" @click="del(i)"></i></div>
+								    </div>
+								</div>
 								</div>
 							</td>
 						</tr>
@@ -254,6 +269,8 @@ input[type="text"]{
 	var vm = new Vue({
 		el: "#app",
 		data: {
+			imgsback: [],      // 图片预览地址
+			imgfilesback: [],  // 图片原文件，上传到后台的数据
 			ctx: ctx,
 			note: {},
 			flight: {},
@@ -283,85 +300,55 @@ input[type="text"]{
 					}
 				});
 			},
+			fileChangeback(e) {  // 加入图片
+		        // 图片预览部分
+		        var vm = this
+		        var event = event || window.event;
+		        var file = event.target.files
+		        var leng=file.length;
+		        for(var i=0;i<leng;i++){
+		            var reader = new FileReader();    // 使用 FileReader 来获取图片路径及预览效果
+		            vm.imgfilesback.push(file[i])
+		            reader.readAsDataURL(file[i]); 
+		            var fileName=file[i].name;
+		            reader.onload =function(e){
+		            	var obj = {
+		            			img:e.target.result,
+								name:fileName,
+								id:"img_"+vm.imgsback.length+i
+							};
+		              vm.imgsback.push(obj);   // base 64 图片地址形成预览                                 
+		            };                 
+		        }
+		    },
 			goSave() {
 				Confirm('确认保存外交照会吗？',()=>{
-					var formData = new FormData($('#inputForm')[0]);
-					formData.delete('file');
-					// formData.append('planSeq',vm.planSeq);
-					for (var i = 0;i<vm.srcList.length;i++){
-						formData.append('file',vm.srcList[i].file);
-					}
-					if(!Validator.Validate($('#inputForm')[0],3)){
-						return;
-					}
-					openLoading();
+					var formData = new FormData($("#inputForm")[0]);
+					var url='${pageContext.request.contextPath }/addNote.action';
 					$.ajax({
-						url:ctx+'/note/add.action',
-						type:'post',
-						data: formData,
-						dataType:'json',
+						type : 'POST',
+						url : url,
+						data : formData,
+						dataType : 'json',
 						contentType:false,
 						processData:false,
-						success:(data)=>{
-							alert(data.errMsg);
-							if(data.errCode=='1'){
-								vm.note = data.data;
-								vm.selNoteSeq = data.data.noteSeq;
-								layerIndex=layer.open({
-									type:2,
-									title:'外交照会编辑',
-									content: ctx + '/view/note/edit.jsp',
-									shadeClose: true,    //开启遮罩关闭
-									shade:false,
-									area:['800px','500px'],
-									maxmin:false,
-									title:false, //标题不显示
-									closeBtn:0,// 不显示关闭按钮
-									isOutAnim: false,// 关闭关闭图层动画效果
-									anim: -1,// 关闭打开图层动画效果
-									success:function(layero,index){
-									}
+						error : function(xhr, status, statusText) {
+							layer.msg("网络错误!" + xhr.status);
+						},
+						success : function(data) {
+							if (data.errCode == '1') {
+								layer.alert(data.errMsg, function(index){
+						    	window.location.href="${pageContext.request.contextPath }/noteInfoManageList.action";
 								});
-								layer.full(layerIndex);
-								parent.vm.init();
-							}
-							closeLoading();
+							} else {
+								layer.alert('保存失败', {icon : 3});
+							}	
 						}
 					});
-				});
-			},
-			getFileOthers (e) {//附件预览----
-				let _this = this
-				if(e.target.files.length == 0){
-					return;
-				}else {
-					vm.srcList = [];
-					for (var i = 0;i<e.target.files.length;i++){
-						var files = e.target.files[i];
-						if (files == null){
-							return;
-						}
-						if (!e || !window.FileReader){
-							return;  // 看支持不支持FileReader
-						}
-						let reader = new FileReader();
-						reader.file = files;
-						reader.readAsDataURL(files); // 这里是最关键的一步，转换就在这里
-						reader.onloadend = function()  {
-							var obj = {
-								img:this.result,
-								file:this.file,
-								name:this.file.name,
-								id:"img_"+vm.srcList.length+i
-							};
-							vm.srcList.push(obj);
-							$("#file").val(null);
-						};
-					}
-				}
+					});
 			},
 			del:function(index) {
-				this.srcList.splice(index, 1);//从哪个位置删除1个元素
+				this.imgsback.splice(index, 1);//从哪个位置删除1个元素
 			}
 		}
 	});
