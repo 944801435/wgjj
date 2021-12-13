@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Query;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.springframework.stereotype.Repository;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Repository;
 import com.uav.base.common.BaseDAO;
 import com.uav.base.common.PagerVO;
 import com.uav.base.model.internetModel.NoteFiles;
+import com.uav.base.model.internetModel.NotePlanFlight;
 import com.uav.base.model.internetModel.NotePlanInfo;
 import com.uav.base.model.internetModel.NoteReport;
 
@@ -154,7 +156,7 @@ public class NoteManageDao extends BaseDAO{
 	public PagerVO findNoteInfoList(NotePlanInfo planInfo, Integer curPage, int pagesize) {
 		List<Map<String, String>> data = new ArrayList<Map<String, String>>();		
 		StringBuilder sb = new StringBuilder();
-		sb.append("SELECT COUNT(DISTINCT npi.`note_id`) as noteCount FROM note_plan_info npi LEFT JOIN note_plan_flight npf ON npi.`note_id`=npf.`note_id` WHERE  npi.del_status=1 ");
+		sb.append("SELECT COUNT(DISTINCT npi.`note_id`) as noteCount FROM note_plan_info npi LEFT JOIN note_plan_flight npf ON npi.`note_id`=npf.`note_id` WHERE  npi.del_status!=0 ");
 		appendConditions(sb,planInfo);
 		sb.append(" order by npi.create_time desc");
 		String sql =sb.toString();
@@ -166,7 +168,7 @@ public class NoteManageDao extends BaseDAO{
 				+ "npi.`tel_no`,npi.`mission`,npi.`nationality`,npi.`reg_no`,npi.`call_number`,npi.`model`,"
 				+ "npi.`person_number`,npi.`operator`,npi.`other`,npi.`air_number`,npi.`flight_time`,npi.`creator`,"
 				+ "npi.`create_time`,npi.`note_no`,npi.`flight_plan`,npi.`status`  FROM note_plan_info npi "
-				+ "LEFT JOIN note_plan_flight npf ON npi.`note_id`=npf.`note_id` WHERE npi.del_status=1 ");
+				+ "LEFT JOIN note_plan_flight npf ON npi.`note_id`=npf.`note_id` WHERE npi.del_status!=0 ");
 		appendConditions(sb1,planInfo);
 		sb1.append(" order by npi.create_time desc");
 		String sql1 =sb1.toString();
@@ -204,6 +206,25 @@ public class NoteManageDao extends BaseDAO{
 		pv.setTotal(rows);
 		return pv;
 	}
+	public void addPlanFlightInfo(NotePlanFlight obj) {
+		Session session = null;
+		Transaction transaction = null;
+		try {
+			session = getSessionFactory().openSession();
+			transaction = session.beginTransaction();
+			session.save(obj);
+			transaction.commit();
+			session.flush();
+		} catch (Exception e) {
+			transaction.rollback();
+			e.printStackTrace();
+			logger.error(e.getMessage());
+		}finally{
+			if(session!=null&&session.isOpen()){
+				session.close();
+			}
+		}
+	}
 	public void saveNoteInfo(NotePlanInfo obj,List<NoteFiles> list) {
 		Session session = null;
 		Transaction transaction = null;
@@ -227,6 +248,40 @@ public class NoteManageDao extends BaseDAO{
 				session.close();
 			}
 		}
+	}
+	public List<NoteFiles> findFilesByNoteId(Integer noteIds) {
+		Session session = getSessionFactory().openSession();
+		List<NoteFiles> noteFiles = null;
+		try {
+			SQLQuery sqlQuery = session.createSQLQuery("SELECT * FROM note_files nf WHERE nf.`note_id`=:noteId ORDER BY nf.`id` DESC").addEntity(NoteFiles.class);
+			sqlQuery.setParameter("noteId", noteIds);
+			noteFiles = sqlQuery.list();
+			return noteFiles;
+		} catch (Exception e) {
+			logger.error(e);
+		} finally {
+			if (session != null && session.isOpen()) {
+				session.close();
+			}
+		}
+		return null;
+	}
+	public List<NotePlanFlight> findFlightByNoteId(String noteId) {
+		Session session = getSessionFactory().openSession();
+		List<NotePlanFlight> notePlanFlights = null;
+		try {
+			SQLQuery sqlQuery = session.createSQLQuery("SELECT * FROM note_plan_flight nf WHERE nf.`note_id`=:noteId ORDER BY nf.`id` DESC").addEntity(NotePlanFlight.class);
+			sqlQuery.setParameter("noteId", noteId);
+			notePlanFlights = sqlQuery.list();
+			return notePlanFlights;
+		} catch (Exception e) {
+			logger.error(e);
+		} finally {
+			if (session != null && session.isOpen()) {
+				session.close();
+			}
+		}
+		return null;
 	}
 
 }

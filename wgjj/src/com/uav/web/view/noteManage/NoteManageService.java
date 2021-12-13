@@ -1,7 +1,9 @@
 package com.uav.web.view.noteManage;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -18,6 +20,7 @@ import com.uav.base.model.SysOptLog;
 import com.uav.base.model.SysUser;
 import com.uav.base.model.internetModel.NoteCivilMessage;
 import com.uav.base.model.internetModel.NoteFiles;
+import com.uav.base.model.internetModel.NotePlanFlight;
 import com.uav.base.model.internetModel.NotePlanInfo;
 import com.uav.base.model.internetModel.NoteReport;
 import com.uav.base.util.DateUtil;
@@ -119,6 +122,7 @@ public class NoteManageService {
 	}
 	public String addNoteInfo(NotePlanInfo obj, MultipartFile[] file) {
 		List<NoteFiles> list = new ArrayList<>();
+		deposeFilesDir = deposeFilesDir+getOrderID()+"\\";
 		if(file!=null){
 		for (MultipartFile multipartFile : file) {
 			try {
@@ -128,13 +132,15 @@ public class NoteManageService {
 				long fileSize = multipartFile.getSize();
 				noteFiles.setFilePath(url);
 				noteFiles.setFileNameCn(fileName);
-				noteFiles.setFileSize(Integer.parseInt(String.valueOf(fileSize)));
+				noteFiles.setFileSize(Integer.parseInt(String.valueOf(fileSize))/1024/1024);//单位M
 				noteFiles.setCreateTime(DateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
 				list.add(noteFiles);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
+		obj.setDocumentNum(getDocumentNo());
+		obj.setStatus(1);
 		obj.setDelStatus(1);
 		noteManageDao.saveNoteInfo(obj,list);
 		return "success";
@@ -142,4 +148,39 @@ public class NoteManageService {
 			return "failed";
 		}
 	}
+	public String addPlanFlightInfo(NotePlanFlight obj) {
+		if(obj!=null){
+			noteManageDao.addPlanFlightInfo(obj);
+			return "success";
+		}
+		return "failed";
+		
+	}
+	public List<NoteFiles> findFilesByNoteId(Integer noteIds) {
+		return noteManageDao.findFilesByNoteId(noteIds);
+	}
+	public List<NotePlanFlight> findFlightByNoteId(String noteId) {
+		return noteManageDao.findFlightByNoteId(noteId);
+	}
+	public static String getOrderID()
+	  {
+	    Calendar cal = Calendar.getInstance();
+	    SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyyMMdd");
+	    String date = sDateFormat.format(cal.getTime());
+	    return date;
+	  }
+	public static String getDocumentNo()
+	{
+		Calendar cal = Calendar.getInstance();
+		SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyyMMdd");
+		String date = sDateFormat.format(cal.getTime());
+		int str = (int) (Math.random() * 10000);
+		String ss = date + String.valueOf(str);
+		return ss;
+	}
+	public void delPlanFlightInfo(Integer id) {
+		noteManageDao.executeHql("delete from NotePlanFlight where id=?", new Object[] { id });
+		
+	}
+	
 }

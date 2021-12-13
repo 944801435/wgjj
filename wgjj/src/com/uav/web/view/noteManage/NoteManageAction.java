@@ -1,19 +1,20 @@
 package com.uav.web.view.noteManage;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.uav.base.common.BaseAction;
@@ -22,9 +23,12 @@ import com.uav.base.common.PagerVO;
 import com.uav.base.common.SystemWebLog;
 import com.uav.base.listener.LoginAccess;
 import com.uav.base.model.Note;
-import com.uav.base.model.SysPms;
-import com.uav.base.model.SysUser;
+import com.uav.base.model.NoteFlight;
+import com.uav.base.model.NoteFlightWay;
+import com.uav.base.model.SysFile;
 import com.uav.base.model.internetModel.NoteCivilMessage;
+import com.uav.base.model.internetModel.NoteFiles;
+import com.uav.base.model.internetModel.NotePlanFlight;
 import com.uav.base.model.internetModel.NotePlanInfo;
 import com.uav.base.model.internetModel.NoteReport;
 import com.uav.base.util.DateUtil;
@@ -54,12 +58,47 @@ public class NoteManageAction extends BaseAction {
 	public String toAdd(NotePlanInfo planInfo, Model model, HttpServletRequest request) {
 		return "/view/sysFlightNote/noteManage/addNote";
 	}
-
+	@RequestMapping("/to_add_note_flight_jsp")
+	public String toAddFlight(Integer noteId, Model model, HttpServletRequest request) {
+		List<NoteFiles> noteFiles = noteManageService.findFilesByNoteId(noteId);
+		if(noteFiles!=null&&noteFiles.size()>0){
+			Integer noteIdAc = noteFiles.get(0).getNoteId(); 
+			model.addAttribute("noteFilesList", noteFiles);
+			model.addAttribute("noteIdAc", noteIdAc);
+		}else{
+			this.setMessage(request, "获取照会信息失败！", "red");
+		}
+		return "/view/sysFlightNote/noteManage/addNote_flight";
+	}
+	/**
+	 * @Title: detail_plan_flight_info
+	 * @author gl
+	 * @date 
+	 * @param noteId
+	 * @return
+	 */
+	@RequestMapping("/detail_plan_flight_info")
+	@ResponseBody
+	public MessageVo detail(String noteId) {
+		MessageVo vo = null;
+		try {
+			List<NotePlanFlight> flightList = noteManageService.findFlightByNoteId(noteId);
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("flightList", flightList);
+			vo = new MessageVo(MessageVo.SUCCESS, "", map);
+		} catch (Exception e) {
+			log.error("查询飞行计划信息失败！", e);
+			vo = new MessageVo(MessageVo.FAIL, "查询飞行计划信息失败！", null);
+		}
+		return vo;
+	}
 	@RequestMapping("/addNote")
 	@SystemWebLog(methodName = "新增照会文书信息")
 	@ResponseBody
 	public MessageVo add(@RequestParam("file") MultipartFile[] file, NotePlanInfo obj, HttpServletRequest request) throws FlightException {
 		MessageVo vo = null;
+		obj.setCreator(getCurUserid(request));
+		obj.setCreateTime(DateUtil.getNowFullTimeString());
 		try {
 			String errMsg = noteManageService.addNoteInfo(obj, file);
 			if (errMsg.equals("success"))
@@ -69,6 +108,39 @@ public class NoteManageAction extends BaseAction {
 		} catch (Exception e) {
 			log.error("新增照会信息失败！", e);
 			vo = new MessageVo("0", "新增照会信息失败！", null);
+		}
+		return vo;
+	}
+	@RequestMapping("/save_plan_flight_info")
+	@SystemWebLog(methodName = "新增飞行计划信息")
+	@ResponseBody
+	public MessageVo addPlanFlight(NotePlanFlight obj, HttpServletRequest request) throws FlightException {
+		MessageVo vo = null;
+//		obj.setCreator(getCurUserid(request));
+//		obj.setCreateTime(DateUtil.formatDate(new Date(), "yyyy-MM-dd"));
+		try {
+			String errMsg = noteManageService.addPlanFlightInfo(obj);
+			if (errMsg.equals("success"))
+				vo = new MessageVo("1", "新增飞行计划信息成功！", obj);
+			else
+				vo = new MessageVo("0", "新增飞行计划信息失败！", obj);
+		} catch (Exception e) {
+			log.error("新增飞行计划信息失败！", e);
+			vo = new MessageVo("0", "新增飞行计划信息失败！", null);
+		}
+		return vo;
+	}
+	@RequestMapping("/del_plan_flight_info")
+	@SystemWebLog(methodName = "删除飞行计划信息")
+	@ResponseBody
+	public MessageVo delPlanFlight(Integer id, HttpServletRequest request) throws FlightException {
+		MessageVo vo = null;
+		try {
+			noteManageService.delPlanFlightInfo(id);
+			vo = new MessageVo(MessageVo.SUCCESS, "删除飞行计划信息成功！", null);
+		} catch (Exception e) {
+			log.error("删除飞行计划信息失败！", e);
+			vo = new MessageVo(MessageVo.FAIL, "删除飞行计划信息失败！", null);
 		}
 		return vo;
 	}

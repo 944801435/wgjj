@@ -102,4 +102,5 @@ public class NotePlanInfo implements Serializable {
 	private String beginTime;
 	@Transient
 	private String endTime;
+	
 }

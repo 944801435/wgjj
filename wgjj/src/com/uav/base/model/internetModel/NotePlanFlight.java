@@ -45,7 +45,7 @@ public class NotePlanFlight implements Serializable {
 	private String departureAirport; //起飞机场
 	
 	@Column(name="land_airport")
-	private String land_airport; //降落机场
+	private String landAirport; //降落机场
 	
 	@Column(name="entry_name")
 	private String entryName; //入境点名称

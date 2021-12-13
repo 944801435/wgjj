@@ -4,6 +4,7 @@
 <head>
 <title>照会文书管理</title>
 <%@ include file="../../tool.jsp"%>
+ <script type="text/javascript" src="${pageContext.request.contextPath }/js/validate.js"></script>
 <script type="text/javascript">
 function search(){
 	$("#myNoteInfoform").submit();
@@ -99,6 +100,7 @@ function reset(){
 						<input style="width: 120px;" class="span3 right_content_select_ctt right_content_select_cttt"
 							placeholder="请输入截止时间" type="text" id="endTime" readonly="readonly" name="endTime" value="${sysoptlog.endTime }" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'});" />	
 				    </div> --%>
+				    </form>
 			</div>
 			<div class="right_content_btnbox">
 				<div onclick="javascript:goDelete()"
@@ -145,7 +147,7 @@ function reset(){
 								<tr>
 									<td width="10px">
 									<c:if test="${item.status==fns:findKey('sys_default_yes') }">
-										<input value="${item.noteId }" name="noteId" type="checkbox">
+										<input value="${item.noteId }" name="noteIds" type="checkbox">
 									</c:if>
 									</td>
 									<td>${item.documentNum }</td>
@@ -192,7 +194,6 @@ function reset(){
 							}</span>-<span>${curPage*pageSize }</span>条，共<span>${totalCount }</span>条
 					</span>
 				</div>
-				</form>	
 		</div>
 </body>
 </html>

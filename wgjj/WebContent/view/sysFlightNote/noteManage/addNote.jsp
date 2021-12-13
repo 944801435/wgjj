@@ -96,95 +96,17 @@ input[type="text"]{
 	<template>
 		<div class="right_content_all">
 			<div class="right_content_all_top my-collapse" :href="'#'+panelId1">
-				<span>基本信息</span>
+				<span>飞行资料信息</span>
 			</div>
-			<form id="inputForm" action="addNote.action" method="post" enctype="multipart/form-data" class="form-horizontal" style="margin: 0;">
+			<form id="inputForm"  method="post" class="form-horizontal" style="margin: 0;">
 				<div :id="panelId1" class="right_content_table">
 					<table class="table" style="width: 100%;">
 						<tr>
 							<td>
 								<div class="control-group">
-									<label class="control-label">照会编号：</label>
-									<div class="controls">
-										<input id="documentNum" type="text" name="documentNum" v-model="note.documentNum" autocomplete="off" type="text" dataType="Require,Limit" len="50" msg="请输入(1~50)个字符的照会编号！" maxlength="50" class="required" value=""/>
-									</div>
-								</div>
-							</td>
-							<td>
-								<div class="control-group">
-									<label class="control-label">国家：</label>
-									<div class="controls">
-										<input id="nationality" name="nationality" v-model="note.nationality" autocomplete="off" type="text" dataType="Require,Limit" len="50" msg="请输入(1~50)个字符的国家！" maxlength="50" class="required" value=""/>
-									</div>
-								</div>
-							</td>
-							<td>
-								<div class="control-group">
-									<label class="control-label">照会号：</label>
-									<div class="controls">
-										<input id="noteNo" name="noteNo" v-model="note.noteNo" autocomplete="off" type="text" dataType="Require,Limit" len="50" msg="请输入(1~50)个字符的照会号！" maxlength="50" class="required" value=""/>
-									</div>
-								</div>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<div class="control-group">
-									<label class="control-label">营运方：</label>
-									<div class="controls">
-										<input id="operator" name="operator" v-model="note.operator" autocomplete="off" type="text" dataType="Require,Limit" len="50" msg="请输入(1~50)个字符的营运方！" maxlength="50" class="required" value=""/>
-									</div>
-								</div>
-							</td>
-							<td>
-								<div class="control-group">
-									<label class="control-label">机型：</label>
-									<div class="controls">
-										<input id="model" name="model" v-model="note.model" autocomplete="off" type="text" dataType="Require,Limit" len="200" msg="请输入(1~200)个字符的机型！" maxlength="200" class="required" value=""/>
-									</div>
-								</div>
-							</td>
-							<td>
-								<div class="control-group">
-									<label class="control-label">架数：</label>
-									<div class="controls">
-										<input id="airNumber" name="airNumber" v-model="note.airNumber" autocomplete="off" type="text" dataType="Require,Limit" len="11" msg="请输入11位数字的架数！" maxlength="11" class="required" value=""/>
-									</div>
-								</div>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<div class="control-group">
-									<label class="control-label">呼号：</label>
-									<div class="controls">
-										<input id="callNumber" name="callNumber" v-model="note.callNumber" autocomplete="off" type="text" dataType="Require,Limit" len="500" msg="请输入(1~500)个字符的呼号！" maxlength="500" class="required" value=""/>
-									</div>
-								</div>
-							</td>
-							<td>
-								<div class="control-group">
-									<label class="control-label">注册号：</label>
-									<div class="controls">
-										<input id="regNo" name="regNo" v-model="note.regNo" autocomplete="off" type="text" dataType="Require,Limit" len="50" msg="请输入(1~50)个字符的注册号！" maxlength="50" class="required" value=""/>
-									</div>
-								</div>
-							</td>
-							<td>
-								<div class="control-group">
-									<label class="control-label">机组人数：</label>
-									<div class="controls">
-										<input id="personNumber" name="personNumber" v-model="note.personNumber" autocomplete="off" type="text" dataType="Require,Limit" len="11" msg="请输入11位数字的机组人数！" maxlength="11" class="required" value=""/>
-									</div>
-								</div>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<div class="control-group">
 									<label class="control-label">来函单位：</label>
 									<div class="controls">
-										<input id="letterUnit" name="letterUnit" v-model="note.letterUnit" autocomplete="off" type="text" dataType="Require,Limit" len="50" msg="请输入(1~50)个字符的来函单位！" maxlength="50" class="required" value=""/>
+										<input id="letterUnit" name="letterUnit" v-model="notePlanInfo.letterUnit" autocomplete="off" type="text" dataType="Require,Limit" len="50" msg="请输入(1~50)个字符的来函单位！" maxlength="50" class="required" value=""/>
 									</div>
 								</div>
 							</td>
@@ -192,7 +114,7 @@ input[type="text"]{
 								<div class="control-group">
 									<label class="control-label">联系人：</label>
 									<div class="controls">
-										<input id="personName" name="personName" v-model="note.personName" autocomplete="off" type="text" dataType="Require,Limit" len="100" msg="请输入(1~100)个字符的联系人！" maxlength="100" class="required" value=""/>
+										<input id="personName" name="personName" v-model="notePlanInfo.personName" autocomplete="off" type="text" dataType="Require,Limit" len="100" msg="请输入(1~100)个字符的联系人！" maxlength="100" class="required" value=""/>
 									</div>
 								</div>
 							</td>
@@ -200,7 +122,77 @@ input[type="text"]{
 								<div class="control-group">
 									<label class="control-label">电话：</label>
 									<div class="controls">
-										<input id="telNo" name="telNo" v-model="note.telNo" autocomplete="off" type="text" dataType="Require,Limit" len="20" msg="请输入(1~20)个字符的电话！" maxlength="20" class="required" value=""/>
+										<input id="telNo" name="telNo" v-model="notePlanInfo.telNo" autocomplete="off" type="text" dataType="Require,Limit" len="20" msg="请输入(1~20)个字符的电话！" maxlength="20" class="required" value=""/>
+									</div>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div class="control-group">
+									<label class="control-label">国家：</label>
+									<div class="controls">
+										<input id="nationality" name="nationality" v-model="notePlanInfo.nationality" autocomplete="off" type="text" dataType="Require,Limit" len="50" msg="请输入(1~50)个字符的国家！" maxlength="50" class="required" value=""/>
+									</div>
+								</div>
+							</td>
+							<td>
+								<div class="control-group">
+									<label class="control-label">照会号：</label>
+									<div class="controls">
+										<input id="noteNo" name="noteNo" v-model="notePlanInfo.noteNo" autocomplete="off" type="text" dataType="Require,Limit" len="50" msg="请输入(1~50)个字符的照会号！" maxlength="50" class="required" value=""/>
+									</div>
+								</div>
+							</td>
+							<td>
+								<div class="control-group">
+									<label class="control-label">营运方：</label>
+									<div class="controls">
+										<input id="operator" name="operator" v-model="notePlanInfo.operator" autocomplete="off" type="text" dataType="Require,Limit" len="50" msg="请输入(1~50)个字符的营运方！" maxlength="50" class="required" value=""/>
+									</div>
+								</div>
+							</td>
+							</tr>
+							<tr>
+							<td>
+								<div class="control-group">
+									<label class="control-label">架数：</label>
+									<div class="controls">
+										<input style="width: 140px;" placeholder="请输入数字" id="airNumber" name="airNumber" v-model="notePlanInfo.airNumber" autocomplete="off" type="number" dataType="Require,Limit" len="11" msg="请输入11位数字的架数！" maxlength="11" class="required" value=""/>
+									</div>
+								</div>
+							</td>
+							<td>
+								<div class="control-group">
+									<label class="control-label">机型：</label>
+									<div class="controls">
+										<input id="model" name="model" v-model="notePlanInfo.model" autocomplete="off" type="text" dataType="Require,Limit" len="200" msg="请输入(1~200)个字符的机型！" maxlength="200" class="required" value=""/>
+									</div>
+								</div>
+							</td>
+							<td>
+								<div class="control-group">
+									<label class="control-label">机组人数：</label>
+									<div class="controls">
+										<input style="width: 140px;" placeholder="请输入数字" id="personNumber" name="personNumber" v-model="notePlanInfo.personNumber" autocomplete="off" type="number" dataType="Require,Limit" len="11" msg="请输入11位数字的架数！" maxlength="11" class="required" value=""/>
+									</div>
+								</div>
+							</td>
+							</tr>
+							<tr>
+							<td>
+								<div class="control-group">
+									<label class="control-label">呼号：</label>
+									<div class="controls">
+										<input id="callNumber" name="callNumber" v-model="notePlanInfo.callNumber" autocomplete="off" type="text" dataType="Require,Limit" len="100" msg="请输入(1~100)个字符的联系人！" maxlength="100" class="required" value=""/>
+									</div>
+								</div>
+							</td>
+							<td>
+								<div class="control-group">
+									<label class="control-label">注册号：</label>
+									<div class="controls">
+										<input id="regNo" name="regNo" v-model="notePlanInfo.regNo" autocomplete="off" type="text" dataType="Require,Limit" len="20" msg="请输入(1~20)个字符的电话！" maxlength="20" class="required" value=""/>
 									</div>
 								</div>
 							</td>
@@ -210,7 +202,7 @@ input[type="text"]{
 								<div class="control-group">
 									<label class="control-label">任务目的：</label>
 									<div class="controls">
-										<input style="width: 93%;" id="mission" name="mission" v-model="note.mission" autocomplete="off" type="text" dataType="Require,Limit" len="50" msg="请输入(1~50)个字符的任务目的！" maxlength="50" class="required" value=""/>
+										<input style="width: 93%;" id="mission" name="mission" v-model="notePlanInfo.mission" autocomplete="off" type="text" dataType="Require,Limit" len="100" msg="请输入(1~100)个字符的任务目的！" maxlength="100" class="required" value=""/>
 									</div>
 								</div>
 							</td>
@@ -218,7 +210,17 @@ input[type="text"]{
 						<tr>
 							<td colspan="3">
 								<div class="control-group">
-								<label class="control-label">文书扫描件：</label>
+									<label class="control-label">其他：</label>
+									<div class="controls">
+										<input style="width: 93%;" id="other" name="other" v-model="notePlanInfo.other" autocomplete="off" type="text" dataType="Require,Limit" len="100" msg="请输入(1~100)个字符的任务目的！" maxlength="100" class="required" value=""/>
+									</div>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="3">
+								<div class="control-group">
+								<label class="control-label">照会文件：</label>
 								<input type="file" id='files' name="file" multiple="multiple" @change='fileChangeback($event)'>
 							        <label for="files"></label>
 								<div v-if='imgsback.length>0' class="fileBox">
@@ -260,12 +262,12 @@ input[type="text"]{
 			imgfilesback: [],  // 图片原文件，上传到后台的数据
 			sizeback: 1 , 
 			ctx: ctx,
-			note: {},
+			notePlanInfo: {},
 			flight: {},
 			flightList: [],
 			noteFileList: [],
 			panelId1: new Date().getTime()+"_1",
-			selNoteSeq:null,
+			selNoteId:null,
 			srcList:[]
 		},
 		mounted: function(){
@@ -329,8 +331,10 @@ input[type="text"]{
 						},
 						success : function(data) {
 							if (data.errCode == '1') {
+								vm.notePlanInfo = data.data;
+								var noteId = data.data.noteId;
 								layer.alert(data.errMsg, function(index){
-						    	window.location.href="${pageContext.request.contextPath }/noteInfoManageList.action";
+						    	window.location.href="${pageContext.request.contextPath }/to_add_note_flight_jsp.action?noteId="+noteId;
 								});
 							} else {
 								layer.alert('保存失败', {icon : 3});
@@ -349,7 +353,7 @@ input[type="text"]{
 			layer.close(layerIndex);
 			layerIndex = null;
 		}
-		vm.selNoteSeq = null;
+		vm.selNoteId = null;
 		parent.closeDetailLayer();
 	}
 </script>
