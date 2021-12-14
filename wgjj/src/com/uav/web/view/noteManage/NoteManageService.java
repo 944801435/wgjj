@@ -37,7 +37,6 @@ import com.uav.base.util.FileUtil;
 @Transactional(rollbackFor={RuntimeException.class,Exception.class})
 @SuppressWarnings("unchecked")
 public class NoteManageService {
-	String deposeFilesDir = "D:\\2021XinchenDownload\\uploadFile\\";
 	@Autowired
 	private NoteManageDao noteManageDao;
 	/**
@@ -122,7 +121,7 @@ public class NoteManageService {
 	}
 	public String addNoteInfo(NotePlanInfo obj, MultipartFile[] file) {
 		List<NoteFiles> list = new ArrayList<>();
-		deposeFilesDir = deposeFilesDir+getOrderID()+"\\";
+		String deposeFilesDir = Constants.readValue("noteFilesDir")+getYYYYMM()+"\\"+getOrderID()+"\\";
 		if(file!=null){
 		for (MultipartFile multipartFile : file) {
 			try {
@@ -169,6 +168,13 @@ public class NoteManageService {
 	    String date = sDateFormat.format(cal.getTime());
 	    return date;
 	  }
+	public static String getYYYYMM()
+	{
+		Calendar cal = Calendar.getInstance();
+		SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyyMM");
+		String date = sDateFormat.format(cal.getTime());
+		return date;
+	}
 	public static String getDocumentNo()
 	{
 		Calendar cal = Calendar.getInstance();
@@ -181,6 +187,34 @@ public class NoteManageService {
 	public void delPlanFlightInfo(Integer id) {
 		noteManageDao.executeHql("delete from NotePlanFlight where id=?", new Object[] { id });
 		
+	}
+	public NotePlanInfo findById(Integer noteId) {
+		return (NotePlanInfo) noteManageDao.findById(NotePlanInfo.class, noteId);
+	}
+	public String editNoteInfo(NotePlanInfo obj, MultipartFile[] file) {
+		List<NoteFiles> list = new ArrayList<>();
+		String deposeFilesDir = Constants.readValue("noteFilesDir")+getYYYYMM()+"\\"+getOrderID()+"\\";
+		if(file!=null){
+		for (MultipartFile multipartFile : file) {
+			try {
+				NoteFiles noteFiles = new NoteFiles();
+				String url = FileUtil.uploadFile(multipartFile,deposeFilesDir);
+				String fileName = multipartFile.getOriginalFilename();
+				long fileSize = multipartFile.getSize();
+				noteFiles.setFilePath(url);
+				noteFiles.setFileNameCn(fileName);
+				noteFiles.setFileSize(Integer.parseInt(String.valueOf(fileSize))/1024/1024);//单位M
+				noteFiles.setCreateTime(DateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+				list.add(noteFiles);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		noteManageDao.editNoteInfo(obj,list);
+		return "success";
+		}else{
+			return "failed";
+		}
 	}
 	
 }

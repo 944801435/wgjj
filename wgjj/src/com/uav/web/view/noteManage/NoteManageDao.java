@@ -182,7 +182,7 @@ public class NoteManageDao extends BaseDAO{
 		for (Object[] account : accounts) {
 			Map<String, String> m = new HashMap<String, String>();
 			m.put("noteId", account[0].toString());
-			m.put("documentNum", account[1].toString());
+			m.put("documentNum", account[1]==null?"":account[1].toString());
 			m.put("letterUnit", account[2]==null?"":account[2].toString());
 			m.put("personName", account[3]==null?"":account[3].toString());
 			m.put("telNo", account[4]==null?"":account[4].toString());
@@ -282,6 +282,55 @@ public class NoteManageDao extends BaseDAO{
 			}
 		}
 		return null;
+	}
+	public void editNoteInfo(NotePlanInfo obj, List<NoteFiles> list) {
+		Session session = null;
+		Transaction transaction = null;
+		try {
+			session = getSessionFactory().openSession();
+			transaction = session.beginTransaction();
+			if (obj!=null&&obj.getNoteId()!=0) {
+				String sql ="UPDATE note_plan_info SET letter_unit =:letterUnit,  person_name =:personName,"
+						+ "tel_no =:telNo,  mission =:mission,  nationality =:nationality,  reg_no =:regNo,"
+						+ "call_number =:callNumber,  model =:model,  person_number =:personNumber,"
+						+ "operator =:operator,other =:other,  air_number =:airNumber, note_no =:noteNo "
+						+ "WHERE note_id =:noteId";
+				SQLQuery query = session.createSQLQuery(sql);
+				query.setParameter("letterUnit", obj.getLetterUnit());
+				query.setParameter("personName", obj.getPersonName());
+				query.setParameter("telNo", obj.getTelNo());
+				query.setParameter("mission", obj.getMission());
+				query.setParameter("nationality", obj.getNationality());
+				query.setParameter("regNo", obj.getRegNo());
+				query.setParameter("callNumber", obj.getCallNumber());
+				query.setParameter("model", obj.getModel());
+				query.setParameter("personNumber", obj.getPersonNumber());
+				query.setParameter("operator", obj.getOperator());
+				query.setParameter("other", obj.getOther());
+				query.setParameter("airNumber", obj.getAirNumber());
+				query.setParameter("noteNo", obj.getNoteNo());
+				query.setParameter("noteId", obj.getNoteId());
+				query.executeUpdate();
+				//需要在日志中体现出来
+				logger.info("照会信息修改!");
+			}
+			for(int i=0;i<list.size();i++){
+				NoteFiles noteFiles = list.get(i);
+				noteFiles.setNoteId(obj.getNoteId());
+				session.save(noteFiles);
+			}
+			transaction.commit();
+			session.flush();
+		} catch (Exception e) {
+			transaction.rollback();
+			e.printStackTrace();
+			logger.error(e.getMessage());
+		}finally{
+			if(session!=null&&session.isOpen()){
+				session.close();
+			}
+		}
+		
 	}
 
 }

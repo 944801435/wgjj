@@ -58,6 +58,16 @@ public class NoteManageAction extends BaseAction {
 	public String toAdd(NotePlanInfo planInfo, Model model, HttpServletRequest request) {
 		return "/view/sysFlightNote/noteManage/addNote";
 	}
+	@RequestMapping("/to_edit_Plan")
+	public String toEditPlanInfo(String noteId, Model model, HttpServletRequest request) {
+		model.addAttribute("noteIdAc", noteId);
+		return "/view/sysFlightNote/noteManage/editNote";
+	}
+	@RequestMapping("/to_detail_Plan")
+	public String toDetailPlanInfo(String noteId, Model model, HttpServletRequest request) {
+		model.addAttribute("noteIdAc", noteId);
+		return "/view/sysFlightNote/noteManage/detailNote";
+	}
 	@RequestMapping("/to_add_note_flight_jsp")
 	public String toAddFlight(Integer noteId, Model model, HttpServletRequest request) {
 		List<NoteFiles> noteFiles = noteManageService.findFilesByNoteId(noteId);
@@ -81,10 +91,19 @@ public class NoteManageAction extends BaseAction {
 	@ResponseBody
 	public MessageVo detail(String noteId) {
 		MessageVo vo = null;
+		List<NotePlanFlight> flightList = new ArrayList<>();
+		List<NoteFiles> noteFiles = new ArrayList<>();
+		NotePlanInfo notePlanInfo = null;
 		try {
-			List<NotePlanFlight> flightList = noteManageService.findFlightByNoteId(noteId);
+			if(noteId!=null&&!"".equals(noteId)){
+				notePlanInfo = noteManageService.findById(Integer.valueOf(noteId));
+				flightList = noteManageService.findFlightByNoteId(noteId);
+				noteFiles = noteManageService.findFilesByNoteId(Integer.valueOf(noteId));
+			}
 			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("notePlanInfo", notePlanInfo);
 			map.put("flightList", flightList);
+			map.put("noteFilesList", noteFiles);
 			vo = new MessageVo(MessageVo.SUCCESS, "", map);
 		} catch (Exception e) {
 			log.error("查询飞行计划信息失败！", e);
@@ -108,6 +127,25 @@ public class NoteManageAction extends BaseAction {
 		} catch (Exception e) {
 			log.error("新增照会信息失败！", e);
 			vo = new MessageVo("0", "新增照会信息失败！", null);
+		}
+		return vo;
+	}
+	@RequestMapping("/update_plan_info_flight")
+	@SystemWebLog(methodName = "修改照会文书信息")
+	@ResponseBody
+	public MessageVo editPlanInfo(@RequestParam("file") MultipartFile[] file, NotePlanInfo obj, HttpServletRequest request) throws FlightException {
+		MessageVo vo = null;
+//		obj.setCreator(getCurUserid(request));
+//		obj.setCreateTime(DateUtil.getNowFullTimeString());
+		try {
+			String errMsg = noteManageService.editNoteInfo(obj, file);
+			if (errMsg.equals("success"))
+				vo = new MessageVo("1", "修改照会信息成功！", obj);
+			else
+				vo = new MessageVo("0", "修改照会信息失败！", obj);
+		} catch (Exception e) {
+			log.error("修改照会信息失败！", e);
+			vo = new MessageVo("0", "修改照会信息失败！", null);
 		}
 		return vo;
 	}
