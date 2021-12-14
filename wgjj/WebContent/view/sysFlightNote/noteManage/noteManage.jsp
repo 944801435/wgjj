@@ -34,11 +34,16 @@ function reset(){
 			}
 		}
 	}
-
+	function goApply() {
+		Confirm("确定申请此照会信息吗？", doApply);
+	}
 	function doDelete() {
 		var frm = document.forms[0];
 		frm.action = '${pageContext.request.contextPath }/noteInfoDel.action';
 		frm.submit();
+	}
+	function doApply() {
+		
 	}
 </script>
 </head>
@@ -165,6 +170,7 @@ function reset(){
 									<td>
 										<a href="${pageContext.request.contextPath }/to_edit_Plan.action?noteId=${item.noteId}">编辑</a>
 										<a href="${pageContext.request.contextPath }/to_detail_Plan.action?noteId=${item.noteId}">详情</a>
+										<a href="" onclick="goApply();">申请</a>
 									</td>
 								</tr>
 							</c:forEach>
