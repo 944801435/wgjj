@@ -50,10 +50,10 @@ function reset(){
 			<div class="right_content_all_top">
 				<span>检索条件</span>
 			</div>
-			<div class="right_content_select">
 			<form id="myNoteInfoform" action="${pageContext.request.contextPath }/noteInfoManageList.action" method="post">
+			<div class="right_content_select">
 					<div style="width: 23%;float: left;" class="span4 right_content_select_box">
-						<span class="right_content_select_name">文书编号：</span> 
+						<span class="right_content_select_name">照会编号：</span> 
 						<input style="width: 120px;" class="right_content_select_ctt right_content_select_cttt"
 							placeholder="请输入文书编号" type="text" id="documentNum" name="documentNum" value="${planInfo.documentNum }" />
 					</div>
@@ -100,7 +100,6 @@ function reset(){
 						<input style="width: 120px;" class="span3 right_content_select_ctt right_content_select_cttt"
 							placeholder="请输入截止时间" type="text" id="endTime" readonly="readonly" name="endTime" value="${sysoptlog.endTime }" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'});" />	
 				    </div> --%>
-				    </form>
 			</div>
 			<div class="right_content_btnbox">
 				<div onclick="javascript:goDelete()"
@@ -139,7 +138,7 @@ function reset(){
 								<th width="12%">照会号</th>
 								<th width="9%">机型</th>
 								<th width="10%">状态</th>
-								<th width="5%">操作</th>
+								<th width="10%">操作</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -164,7 +163,8 @@ function reset(){
 										<c:if test="${item.status!=null && item.status==4}">驳回</c:if>
 									</td>
 									<td>
-										<a href="${pageContext.request.contextPath }/to_edit.action?userId=${item.noteId}">编辑</a>
+										<a href="${pageContext.request.contextPath }/to_edit_Plan.action?noteId=${item.noteId}">编辑</a>
+										<a href="${pageContext.request.contextPath }/to_detail_Plan.action?noteId=${item.noteId}">详情</a>
 									</td>
 								</tr>
 							</c:forEach>
@@ -194,6 +194,7 @@ function reset(){
 							}</span>-<span>${curPage*pageSize }</span>条，共<span>${totalCount }</span>条
 					</span>
 				</div>
+				</form>
 		</div>
 </body>
 </html>
