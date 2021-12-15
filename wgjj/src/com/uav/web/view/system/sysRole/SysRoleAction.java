@@ -84,8 +84,8 @@ public class SysRoleAction extends BaseAction {
 				sysRole = new SysRole();
 			}
 			PagerVO pv = roleService.findList(sysRole, curPage, pageSize);
-			model.addAttribute("roleList", pv.getDatas());
-			model.addAttribute("totalCount", pv.getTotal());
+			model.addAttribute("roleList", pv.getItems());
+			model.addAttribute("totalCount", pv.getCounts());
 			model.addAttribute("curPage", curPage);
 			model.addAttribute("pageSize", pageSize);
 		} catch (Exception e) {

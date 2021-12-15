@@ -84,8 +84,8 @@ public class SysConfigQueryAction extends BaseAction{
 		request.getSession().setAttribute("query_sysConfig", queryMap);
 		try {
 			PagerVO pv = sysConfigQueryService.findList(curPage, pageSize);
-			model.addAttribute("sysconfiglist", pv.getDatas());
-			model.addAttribute("totalCount", pv.getTotal());
+			model.addAttribute("sysconfiglist", pv.getItems());
+			model.addAttribute("totalCount", pv.getCounts());
 			model.addAttribute("curPage", curPage);
 			model.addAttribute("pageSize", pageSize);
 		} catch (Exception e) {

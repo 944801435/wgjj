@@ -55,7 +55,7 @@ public class SysOptLogAction extends BaseAction{
 		try {
 		String curDeptId =	this.getCurDeptid(request);
 		PagerVO pv = sysOptLogService.findList(sysOptLog,curDeptId,curPage,pageSize);
-		for(Object temp : pv.getDatas()){
+		for(Object temp : pv.getItems()){
 			if (temp instanceof SysOptLog) {
 				SysOptLog obj = (SysOptLog) temp;
 				SysUser sysUser = sysOptLogService.findUserById(obj.getUserId());
@@ -63,9 +63,9 @@ public class SysOptLogAction extends BaseAction{
 				obj.setOpState(Constants.getOptSts(obj.getOpState()));
 			}
 		}
-		model.addAttribute("sysoptloglist", pv.getDatas());
+		model.addAttribute("sysoptloglist", pv.getItems());
 		model.addAttribute("sysoptlog", sysOptLog);
-		model.addAttribute("totalCount", pv.getTotal());
+		model.addAttribute("totalCount", pv.getCounts());
 		model.addAttribute("curPage", curPage);
 		model.addAttribute("pageSize", pageSize);
 		} catch (Exception e) {

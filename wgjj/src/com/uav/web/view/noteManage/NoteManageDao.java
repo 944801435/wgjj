@@ -91,8 +91,8 @@ public class NoteManageDao extends BaseDAO{
 			data.add(m);
 		}
 		PagerVO<Map<String, String>> pv = new PagerVO();
-		pv.setDatas(data);
-		pv.setTotal(rows);
+		pv.setItems(data);
+		pv.setCounts(rows);
 		return pv;
 	}
 	private void appendConditions(StringBuilder sb, NotePlanInfo planInfo) {
@@ -202,8 +202,8 @@ public class NoteManageDao extends BaseDAO{
 			data.add(m);
 		}
 		PagerVO<Map<String, String>> pv = new PagerVO();
-		pv.setDatas(data);
-		pv.setTotal(rows);
+		pv.setItems(data);
+		pv.setCounts(rows);
 		return pv;
 	}
 	public void addPlanFlightInfo(NotePlanFlight obj) {

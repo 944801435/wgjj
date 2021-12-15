@@ -69,8 +69,8 @@ public class CaacApproveAction extends BaseAction {
 		try {
 			PagerVO pager = caacApproveService.findList(obj, curPage, pageSize);
 			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("list", pager.getDatas());
-			map.put("totalCount", pager.getTotal());
+			map.put("list", pager.getItems());
+			map.put("totalCount", pager.getCounts());
 			vo = new MessageVo(MessageVo.SUCCESS, "", map);
 		} catch (Exception e) {
 			log.error("查询民航意见列表失败！", e);

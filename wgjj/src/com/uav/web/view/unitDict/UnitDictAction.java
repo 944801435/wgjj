@@ -80,8 +80,8 @@ public class UnitDictAction extends BaseAction {
 				unitDict = new UnitDict();
 			}
 			PagerVO pv = unitDictService.findList(unitDict, curPage, pageSize);
-			model.addAttribute("unitDictList", pv.getDatas());
-			model.addAttribute("totalCount", pv.getTotal());
+			model.addAttribute("unitDictList", pv.getItems());
+			model.addAttribute("totalCount", pv.getCounts());
 			model.addAttribute("curPage", curPage);
 			model.addAttribute("pageSize", pageSize);
 		} catch (Exception e) {

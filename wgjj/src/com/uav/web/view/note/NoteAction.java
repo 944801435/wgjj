@@ -65,8 +65,8 @@ public class NoteAction extends BaseAction {
 		try {
 			PagerVO pager = noteService.findList(obj, curPage, pageSize);
 			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("list", pager.getDatas());
-			map.put("totalCount", pager.getTotal());
+			map.put("list", pager.getItems());
+			map.put("totalCount", pager.getCounts());
 			vo = new MessageVo(MessageVo.SUCCESS, "", map);
 		} catch (Exception e) {
 			log.error("查询外交照会列表失败！", e);

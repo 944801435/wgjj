@@ -284,7 +284,7 @@ public class SysUserAction extends BaseAction {
 			sysUser.setUserId(this.getCurUserid(request));
 			sysUser.setDeptId(this.getCurDeptid(request));
 			PagerVO pv = userService.findList(sysUser, curPage, pageSize);
-			for (Object temp : pv.getDatas()) {
+			for (Object temp : pv.getItems()) {
 				if (temp instanceof SysUser) {
 					SysUser obj = (SysUser) temp;
 					if (StringUtils.isNotBlank(obj.getDeptId())) {
@@ -295,8 +295,8 @@ public class SysUserAction extends BaseAction {
 					}
 				}
 			}
-			model.addAttribute("userList", pv.getDatas());
-			model.addAttribute("totalCount", pv.getTotal());
+			model.addAttribute("userList", pv.getItems());
+			model.addAttribute("totalCount", pv.getCounts());
 			model.addAttribute("sysUser", sysUser);
 			model.addAttribute("curPage", curPage);
 			model.addAttribute("pageSize", pageSize);

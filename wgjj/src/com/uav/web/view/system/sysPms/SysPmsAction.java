@@ -81,9 +81,9 @@ public class SysPmsAction extends BaseAction {
 				sysPms = new SysPms();
 			}
 			PagerVO pv = pmsService.findList(sysPms, curPage, pageSize);
-			model.addAttribute("pmsList", pv.getDatas());
+			model.addAttribute("pmsList", pv.getItems());
 			model.addAttribute("menuId", sysPms.getMenuId());
-			model.addAttribute("totalCount", pv.getTotal());
+			model.addAttribute("totalCount", pv.getCounts());
 			model.addAttribute("curPage", curPage);
 			model.addAttribute("pageSize", pageSize);
 		} catch (Exception e) {

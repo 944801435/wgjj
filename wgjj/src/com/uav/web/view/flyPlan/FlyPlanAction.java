@@ -62,8 +62,8 @@ public class FlyPlanAction extends BaseAction {
 			obj.setCrtDept(getCurDeptid(request));
 			PagerVO pager = flyPlanService.findList(obj, curPage, pageSize);
 			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("list", pager.getDatas());
-			map.put("totalCount", pager.getTotal());
+			map.put("list", pager.getItems());
+			map.put("totalCount", pager.getCounts());
 			vo = new MessageVo(MessageVo.SUCCESS, "", null);
 		} catch (Exception e) {
 			log.error("查询飞行计划列表失败！", e);

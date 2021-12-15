@@ -101,8 +101,8 @@ public class SysMenuAction extends BaseAction {
 				sysMenu = new SysMenu();
 			}
 			PagerVO pv = menuService.findList(sysMenu, curPage, pageSize);
-			model.addAttribute("menuList", pv.getDatas());
-			model.addAttribute("totalCount", pv.getTotal());
+			model.addAttribute("menuList", pv.getItems());
+			model.addAttribute("totalCount", pv.getCounts());
 			model.addAttribute("curPage", curPage);
 			model.addAttribute("pageSize", pageSize);
 		} catch (Exception e) {

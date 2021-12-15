@@ -80,8 +80,8 @@ public class ViolationAction extends BaseAction {
 				violation = new Violation();
 			}
 			PagerVO pv = violationService.findList(violation, curPage, pageSize);
-			model.addAttribute("violationList", pv.getDatas());
-			model.addAttribute("totalCount", pv.getTotal());
+			model.addAttribute("violationList", pv.getItems());
+			model.addAttribute("totalCount", pv.getCounts());
 			model.addAttribute("curPage", curPage);
 			model.addAttribute("pageSize", pageSize);
 		} catch (Exception e) {

@@ -71,11 +71,11 @@ public class SysOptLogService {
 		hql.append(" order by o.optTime desc");
 		PagerVO vo = sysOptLogDao.findPaginated(hql.toString(), params.toArray(), curPage, pageSize);
 		List<Object> datas = new ArrayList<Object>();
-		for(Object o : vo.getDatas()){
+		for(Object o : vo.getItems()){
 			Integer logSeq = (Integer) o;
 			datas.add(getSysOptLogById(logSeq));
 		}
-		vo.setDatas(datas);
+		vo.setItems(datas);
 		return vo;
 	}
 	
