@@ -332,5 +332,9 @@ public class NoteManageDao extends BaseDAO{
 		}
 		
 	}
+	public void editNoteFile(NoteFiles obj) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

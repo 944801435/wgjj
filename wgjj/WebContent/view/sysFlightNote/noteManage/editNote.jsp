@@ -297,7 +297,7 @@ ul { list-style:none;margin: 0px;padding: 0px;text-align: left;}
 						<td>{{item.fileNameCn }}</td>
 						<td>{{item.fileSize }}<span>MB</span></td>
 						<td>{{item.createTime }}</td>
-						<td><a @click="ocrDistinguish(item.id)">识别</a>
+						<td><a @click="ocrDistinguish(item)">识别</a>
 						 <a @click="noteTranslate(item.id)">翻译</a></td>
 					</tr>
 				</table>
@@ -632,8 +632,19 @@ ul { list-style:none;margin: 0px;padding: 0px;text-align: left;}
 				});
 			},
 			ocrDistinguish(item){
-				alert(item);
-				document.getElementById("ocrNoteInfo").innerHTML="在线签章系统，从电子合同到签收快递，线上理财到银行业务，均可无纸化便捷。在线签章系统，从电子合同到签收快递，线上理财到银行业务，均可无纸化便捷";
+				$.ajax({
+					url:ctx+'/ocr_distinguish_note_info.action',
+					data: item,
+					type:'post',
+					dataType:'json',
+					success:(data)=>{
+						if(data.errCode=='1'){
+						document.getElementById("ocrNoteInfo").innerHTML=data.data.ocrText;
+						}
+						alert(data.errMsg);
+						closeLoading();
+					}
+				});
 			},
 			editFlight(item){
 				Validator.Validate_onLoad($('#saveForm')[0],3);

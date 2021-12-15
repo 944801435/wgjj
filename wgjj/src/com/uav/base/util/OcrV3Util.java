@@ -13,6 +13,9 @@ import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+
 import java.io.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -28,10 +31,12 @@ public class OcrV3Util {
 
     private static final String APP_SECRET = "AxdOLyR3b4eSunx94KDqLv2mTThLsFyw";
 
-    public static void main(String[] args) throws IOException {
+    public static String ocrDistinguish(String filePath) throws IOException {
+//    	public static void main(String[] filePath) throws IOException {
 
         Map<String,String> params = new HashMap<String,String>();
-        String q = loadAsBase64("D:/Download/1636351223(1).jpg");
+//        String q = loadAsBase64("D:/2021XinchenDownload/uploadFile/202112/20211213/阿尔及利亚飞行资料信息31346.bmp");
+        String q = loadAsBase64(filePath);
         String salt = String.valueOf(System.currentTimeMillis());
         String detectType = "10012";
         String imageType = "1";
@@ -51,7 +56,26 @@ public class OcrV3Util {
         params.put("sign", sign);
         String result = requestForHttp(YOUDAO_URL,params);
         /** 处理结果 */
-        System.out.println(result);
+        try {
+        	StringBuilder stringBuilder = new StringBuilder();
+            JSONObject jsonObject = JSONObject.parseObject(result);
+            JSONObject jsonArray = jsonObject.getJSONObject("Result");
+            JSONArray jsonArray2 = jsonArray.getJSONArray("regions");
+            for (int i = 0; i <jsonArray2.size(); i++) {
+                JSONObject jsonArrayObjectItem = JSONObject.parseObject(jsonArray2.get(i).toString());
+                JSONArray jsonTwoObj = jsonArrayObjectItem.getJSONArray("lines");
+                for (int j = 0; j <jsonTwoObj.size(); j++) {
+                	JSONObject jsonObjectItem = JSONObject.parseObject(jsonTwoObj.get(j).toString());
+                if(jsonObjectItem!=null){
+                	stringBuilder.append(jsonObjectItem.get("text"));
+                }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+//        System.out.println(result);
+        return result;
     }
 
     public static String requestForHttp(String url,Map<String,String> params) throws IOException {

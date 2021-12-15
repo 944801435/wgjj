@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +26,9 @@ import com.uav.base.model.internetModel.NotePlanInfo;
 import com.uav.base.model.internetModel.NoteReport;
 import com.uav.base.util.DateUtil;
 import com.uav.base.util.FileUtil;
+import com.uav.base.util.OcrV3Util;
+
+import sun.util.logging.resources.logging;
 
 /**
  * 照会文书管理
@@ -37,6 +41,7 @@ import com.uav.base.util.FileUtil;
 @Transactional(rollbackFor={RuntimeException.class,Exception.class})
 @SuppressWarnings("unchecked")
 public class NoteManageService {
+	protected static final Logger log = Logger.getLogger(NoteManageService.class);
 	@Autowired
 	private NoteManageDao noteManageDao;
 	/**
@@ -193,7 +198,7 @@ public class NoteManageService {
 	}
 	public String editNoteInfo(NotePlanInfo obj, MultipartFile[] file) {
 		List<NoteFiles> list = new ArrayList<>();
-		String deposeFilesDir = Constants.readValue("noteFilesDir")+getYYYYMM()+"\\"+getOrderID()+"\\";
+		String deposeFilesDir = Constants.readValue("noteFilesDir")+getYYYYMM()+"/"+getOrderID()+"/";
 		if(file!=null){
 		for (MultipartFile multipartFile : file) {
 			try {
@@ -219,6 +224,21 @@ public class NoteManageService {
 	public void apply(Integer[] noteIds) {
 		for (Integer noteId : noteIds) {
 			noteManageDao.executeHql("update NotePlanInfo set status=0 where noteId=? ", new Object[] {noteId });
+		}
+	}
+	public String ocrDistinguish(NoteFiles obj) {
+		if(obj!=null&&obj.getFilePath()!=null){
+			try {
+				String ocrResult = OcrV3Util.ocrDistinguish(obj.getFilePath());
+				obj.setOcrText(ocrResult);
+				noteManageDao.executeHql("update NoteFiles set ocrText=? where id=? ", new Object[] {obj.getOcrText(),obj.getId()});
+			} catch (IOException e) {
+				log.error("照会文件识别失败!", e);
+				e.printStackTrace();
+			}
+			return "success";
+		}else{
+			return "failed";
 		}
 	}
 	

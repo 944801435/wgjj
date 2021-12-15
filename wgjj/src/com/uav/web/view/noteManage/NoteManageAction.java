@@ -164,6 +164,23 @@ public class NoteManageAction extends BaseAction {
 		}
 		return vo;
 	}
+	@RequestMapping("/ocr_distinguish_note_info")
+	@SystemWebLog(methodName = "照会原件ocr识别")
+	@ResponseBody
+	public MessageVo ocrDistinguish(NoteFiles obj, HttpServletRequest request) throws FlightException {
+		MessageVo vo = null;
+		try {
+			String errMsg = noteManageService.ocrDistinguish(obj);
+			if (errMsg.equals("success"))
+				vo = new MessageVo("1", "ocr识别成功！", obj);
+			else
+				vo = new MessageVo("0", "ocr识别失败！", obj);
+		} catch (Exception e) {
+			log.error("ocr识别失败！", e);
+			vo = new MessageVo("0", "ocr识别失败！", null);
+		}
+		return vo;
+	}
 	@RequestMapping("/del_plan_flight_info")
 	@SystemWebLog(methodName = "删除飞行计划信息")
 	@ResponseBody
