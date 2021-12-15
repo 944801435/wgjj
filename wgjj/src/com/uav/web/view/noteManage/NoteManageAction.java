@@ -22,10 +22,6 @@ import com.uav.base.common.MessageVo;
 import com.uav.base.common.PagerVO;
 import com.uav.base.common.SystemWebLog;
 import com.uav.base.listener.LoginAccess;
-import com.uav.base.model.Note;
-import com.uav.base.model.NoteFlight;
-import com.uav.base.model.NoteFlightWay;
-import com.uav.base.model.SysFile;
 import com.uav.base.model.internetModel.NoteCivilMessage;
 import com.uav.base.model.internetModel.NoteFiles;
 import com.uav.base.model.internetModel.NotePlanFlight;
@@ -186,7 +182,7 @@ public class NoteManageAction extends BaseAction {
 	/**
 	 * 
 	 * 描述 获取照会信息列表 @Title: findList @author @Modified By gl @param curPage
-	 * 当前页面 @param sysUser 查询参数 @param request HTTP请求 @param model 返回封装类 @return
+	 * 当前页面 @param planInfo 查询参数 @param request HTTP请求 @param model 返回封装类 @return
 	 * String 返回类型 @throws
 	 */
 	@RequestMapping("/noteInfoManageList.action")
@@ -212,7 +208,7 @@ public class NoteManageAction extends BaseAction {
 
 	/**
 	 * 
-	 * 描述照会信息 @Title: del @author @param sysUser @param userIds @param
+	 * 描述照会信息 @Title: del @author @param planInfo @param noteIds @param
 	 * request @return String 返回类型 @throws
 	 */
 	@RequestMapping("/noteInfoDel.action")
@@ -232,11 +228,31 @@ public class NoteManageAction extends BaseAction {
 		}
 		return "redirect:/noteInfoManageList.action";
 	}
-
+	/**
+	 * 描述照会信息 @Title: apply @author @param planInfo @param noteIds @param
+	 * request @return String 返回类型 @throws
+	 */
+	@RequestMapping("/noteInfoApply.action")
+	@SystemWebLog(methodName = "申请照会信息")
+	public String apply(NotePlanInfo planInfo, Integer[] noteIds, HttpServletRequest request) {
+		if (noteIds == null) {
+			log.error("申请照会信息失败：参数错误！");
+			this.setMessage(request, "申请照会信息失败：参数错误！", "red");
+			return "redirect:/noteInfoManageList.action";
+		}
+		try {
+			noteManageService.apply(noteIds);
+			this.setMessage(request, "申请照会信息成功！", "green");
+		} catch (Exception e) {
+			e.printStackTrace();
+			this.setMessage(request, "申请照会信息失败！", "red");
+		}
+		return "redirect:/noteInfoManageList.action";
+	}
 	/**
 	 * 
 	 * 描述 获取照会信息列表 @Title: findList @author @Modified By gl @param curPage
-	 * 当前页面 @param sysUser 查询参数 @param request HTTP请求 @param model 返回封装类 @return
+	 * 当前页面 @param planInfo 查询参数 @param request HTTP请求 @param model 返回封装类 @return
 	 * String 返回类型 @throws
 	 */
 	@RequestMapping("/noteManageList.action")
@@ -281,7 +297,7 @@ public class NoteManageAction extends BaseAction {
 	/**
 	 * 
 	 * 描述 获取审批许可列表 @Title: findList @author @Modified By gl @param curPage
-	 * 当前页面 @param sysUser 查询参数 @param request HTTP请求 @param model 返回封装类 @return
+	 * 当前页面 @param noteReport 查询参数 @param request HTTP请求 @param model 返回封装类 @return
 	 * String 返回类型 @throws
 	 */
 	@RequestMapping("/noteReportList.action")

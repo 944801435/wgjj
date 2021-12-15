@@ -66,6 +66,21 @@ input[type="text"] {
 .open_table .controls {
 	float: left;
 }
+ul { list-style:none;margin: 0px;padding: 0px;text-align: left;}
+.iprod_tit { margin-top:0px; color:#333; text-align:center; font-size:25px }
+.white .iprod_tit { color: #fff }
+.white .iprod_tit2 { color: #fff }
+.product_ls { width:100%; }
+.product_ls li { width:49%; height:390px; margin-left:5px; float:left; }
+.product_ls li:hover { background:#fff; box-shadow:0 0 8px #ccc }
+.product_ls .icons { width:70px; height:70px; margin:0 auto; background-repeat:no-repeat; background-position:center }
+/* .product_ls .icon_1 { background-image:url(../images/picon_iprod01.png) } */
+/* .product_ls .icon_2 { background-image:url(../images/picon_iprod02.png) } */
+/* .product_ls li:hover .icon_1 { background-image:url(../images/picon_iprod01_active.png) } */
+/* .product_ls li:hover .icon_2 { background-image:url(../images/picon_iprod02_active.png) } */
+.product_ls h3 { font-size:18px; text-align:center }
+.product_ls h4 { font-size:14px; text-align:center }
+.product_ls p { margin:40px 40px 0; font-size:14px; line-height:24px; text-indent:2em }
 </style>
 </head>
 <body>
@@ -282,14 +297,29 @@ input[type="text"] {
 						<td>{{item.fileNameCn }}</td>
 						<td>{{item.fileSize }}<span>MB</span></td>
 						<td>{{item.createTime }}</td>
-						<td><a @click="editFlight(item.id)">识别</a> <a
-							@click="delFlight(item.id)">翻译</a></td>
+						<td><a @click="ocrDistinguish(item.id)">识别</a>
+						 <a @click="noteTranslate(item.id)">翻译</a></td>
 					</tr>
 				</table>
 			</div>
 		</div>
-		<div class="right_content_all">
-			<div class="right_content_all_top my-collapse" :href="'#'+panelId3">
+			<div class="right_content_all" style="height:425px">
+			<div class="right_content_all_top my-collapse" :href="'#'+panelId4">
+				<span>结果展示</span>
+			</div>
+			<ul class="product_ls">
+				<li>
+					<h3>OCR识别结果</h3>
+					<p id="ocrNoteInfo"></p>
+				</li>
+				<li>
+					<h3>翻译结果</h3>
+					<p>联合各律师事务所，搭建一站式法律云服务平台，对接移动公证法律大数据，将法律服务连接智能高效的互联网方式。</p>
+				</li>
+			</ul>
+			</div>
+		<div class="right_content_all" >
+			<div class="right_content_all_top my-collapse" :href="'#'+panelId3" style="margin-top: 25px;">
 				<span>飞行计划</span>
 			</div>
 			<div :id="panelId3" class="right_content_table">
@@ -454,6 +484,7 @@ input[type="text"] {
 			panelId1: new Date().getTime()+"_1",
 			panelId2: new Date().getTime()+"_2",
 			panelId3: new Date().getTime()+"_3",
+			panelId4: new Date().getTime()+"_4",
 			noteIdAc:null
 		},
 		mounted: function(){
@@ -599,6 +630,10 @@ input[type="text"] {
 						layer.close(index);
 					}
 				});
+			},
+			ocrDistinguish(item){
+				alert(item);
+				document.getElementById("ocrNoteInfo").innerHTML="在线签章系统，从电子合同到签收快递，线上理财到银行业务，均可无纸化便捷。在线签章系统，从电子合同到签收快递，线上理财到银行业务，均可无纸化便捷";
 			},
 			editFlight(item){
 				Validator.Validate_onLoad($('#saveForm')[0],3);

@@ -15,7 +15,7 @@ function reset(){
 }
 	function goDelete() {
 		var hasChecked = 0;
-		var frm = document.forms[0];
+		var frm = document.forms[1];
 		if (frm.noteIds != null) {
 			if (frm.noteIds.checked) {
 				hasChecked = 1;
@@ -38,7 +38,7 @@ function reset(){
 		Confirm("确定申请此照会信息吗？", doApply);
 	}
 	function doDelete() {
-		var frm = document.forms[0];
+		var frm = document.forms[1];
 		frm.action = '${pageContext.request.contextPath }/noteInfoDel.action';
 		frm.submit();
 	}
@@ -97,6 +97,7 @@ function reset(){
 							<option value="4">驳回</option>
 						</select>
 					</div>
+					
 					<%-- <div style="width: 46%;float: left;" class="span4 right_content_select_box">
 						<span class="right_content_select_name">操作时间：</span> 
 						<input style="width: 120px;" class="span3 right_content_select_ctt right_content_select_cttt"
@@ -106,6 +107,7 @@ function reset(){
 							placeholder="请输入截止时间" type="text" id="endTime" readonly="readonly" name="endTime" value="${sysoptlog.endTime }" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'});" />	
 				    </div> --%>
 			</div>
+			</form>
 			<div class="right_content_btnbox">
 				<div onclick="javascript:goDelete()"
 					class="right_content_btnbox_btn right_content_btnbox_delete2"
@@ -129,21 +131,21 @@ function reset(){
 				</div>
 			</div>
 			</div>
-			<input id="action" name="action" value="2" type="hidden"/>
+			<form action="">
 				<div class="right_content_table">
 					<table class="table table-bordered table_list table-striped">
 						<thead>
 							<tr class="active blue_active_op">
 								<th width="4%"></th>
-								<th width="12%">照会编号</th>
+								<th width="11%">照会编号</th>
 								<th width="11%">所属单位</th>
-								<th width="12%">姓名</th>
-								<th width="12%">电话</th>
-								<th width="10%">国家</th>
-								<th width="12%">照会号</th>
-								<th width="9%">机型</th>
+								<th width="10%">姓名</th>
+								<th width="11%">电话</th>
+								<th width="11%">国家</th>
+								<th width="10%">照会号</th>
+								<th width="10%">机型</th>
 								<th width="10%">状态</th>
-								<th width="10%">操作</th>
+								<th width="12%">操作</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -177,6 +179,7 @@ function reset(){
 						</tbody>
 					</table>
 				</div>
+				
 				<div class="right_content_pagination">
 					<div class="pagination">
 						<script>

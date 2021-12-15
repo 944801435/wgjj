@@ -245,7 +245,7 @@ input[type="text"]{
 				 class="right_content_btnbox_btn right_content_btnbox_save">
 				<img src="${ctx }/images/save_btn.png" /> <span>保存</span>
 			</div>
-			<div onclick="parent.closeDetailLayer()" style="cursor:pointer;"
+			<div onclick="window.location.href='${ctx}/noteInfoManageList.action'" style="cursor:pointer;"
 				 class="right_content_btnbox_btn right_content_btnbox_return">
 				<img src="${pageContext.request.contextPath }/images/return_btn.png" />
 				<span>返回</span>
