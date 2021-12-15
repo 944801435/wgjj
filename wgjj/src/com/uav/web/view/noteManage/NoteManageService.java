@@ -15,12 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.uav.base.common.Constants;
 import com.uav.base.common.PagerVO;
-import com.uav.base.model.SysOptLog;
-import com.uav.base.model.SysUser;
-import com.uav.base.model.internetModel.NoteCivilMessage;
+import com.uav.base.model.internetModel.NoteCivilReply;
 import com.uav.base.model.internetModel.NoteFiles;
 import com.uav.base.model.internetModel.NotePlanFlight;
 import com.uav.base.model.internetModel.NotePlanInfo;
@@ -83,11 +79,11 @@ public class NoteManageService {
 		hql.append(" order by note.createTime desc");
 		PagerVO vo = noteManageDao.findPaginated(hql.toString(), params.toArray(), curPage, pageSize);
 		List<Object> datas = new ArrayList<Object>();
-		for(Object o : vo.getDatas()){
+		for(Object o : vo.getItems()){
 			Integer noteId = (Integer) o;
 			datas.add(getNoteManageById(noteId));
 		}
-		vo.setDatas(datas);
+		vo.setItems(datas);
 		return vo;
 	}
 	/**
@@ -96,8 +92,8 @@ public class NoteManageService {
 	public NotePlanInfo getNoteManageById(Integer noteId){
 		return (NotePlanInfo) noteManageDao.findById(NotePlanInfo.class, noteId);
 	}
-	public NoteCivilMessage findCivilMessageById(int noteId) {
-		return (NoteCivilMessage) noteManageDao.findById(NoteCivilMessage.class, noteId);
+	public NoteCivilReply findCivilMessageById(int noteId) {
+		return (NoteCivilReply) noteManageDao.findById(NoteCivilReply.class, noteId);
 	}
 	/**
 	 * 
@@ -108,10 +104,10 @@ public class NoteManageService {
 	 * NoteCivilMessage 返回类型 
 	 * @throws
 	 */
-	public NoteCivilMessage findNoteCivilMessageByCreateTime(Integer noteId) {
-		String sql = "from NoteCivilMessage nc where nc.createTime=(select MAX(createTime) from NoteCivilMessage) AND nc.noteId=? ";
+	public NoteCivilReply findNoteCivilMessageByCreateTime(Integer noteId) {
+		String sql = "from NoteCivilReply nc where nc.createTime=(select MAX(createTime) from NoteCivilReply) AND nc.noteId=? ";
 //		String sql = "SELECT nc.* FROM note_civil_message nc WHERE nc.create_time=(SELECT MAX(create_time) FROM note_civil_message) AND nc.note_id=? ";
-		NoteCivilMessage civilMessage = (NoteCivilMessage) noteManageDao.findUnique(sql,  new Object[] {noteId});
+		NoteCivilReply civilMessage = (NoteCivilReply) noteManageDao.findUnique(sql,  new Object[] {noteId});
 		return civilMessage;
 	}
 	public PagerVO findReportList(NoteReport noteReport, Integer curPage, int pagesize) {

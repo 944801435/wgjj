@@ -8,6 +8,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.uav.base.model.internetModel.NoteCivilReply;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -28,6 +30,8 @@ import com.uav.base.model.NoteFlightWay;
 import com.uav.base.model.SysFile;
 import com.uav.base.model.internetModel.NoteFiles;
 import com.uav.base.model.internetModel.NotePlanFlight;
+import com.uav.base.model.SysPms;
+import com.uav.base.model.SysUser;
 import com.uav.base.model.internetModel.NotePlanInfo;
 import com.uav.base.model.internetModel.NoteReport;
 import com.uav.base.util.DateUtil;
@@ -71,7 +75,7 @@ public class NoteManageAction extends BaseAction {
 	public String toAddFlight(Integer noteId, Model model, HttpServletRequest request) {
 		List<NoteFiles> noteFiles = noteManageService.findFilesByNoteId(noteId);
 		if(noteFiles!=null&&noteFiles.size()>0){
-			Integer noteIdAc = noteFiles.get(0).getNoteId(); 
+			Integer noteIdAc = noteFiles.get(0).getNoteId();
 			model.addAttribute("noteFilesList", noteFiles);
 			model.addAttribute("noteIdAc", noteIdAc);
 		}else{
@@ -82,7 +86,7 @@ public class NoteManageAction extends BaseAction {
 	/**
 	 * @Title: detail_plan_flight_info
 	 * @author gl
-	 * @date 
+	 * @date
 	 * @param noteId
 	 * @return
 	 */
@@ -215,8 +219,8 @@ public class NoteManageAction extends BaseAction {
 				planInfo = new NotePlanInfo();
 			}
 			PagerVO pv = noteManageService.findNoteInfoList(planInfo, curPage, pageSize);
-			model.addAttribute("noteList", pv.getDatas());
-			model.addAttribute("totalCount", pv.getTotal());
+			model.addAttribute("noteList", pv.getItems());
+			model.addAttribute("totalCount", pv.getCounts());
 			model.addAttribute("curPage", curPage);
 			model.addAttribute("pageSize", pageSize);
 		} catch (Exception e) {
@@ -285,22 +289,21 @@ public class NoteManageAction extends BaseAction {
 				planInfo = new NotePlanInfo();
 			}
 			PagerVO pv = noteManageService.findList(planInfo, curPage, pageSize);
-			for (Object temp : pv.getDatas()) {
+			for (Object temp : pv.getItems()) {
 				if (temp instanceof NotePlanInfo) {
 					NotePlanInfo planInfo2 = (NotePlanInfo) temp;
 					// NoteCivilMessage message =
 					// noteManageService.findCivilMessageById(planInfo2.getNoteId());
-					NoteCivilMessage message = noteManageService
+					NoteCivilReply message = noteManageService
 							.findNoteCivilMessageByCreateTime(planInfo2.getNoteId());
 					if (message != null) {
 						planInfo2.setPermitNumber(message.getPermitNumber());
-						planInfo2.setReplyContent(message.getReplyContent());
-						planInfo2.setRouteInfo(message.getRouteInfo());
+						planInfo2.setRouteInfo(message.getPlanRoute());
 					}
 				}
 			}
-			model.addAttribute("noteList", pv.getDatas());
-			model.addAttribute("totalCount", pv.getTotal());
+			model.addAttribute("noteList", pv.getItems());
+			model.addAttribute("totalCount", pv.getCounts());
 			model.addAttribute("curPage", curPage);
 			model.addAttribute("pageSize", pageSize);
 		} catch (Exception e) {
@@ -330,8 +333,8 @@ public class NoteManageAction extends BaseAction {
 				noteReport = new NoteReport();
 			}
 			PagerVO pv = noteManageService.findReportList(noteReport, curPage, pageSize);
-			model.addAttribute("noteReportList", pv.getDatas());
-			model.addAttribute("totalCount", pv.getTotal());
+			model.addAttribute("noteReportList", pv.getItems());
+			model.addAttribute("totalCount", pv.getCounts());
 			model.addAttribute("curPage", curPage);
 			model.addAttribute("pageSize", pageSize);
 		} catch (Exception e) {

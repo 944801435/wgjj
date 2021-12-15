@@ -73,7 +73,7 @@ public class FileUtil {
 		}
 		System.out.println("fileName:" + fileName);
 		// 根据文件的全路径名字(含路径、后缀),new一个File对象dest
-		File dest = new File(deposeFilesDir + fileName);
+		File dest = new File(deposeFilesDir +File.separator+ fileName);
 		// 如果pathAll路径不存在，则创建相关该路径涉及的文件夹;
 		if (!dest.getParentFile().exists()) {
 			dest.getParentFile().mkdirs();
@@ -86,7 +86,7 @@ public class FileUtil {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return deposeFilesDir + fileName;
+		return deposeFilesDir +File.separator+ fileName;
 	  }
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static void download(String fileId, HttpServletRequest request, HttpServletResponse response) throws Exception {

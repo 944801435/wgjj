@@ -596,8 +596,8 @@ public class BaseDAO<T extends Serializable, ID extends Serializable> extends Hi
 		}
 		List<Object> datas = query.list();
 		PagerVO pv = new PagerVO();
-		pv.setDatas(datas);
-		pv.setTotal(total);
+		pv.setItems(datas);
+		pv.setCounts(total);
 		
 		return pv;
 	}
@@ -627,8 +627,8 @@ public class BaseDAO<T extends Serializable, ID extends Serializable> extends Hi
 		}
 		List<Object> datas = query.list();
 		PagerVO pv = new PagerVO();
-		pv.setDatas(datas);
-		pv.setTotal(total);
+		pv.setItems(datas);
+		pv.setCounts(total);
 		
 		return pv;
 	}
@@ -672,8 +672,8 @@ public class BaseDAO<T extends Serializable, ID extends Serializable> extends Hi
 		}
 		List<Object> datas = query.list();
 		PagerVO pv = new PagerVO();
-		pv.setDatas(datas);
-		pv.setTotal(total);
+		pv.setItems(datas);
+		pv.setCounts(total);
 		
 		return pv;
 	}
