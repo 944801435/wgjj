@@ -61,7 +61,9 @@ public class BaseDAO<T extends Serializable, ID extends Serializable> extends Hi
 	public void saveOrUpdate(Object obj) {
 		this.getHibernateTemplate().saveOrUpdate(obj);
 	}
-
+	public void merge(Object obj) {
+		this.getHibernateTemplate().merge(obj);
+	}
 	public void executeSql(final String sql, final Object[] params) {
 		getHibernateTemplate().execute(new HibernateCallback() {
 

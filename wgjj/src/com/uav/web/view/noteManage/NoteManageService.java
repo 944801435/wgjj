@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import com.uav.base.common.Constants;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,7 +62,7 @@ public class NoteManageService {
 		
 		List<Object> params = new ArrayList<Object>();
 		
-		StringBuffer hql = new StringBuffer("select DISTINCT note.noteId from NotePlanInfo note , NoteCivilMessage ncm WHERE 1=1 ");
+		StringBuffer hql = new StringBuffer("select DISTINCT note.noteId from NotePlanInfo note , NoteCivilReply ncm WHERE 1=1 ");
 		
 		if(!StringUtils.isBlank(planInfo.getBeginTime())){
 			hql.append(" and note.createTime>=?");
