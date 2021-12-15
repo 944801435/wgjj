@@ -212,9 +212,9 @@ form{
 	border-radius: 3px;
 }
 
-.hide{
+/*.hide{
 	display: none !important;
-}
+}*/
 
 a{
 	cursor: pointer;
