@@ -39,9 +39,6 @@ public class NoteReport implements Serializable {
 	@Column(name = "file_path")
 	private String filePath;//文件存储地址
 	
-	@Column(name = "document_num")
-	private int documentNum;//文件顺序
-	
 	@Column(name = "status")
 	private short status;//文件应用类型 1：照会原件 2：外交部文件
 	
