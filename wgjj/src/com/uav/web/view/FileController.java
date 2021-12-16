@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.Calendar;
@@ -106,5 +107,36 @@ public class FileController {
         try (InputStream inputStream = new BufferedInputStream(new FileInputStream(file))) {
             FileCopyUtils.copy(inputStream, response.getOutputStream());
         }
+    }
+
+    /**
+     * 在线预览
+     * @param path
+     * @param response
+     * @throws IOException
+     */
+    @RequestMapping("onlinePreview")
+    public void onlinePreview(String path, HttpServletResponse response) throws IOException {
+        File file = new File(rootPath, path);
+        if (!file.exists()) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, "文件未找到！");
+            return;
+        }
+        BufferedInputStream br = new BufferedInputStream(new FileInputStream(file));
+        byte[] bs = new byte[1024];
+        int len = 0;
+        response.reset(); // 非常重要
+        URL u = new URL("file:///" + file);
+        String contentType = u.openConnection().getContentType();
+        response.setContentType(contentType);
+        response.setHeader("Content-Disposition", "inline;filename="
+                + file.getName());
+        OutputStream out = response.getOutputStream();
+        while ((len = br.read(bs)) > 0) {
+            out.write(bs, 0, len);
+        }
+        out.flush();
+        out.close();
+        br.close();
     }
 }

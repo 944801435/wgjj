@@ -158,7 +158,7 @@
 										<div class="btn-group">
 											<%--<button type="button" class="btn btn-default btn-sm" >详情</button>--%>
 											<c:if test="${not empty item.noteReport.filePath}">
-											<a class="btn btn-default  btn-sm" onclick="window.location='${ctx}/preview.action?path=${item.noteReport.filePath}'">详情</a>
+											<a class="btn btn-default  btn-sm" onclick="window.location='${ctx}/onlinePreview.action?path=${item.noteReport.filePath}'">详情</a>
 											<a class="btn btn-default  btn-sm" onclick="window.location='${ctx}/preview.action?path=${item.noteReport.filePath}'">下载</a>
 											</c:if>
 										</div>
