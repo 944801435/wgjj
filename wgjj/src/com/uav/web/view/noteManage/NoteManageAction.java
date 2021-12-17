@@ -188,6 +188,45 @@ public class NoteManageAction extends BaseAction {
 		}
 		return vo;
 	}
+	@RequestMapping("/translation_note_info")
+	@SystemWebLog(methodName = "ocr识别结果翻译")
+	@ResponseBody
+	public MessageVo translationNoteInfo(NoteFiles obj, HttpServletRequest request) throws FlightException {
+		MessageVo vo = null;
+		try {
+			String errMsg = noteManageService.translationNoteInfo(obj);
+			if (errMsg.equals("success"))
+				vo = new MessageVo("1", "翻译成功！", obj);
+			else
+				vo = new MessageVo("0", "翻译失败！", obj);
+		} catch (Exception e) {
+			log.error("翻译失败！", e);
+			vo = new MessageVo("0", "翻译失败！", null);
+		}
+		return vo;
+	}
+	/**
+	 * 批量导出照会信息
+	 * @param noteIds
+	 * @return
+	 */
+	@RequestMapping("/batch_note_exportzip")
+	@ResponseBody
+	public Map batchExportZip(NotePlanInfo planInfo, Integer[] noteIds, HttpServletRequest request) {
+		Map<String,Object> result=new HashMap<String,Object>();
+		String noteZipPath=noteManageService.exportNoteZip(noteIds);
+		log.info("zip文件路径："+noteZipPath);
+		if(StringUtils.isNotBlank(noteZipPath)){
+			result.put("code",10001);
+			result.put("message","照会信息导出成功！");
+			result.put("data",noteZipPath);
+		}else{
+			result.put("code",10000);
+			result.put("message","照会信息导出失败！");
+			result.put("data","");
+		}
+		return result;
+	}
 	@RequestMapping("/del_plan_flight_info")
 	@SystemWebLog(methodName = "删除飞行计划信息")
 	@ResponseBody

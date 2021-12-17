@@ -1,13 +1,18 @@
 package com.uav.web.view.noteManage;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import com.uav.base.common.Constants;
+
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +27,19 @@ import com.uav.base.model.internetModel.NotePlanFlight;
 import com.uav.base.model.internetModel.NotePlanInfo;
 import com.uav.base.model.internetModel.NoteReport;
 import com.uav.base.util.DateUtil;
+import com.uav.base.util.FanyiV3Util;
 import com.uav.base.util.FileUtil;
 import com.uav.base.util.OcrV3Util;
+import com.uav.base.util.PropertiesUtil;
+import com.uav.web.view.civilaviation.CivilAviationService;
+import com.uav.web.view.civilaviation.CivilAviationVO;
 
+import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.ZipUtil;
+import cn.hutool.json.JSONArray;
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 import sun.util.logging.resources.logging;
 
 /**
@@ -41,6 +56,10 @@ public class NoteManageService {
 	protected static final Logger log = Logger.getLogger(NoteManageService.class);
 	@Autowired
 	private NoteManageDao noteManageDao;
+	@Autowired
+	private CivilAviationService civilAviationService;
+	//本地文件夹操作位置
+		String rootPath = PropertiesUtil.getPropertyValue("file.upload.path.windows","");
 	/**
 	 * @throws Exception 
 	 * 查询
@@ -238,5 +257,111 @@ public class NoteManageService {
 			return "failed";
 		}
 	}
-	
+	public String translationNoteInfo(NoteFiles obj) {
+		if(obj!=null&&obj.getFilePath()!=null){
+			try {
+				String transResult = FanyiV3Util.translationNoteInfo(obj.getOcrText());
+				obj.setTranslationText(transResult);
+				noteManageDao.executeHql("update NoteFiles set translationText=? where id=? ", new Object[] {obj.getTranslationText(),obj.getId()});
+			} catch (IOException e) {
+				log.error("照会文件翻译失败!", e);
+				e.printStackTrace();
+			}
+			return "success";
+		}else{
+			return "failed";
+		}
+	}
+	/**
+	 * 批量导出照会信息zip压缩包
+	 * @param noteIds
+	 * @return
+	 */
+	public String exportNoteZip(Integer[] noteIds) {
+		String exportZipPath="";
+		String fileDirId=IdUtil.fastSimpleUUID();
+		String exportFilePath = getExportFilePath(fileDirId);
+		for(Integer noteId:noteIds) {
+			createNoteFiles(noteId, exportFilePath);
+		}
+		exportZipPath=zipCivilFiles(exportFilePath);
+		return exportZipPath;
+	}
+	/**
+	 * zip压缩文件夹
+	 * @param exportFilePath
+	 * @return
+	 */
+	public String zipCivilFiles(String exportFilePath){
+		String zipFilePath="";
+		File exportFileDir=new File(exportFilePath);
+		zipFilePath=rootPath+File.separator+"note"+File.separator+exportFileDir.getName()+".zip";
+		File zipFile=ZipUtil.zip(exportFilePath,zipFilePath);
+		zipFilePath="note"+File.separator+exportFileDir.getName()+".zip";
+		return zipFilePath;
+	}
+	/**
+	 * 根据此次导出生成一个文件夹
+	 * @param fileDirId
+	 * @return
+	 */
+	public String getExportFilePath(String fileDirId){
+		String exportFilePath=rootPath+File.separator+"note"+ File.separator+fileDirId;
+		File fileDir=new File(exportFilePath);
+		if(!fileDir.exists()){
+			fileDir.mkdirs();
+		}
+		return exportFilePath;
+	}
+	/**
+	 * 根据导出目录文件夹和民航信息id，生成民航信息导出内容
+	 * @param noteId
+	 * @param exportFilePath
+	 */
+	public void createNoteFiles(Integer noteId,String exportFilePath) {
+		String NoteFilePath=exportFilePath+File.separator+noteId+"";
+		File NoteFileDir=new File(NoteFilePath);
+		if(!NoteFileDir.exists()){
+			NoteFileDir.mkdir();
+		}
+		CivilAviationVO civilAviationVO=civilAviationService.findCivilAviationVO(noteId);
+		if(civilAviationVO!=null&&civilAviationVO.getPlanInfo()!=null){
+			JSONObject planInfoJson= JSONUtil.parseObj(civilAviationVO.getPlanInfo());
+			if(CollectionUtil.isNotEmpty(civilAviationVO.getPlanFlights())){
+				JSONArray planFilghts=JSONUtil.parseArray(civilAviationVO.getPlanFlights());
+				planInfoJson.putOpt("flightDetails",planFilghts);
+			}
+			try {
+				String jsonContent = planInfoJson.toString();
+				String jsonFileName = NoteFilePath + File.separator + noteId + ".json";
+				File jsonFile = new File(jsonFileName);
+				if (!jsonFile.exists()) {
+					jsonFile.createNewFile();
+				}
+				//.json文件输出
+				FileOutputStream jsonFileOut = new FileOutputStream(jsonFile);
+				jsonFileOut.write(jsonContent.getBytes());
+				jsonFileOut.close();
+				//拷贝回复附件
+				List<NoteFiles> list = civilAviationVO.getNoteFiles();
+				for(int i=0;i<list.size();i++){
+					NoteFiles noteFiles = list.get(i);
+				if (StringUtils.isNotBlank(noteFiles.getFilePath())&&StringUtils.isNotBlank(noteFiles.getFileNameCn())) {
+					String filePath = noteFiles.getFilePath();
+					String fileName = noteFiles.getFileNameCn();
+					Pattern filePattern = Pattern.compile("[\\\\/:*?\"<>|《》（）\n]");
+					fileName=filePattern.matcher(fileName).replaceAll("");
+					File replyFile = new File(filePath);
+					if (replyFile.exists()) {
+						FileOutputStream replyOut = new FileOutputStream(new File(NoteFilePath + File.separator + fileName));
+						FileUtils.copyFile(replyFile, replyOut);
+						replyOut.close();
+					}
+				}
+				}
+			}catch (IOException e){
+				e.printStackTrace();
+			}
+		}
+	}
 }

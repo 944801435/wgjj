@@ -71,8 +71,8 @@ ul { list-style:none;margin: 0px;padding: 0px;text-align: left;}
 .white .iprod_tit { color: #fff }
 .white .iprod_tit2 { color: #fff }
 .product_ls { width:100%; }
-.product_ls li { width:49%; height:390px; margin-left:5px; float:left; }
-.product_ls li:hover { background:#fff; box-shadow:0 0 8px #ccc }
+.product_ls li { width:49%; height:470px; margin-left:5px; float:left; }
+.product_ls li:hover { background:#fff; box-shadow:0 0 3px #ccc }
 .product_ls .icons { width:70px; height:70px; margin:0 auto; background-repeat:no-repeat; background-position:center }
 /* .product_ls .icon_1 { background-image:url(../images/picon_iprod01.png) } */
 /* .product_ls .icon_2 { background-image:url(../images/picon_iprod02.png) } */
@@ -80,7 +80,7 @@ ul { list-style:none;margin: 0px;padding: 0px;text-align: left;}
 /* .product_ls li:hover .icon_2 { background-image:url(../images/picon_iprod02_active.png) } */
 .product_ls h3 { font-size:18px; text-align:center }
 .product_ls h4 { font-size:14px; text-align:center }
-.product_ls p { margin:40px 40px 0; font-size:14px; line-height:24px; text-indent:2em }
+.product_ls p { margin:10px 10px 0; font-size:12px; line-height:20px; text-indent:2em }
 </style>
 </head>
 <body>
@@ -298,12 +298,12 @@ ul { list-style:none;margin: 0px;padding: 0px;text-align: left;}
 						<td>{{item.fileSize }}<span>MB</span></td>
 						<td>{{item.createTime }}</td>
 						<td><a @click="ocrDistinguish(item)">识别</a>
-						 <a @click="noteTranslate(item.id)">翻译</a></td>
+						 <a @click="noteTranslate(item)">翻译</a></td>
 					</tr>
 				</table>
 			</div>
 		</div>
-			<div class="right_content_all" style="height:425px">
+			<div class="right_content_all" style="height:475px">
 			<div class="right_content_all_top my-collapse" :href="'#'+panelId4">
 				<span>结果展示</span>
 			</div>
@@ -314,7 +314,7 @@ ul { list-style:none;margin: 0px;padding: 0px;text-align: left;}
 				</li>
 				<li>
 					<h3>翻译结果</h3>
-					<p>联合各律师事务所，搭建一站式法律云服务平台，对接移动公证法律大数据，将法律服务连接智能高效的互联网方式。</p>
+					<p id="translationNoteInfo"></p>
 				</li>
 			</ul>
 			</div>
@@ -632,14 +632,31 @@ ul { list-style:none;margin: 0px;padding: 0px;text-align: left;}
 				});
 			},
 			ocrDistinguish(item){
+				this.flight = Object.assign({}, item)
 				$.ajax({
 					url:ctx+'/ocr_distinguish_note_info.action',
-					data: item,
+					data: vm.flight,
 					type:'post',
 					dataType:'json',
 					success:(data)=>{
 						if(data.errCode=='1'){
 						document.getElementById("ocrNoteInfo").innerHTML=data.data.ocrText;
+						}
+						alert(data.errMsg);
+						closeLoading();
+					}
+				});
+			},
+			noteTranslate(item){
+				this.flight = Object.assign({}, item)
+				$.ajax({
+					url:ctx+'/translation_note_info.action',
+					data: vm.flight,
+					type:'post',
+					dataType:'json',
+					success:(data)=>{
+						if(data.errCode=='1'){
+						document.getElementById("translationNoteInfo").innerHTML=data.data.translationText;
 						}
 						alert(data.errMsg);
 						closeLoading();

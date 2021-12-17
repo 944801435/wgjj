@@ -56,8 +56,8 @@ public class OcrV3Util {
         params.put("sign", sign);
         String result = requestForHttp(YOUDAO_URL,params);
         /** 处理结果 */
+        StringBuilder stringBuilder = new StringBuilder();
         try {
-        	StringBuilder stringBuilder = new StringBuilder();
             JSONObject jsonObject = JSONObject.parseObject(result);
             JSONObject jsonArray = jsonObject.getJSONObject("Result");
             JSONArray jsonArray2 = jsonArray.getJSONArray("regions");
@@ -74,8 +74,7 @@ public class OcrV3Util {
         } catch (Exception e) {
             e.printStackTrace();
         }
-//        System.out.println(result);
-        return result;
+        return stringBuilder.toString();
     }
 
     public static String requestForHttp(String url,Map<String,String> params) throws IOException {

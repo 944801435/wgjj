@@ -13,6 +13,8 @@ import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.alibaba.fastjson.JSONObject;
+
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -30,10 +32,11 @@ public class FanyiV3Util {
 
     private static final String APP_SECRET = "AxdOLyR3b4eSunx94KDqLv2mTThLsFyw";
 
-    public static void main(String[] args) throws IOException {
+//    public static void main(String[] args) throws IOException {
+	public static String translationNoteInfo(String ocrResult) throws IOException {
 
         Map<String,String> params = new HashMap<String,String>();
-        String q = "translation";
+        String q = ocrResult;
         String salt = String.valueOf(System.currentTimeMillis());
         params.put("from", "auto");
         params.put("to", "zh-CHS");
@@ -48,14 +51,18 @@ public class FanyiV3Util {
         params.put("sign", sign);
         params.put("vocabId","1");
         /** 处理结果 */
-        requestForHttp(YOUDAO_URL,params);
+        String transResult = requestForHttp(YOUDAO_URL,params);
+        JSONObject jsonObject = JSONObject.parseObject(transResult);
+        String result = jsonObject.getString("translation");
+        if(result!=null){
+        	return result;
+        }
+        return null;
     }
 
-    public static void requestForHttp(String url,Map<String,String> params) throws IOException {
-
+    public static String requestForHttp(String url,Map<String,String> params) throws IOException {
         /** 创建HttpClient */
         CloseableHttpClient httpClient = HttpClients.createDefault();
-
         /** httpPost */
         HttpPost httpPost = new HttpPost(url);
         List<NameValuePair> paramsList = new ArrayList<NameValuePair>();
@@ -87,8 +94,7 @@ public class FanyiV3Util {
                 HttpEntity httpEntity = httpResponse.getEntity();
                 String json = EntityUtils.toString(httpEntity,"UTF-8");
                 EntityUtils.consume(httpEntity);
-                logger.info(json);
-                System.out.println(json);
+               return json;
             }
         }finally {
             try{
@@ -99,6 +105,7 @@ public class FanyiV3Util {
                 logger.info("## release resouce error ##" + e);
             }
         }
+		return null;
     }
 
     /**

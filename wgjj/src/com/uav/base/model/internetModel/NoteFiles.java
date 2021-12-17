@@ -54,12 +54,11 @@ public class NoteFiles implements Serializable {
 	@Column(name = "ocr_text")
 	private String ocrText;//OCR识别内容
 	
+	@Column(name = "translation_text")
+	private String translationText;//翻译内容
+	
 	@Column(name = "create_time")
 	private String createTime;// 创建时间
-	
-	@ManyToOne(targetEntity = NotePlanInfo.class)
-	@JoinColumn(name = "note_id", insertable = false, updatable = false)
-	private NotePlanInfo notePlanInfo;
 	
 	@Transient
 	private String begTime;

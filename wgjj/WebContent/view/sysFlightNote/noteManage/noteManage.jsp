@@ -34,6 +34,38 @@ function reset(){
 			}
 		}
 	}
+	function goExport() {
+		var chekLength=$("input:checkbox[name='noteIds']:checked").length;
+		if(chekLength<1){
+			window.alert("请选择要导出的信息！");
+			return;
+		}
+		Confirm("确定导出？",(function(){
+				var noteIds = "";
+				$('input:checkbox[name=noteIds]:checked').each(function(i){
+					if(0==i){
+						noteIds = $(this).val();
+					}else{
+						noteIds += (","+$(this).val());
+					}
+				});
+				$.ajax( {
+					type : "POST",
+					url : "${ctx}/batch_note_exportzip.action?noteIds="+noteIds,
+					dataType:"json",
+					cache:false,
+					async:false,
+					success : function(result) {
+						let resp =eval(result);
+						console.log(resp.data);
+						window.alert(resp.message)
+						if(resp.code=10001){
+							window.location.href="${pageContext.request.contextPath }/preview.action?path="+resp.data;
+						}
+					}
+				});
+			}));
+	}
 	function goApply() {
 		Confirm("确定申请此照会信息吗？", doApply);
 	}
@@ -114,6 +146,12 @@ function reset(){
 					style="cursor:pointer;">
 					<img src="${pageContext.request.contextPath }/images/delete2_btn.png" />
 					<span>删除</span>
+				</div>
+				<div onclick="javascript:goExport()"
+					class="right_content_btnbox_btn right_content_btnbox_delete2"
+					style="cursor:pointer;">
+					<img src="${pageContext.request.contextPath }/images/delete2_btn.png" />
+					<span>导出</span>
 				</div>
 				<div class="right_content_btnbox_btn right_content_btnbox_add"
 					style="cursor:pointer;"
