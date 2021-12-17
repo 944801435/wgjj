@@ -62,7 +62,7 @@ public class CivilAviationService {
 		
 		List<Object> params = new ArrayList<Object>();
 		
-		StringBuffer hql = new StringBuffer("select DISTINCT note.noteId from NotePlanInfo note  WHERE note.delStatus=1 ");
+		StringBuffer hql = new StringBuffer("select DISTINCT note.noteId from NotePlanInfo note  WHERE note.delStatus=1 and note.status in (2,3,4,5) ");
 		if(pagerVO.getParams()!=null){
 			if (!StringUtils.isBlank((String)pagerVO.getParams().get("documentNum"))) {
 				hql.append(" and note.documentNum = ? ");
