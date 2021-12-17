@@ -295,7 +295,7 @@ public class NoteManageAction extends BaseAction {
 	 * 描述照会信息 @Title: apply @author @param planInfo @param noteIds @param
 	 * request @return String 返回类型 @throws
 	 */
-	@RequestMapping("/noteInfoApply.action")
+	/*@RequestMapping("/noteInfoApply.action")
 	@SystemWebLog(methodName = "申请照会信息")
 	public String apply(NotePlanInfo planInfo, Integer[] noteIds, HttpServletRequest request) {
 		if (noteIds == null) {
@@ -311,6 +311,20 @@ public class NoteManageAction extends BaseAction {
 			this.setMessage(request, "申请照会信息失败！", "red");
 		}
 		return "redirect:/noteInfoManageList.action";
+	}*/
+	@RequestMapping("/noteInfoApply.action")
+	@SystemWebLog(methodName = "申请照会信息")
+	@ResponseBody
+	public MessageVo apply(Integer id, HttpServletRequest request) throws FlightException {
+		MessageVo vo = null;
+		try {
+			noteManageService.apply(id);
+			vo = new MessageVo(MessageVo.SUCCESS, "申请照会信息成功！", null);
+		} catch (Exception e) {
+			log.error("申请照会信息失败！", e);
+			vo = new MessageVo(MessageVo.FAIL, "申请照会信息失败！", null);
+		}
+		return vo;
 	}
 	/**
 	 * 

@@ -66,16 +66,30 @@ function reset(){
 				});
 			}));
 	}
-	function goApply() {
-		Confirm("确定申请此照会信息吗？", doApply);
+	function goApply(noteId) {
+		if (noteId != null) {
+		Confirm("确定申请提交此信息吗？", doApply(noteId));
+		}else{
+			return;
+		}
 	}
 	function doDelete() {
 		var frm = document.forms[1];
 		frm.action = '${pageContext.request.contextPath }/noteInfoDel.action';
 		frm.submit();
 	}
-	function doApply() {
-		
+	function doApply(noteId) {
+		openLoading();
+		$.ajax({
+			url:'${pageContext.request.contextPath }/noteInfoApply.action',
+			data: {noteId:noteId},
+			type:'post',
+			dataType:'json',
+			success:(data)=>{
+				alert(data.errMsg);
+				closeLoading();
+			}
+		});
 	}
 </script>
 </head>
@@ -124,9 +138,10 @@ function reset(){
 						<select style="width: 138px;" id="status" name="status" >
 							<option value="0">请选择</option>
 							<option value="1">待申请</option>
-							<option value="2">审核中</option>
-							<option value="3">批准</option>
-							<option value="4">驳回</option>
+							<option value="2">已申请</option>
+							<option value="3">审核中</option>
+							<option value="4">批准</option>
+							<option value="5">驳回</option>
 						</select>
 					</div>
 					
@@ -203,14 +218,15 @@ function reset(){
 									<td>${item.model }</td>
 									<td>
 										<c:if test="${item.status!=null && item.status==1}">待申请</c:if>
-										<c:if test="${item.status!=null && item.status==2}">审核中</c:if>
-										<c:if test="${item.status!=null && item.status==3}">批准</c:if>
-										<c:if test="${item.status!=null && item.status==4}">驳回</c:if>
+										<c:if test="${item.status!=null && item.status==2}">已申请</c:if>
+										<c:if test="${item.status!=null && item.status==3}">审核中</c:if>
+										<c:if test="${item.status!=null && item.status==4}">批准</c:if>
+										<c:if test="${item.status!=null && item.status==5}">驳回</c:if>
 									</td>
 									<td>
 										<a href="${pageContext.request.contextPath }/to_edit_Plan.action?noteId=${item.noteId}">编辑</a>
 										<a href="${pageContext.request.contextPath }/to_detail_Plan.action?noteId=${item.noteId}">详情</a>
-										<a href="" onclick="goApply();">申请</a>
+										<a href="" onclick="goApply(item.noteId);">申请</a>
 									</td>
 								</tr>
 							</c:forEach>

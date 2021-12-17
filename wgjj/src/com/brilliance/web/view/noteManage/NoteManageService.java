@@ -236,10 +236,13 @@ public class NoteManageService {
 			return "failed";
 		}
 	}
-	public void apply(Integer[] noteIds) {
+	/*public void apply(Integer[] noteIds) {
 		for (Integer noteId : noteIds) {
 			noteManageDao.executeHql("update NotePlanInfo set status=0 where noteId=? ", new Object[] {noteId });
 		}
+	}*/
+	public void apply(Integer noteId) {
+		noteManageDao.executeHql("update NotePlanInfo set status=2 where noteId=? ", new Object[] {noteId });
 	}
 	public String ocrDistinguish(NoteFiles obj) {
 		if(obj!=null&&obj.getFilePath()!=null){
@@ -363,4 +366,5 @@ public class NoteManageService {
 			}
 		}
 	}
+
 }
