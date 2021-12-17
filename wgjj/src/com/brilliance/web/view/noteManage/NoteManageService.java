@@ -241,8 +241,12 @@ public class NoteManageService {
 			noteManageDao.executeHql("update NotePlanInfo set status=0 where noteId=? ", new Object[] {noteId });
 		}
 	}*/
-	public void apply(Integer noteId) {
-		noteManageDao.executeHql("update NotePlanInfo set status=2 where noteId=? ", new Object[] {noteId });
+	public boolean apply(Integer noteId) {
+		if(noteId!=null){
+			noteManageDao.executeHql("update NotePlanInfo set status=2 where noteId=? ", new Object[] {noteId });
+			return true;
+		}
+		return false;
 	}
 	public String ocrDistinguish(NoteFiles obj) {
 		if(obj!=null&&obj.getFilePath()!=null){

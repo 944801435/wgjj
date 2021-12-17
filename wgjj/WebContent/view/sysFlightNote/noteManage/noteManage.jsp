@@ -13,62 +13,81 @@ function search(){
 function reset(){
 	$("input[type='text']").val("");
 }
-	function goDelete() {
-		var hasChecked = 0;
-		var frm = document.forms[1];
-		if (frm.noteIds != null) {
-			if (frm.noteIds.checked) {
-				hasChecked = 1;
-			} else {
-				for ( var i = 0; i < frm.noteIds.length; i++) {
-					if (frm.noteIds[i].checked == 1) {
-						hasChecked = 1;
-						break;
-					}
+var noteId;
+function goDelete() {
+	var hasChecked = 0;
+	var frm = document.forms[1];
+	if(frm.status!=null&&frm.status!='1'){
+		alert("只能删除待申请状态信息！");
+	}
+	if (frm.noteIds != null) {
+		if (frm.noteIds.checked) {
+			hasChecked = 1;
+		} else {
+			for ( var i = 0; i < frm.noteIds.length; i++) {
+				if (frm.noteIds[i].checked == 1) {
+					hasChecked = 1;
+					break;
 				}
 			}
-			if (hasChecked) {
-				Confirm("确定要删除选中的信息吗？", doDelete);
-			} else {
-				alert("请选择要删除的信息！");
-			}
+		}
+		if (hasChecked) {
+			Confirm("确定要删除选中的信息吗？", doDelete);
+		} else {
+			alert("请选择要删除的信息！");
 		}
 	}
+}
 	function goExport() {
-		var chekLength=$("input:checkbox[name='noteIds']:checked").length;
-		if(chekLength<1){
-			window.alert("请选择要导出的信息！");
-			return;
-		}
-		Confirm("确定导出？",(function(){
-				var noteIds = "";
-				$('input:checkbox[name=noteIds]:checked').each(function(i){
-					if(0==i){
-						noteIds = $(this).val();
-					}else{
-						noteIds += (","+$(this).val());
-					}
-				});
+	var chekLength=$("input:checkbox[name='noteIds']:checked").length;
+	if(chekLength<1){
+		window.alert("请选择要导出的信息！");
+		return;
+	}
+	Confirm("确定导出？",(function(){
+		var noteIds = "";
+		$('input:checkbox[name=noteIds]:checked').each(function(i){
+			if(0==i){
+				noteIds = $(this).val();
+			}else{
+				noteIds += (","+$(this).val());
+			}
+		});
+		$.ajax( {
+			type : "POST",
+			url : "${ctx}/batch_note_exportzip.action?noteIds="+noteIds,
+			dataType:"json",
+			cache:false,
+			async:false,
+			success : function(result) {
+				let resp =eval(result);
+				console.log(resp.data);
+				window.alert(resp.message)
+				if(resp.code=10001){
+					window.location.href="${pageContext.request.contextPath }/preview.action?path="+resp.data;
+				}
+			}
+		});
+		}));
+	}
+	function goApply(id) {
+		if (id != null) {
+			Confirm("确定申请此照会？",(function(){
 				$.ajax( {
 					type : "POST",
-					url : "${ctx}/batch_note_exportzip.action?noteIds="+noteIds,
+					url : "${ctx}/noteInfoApply.action?noteId="+id,
 					dataType:"json",
-					cache:false,
-					async:false,
 					success : function(result) {
+						console.log(result);
 						let resp =eval(result);
-						console.log(resp.data);
-						window.alert(resp.message)
+						console.log(resp.message);
+						window.alert(resp.message);
 						if(resp.code=10001){
-							window.location.href="${pageContext.request.contextPath }/preview.action?path="+resp.data;
+							search();
 						}
 					}
 				});
 			}));
-	}
-	function goApply(noteId) {
-		if (noteId != null) {
-		Confirm("确定申请提交此信息吗？", doApply(noteId));
 		}else{
 			return;
 		}
@@ -77,19 +96,6 @@ function reset(){
 		var frm = document.forms[1];
 		frm.action = '${pageContext.request.contextPath }/noteInfoDel.action';
 		frm.submit();
-	}
-	function doApply(noteId) {
-		openLoading();
-		$.ajax({
-			url:'${pageContext.request.contextPath }/noteInfoApply.action',
-			data: {noteId:noteId},
-			type:'post',
-			dataType:'json',
-			success:(data)=>{
-				alert(data.errMsg);
-				closeLoading();
-			}
-		});
 	}
 </script>
 </head>
@@ -205,9 +211,9 @@ function reset(){
 							<c:forEach var="item" items="${noteList }">
 								<tr>
 									<td width="10px">
-									<c:if test="${item.status==fns:findKey('sys_default_yes') }">
-										<input value="${item.noteId }" name="noteIds" type="checkbox">
-									</c:if>
+<%-- 									<c:if test="${item.status==fns:findKey('sys_default_yes') }"> --%>
+									<input value="${item.noteId }" name="noteIds" type="checkbox">
+<%-- 									</c:if> --%>
 									</td>
 									<td>${item.documentNum }</td>
 									<td>${item.letterUnit }</td>
@@ -226,7 +232,9 @@ function reset(){
 									<td>
 										<a href="${pageContext.request.contextPath }/to_edit_Plan.action?noteId=${item.noteId}">编辑</a>
 										<a href="${pageContext.request.contextPath }/to_detail_Plan.action?noteId=${item.noteId}">详情</a>
-										<a href="" onclick="goApply(item.noteId);">申请</a>
+										<c:if test="${item.status!=null && item.status==1}">
+										<a href="" onclick="goApply(${item.noteId});">申请</a>
+										</c:if>
 									</td>
 								</tr>
 							</c:forEach>
