@@ -320,7 +320,7 @@ ul { list-style:none;margin: 0px;padding: 0px;text-align: left;}
 			</div>
 		<div class="right_content_all" >
 			<div class="right_content_all_top my-collapse" :href="'#'+panelId3" style="margin-top: 25px;">
-				<span>飞行计划</span>
+				<span>飞行资料信息</span>
 			</div>
 			<div :id="panelId3" class="right_content_table">
 				<table class="table table-bordered table_list flightTable">
