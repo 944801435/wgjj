@@ -76,10 +76,10 @@
 						<span >状态：</span>
 						<select class="form-control select"  style="width: 150px;" id="status" name="status">
 							<option value="0">请选择</option>
-							<option value="1">待申请</option>
-							<option value="2">审核中</option>
-							<option value="3">批准</option>
-							<option value="4">驳回</option>
+							<option value="2">已申请</option>
+							<option value="3">审核中</option>
+							<option value="4">批准</option>
+							<option value="5">驳回</option>
 						</select>
 					</div>
 					<%--<div style="width: 46%;float: left;" class="span8 right_content_select_box">
@@ -149,10 +149,10 @@
 
 									<td>${item.planInfo.model }</td>
 									<td>
-										<c:if test="${item.planInfo.status!=null && item.planInfo.status==1}">待申请</c:if>
-										<c:if test="${item.planInfo.status!=null && item.planInfo.status==2}">审核中</c:if>
-										<c:if test="${item.planInfo.status!=null && item.planInfo.status==3}">批准</c:if>
-										<c:if test="${item.planInfo.status!=null && item.planInfo.status==4}">驳回</c:if>
+										<c:if test="${item.planInfo.status!=null && item.planInfo.status==2}">已申请</c:if>
+										<c:if test="${item.planInfo.status!=null && item.planInfo.status==3}">审核中</c:if>
+										<c:if test="${item.planInfo.status!=null && item.planInfo.status==4}">批准</c:if>
+										<c:if test="${item.planInfo.status!=null && item.planInfo.status==5}">驳回</c:if>
 									</td>
 									<td>
 										<div class="btn-group">

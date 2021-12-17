@@ -156,10 +156,10 @@
 						<span >状态：</span>
 						<select class="form-control select"  style="width: 150px;" id="status" name="status">
 							<option value="0">请选择</option>
-							<option value="1">待申请</option>
-							<option value="2">审核中</option>
-							<option value="3">批准</option>
-							<option value="4">驳回</option>
+							<option value="2">已申请</option>
+							<option value="3">审核中</option>
+							<option value="4">批准</option>
+							<option value="5">驳回</option>
 						</select>
 					</div>
 					<%--<div style="width: 46%;float: left;" class="span8 right_content_select_box">
@@ -226,7 +226,7 @@
 							<c:forEach var="item" items="${pagerVO.items }">
 								<tr>
 									<td>
-										<c:if test="${item.status!=null && item.status==1 && not empty item.permitNumber }">
+										<c:if test="${item.status!=null && item.status==2 && not empty item.permitNumber }">
 											<input type="checkbox" name="noteId" value="${item.noteId }" onclick="userCheck(this)">
 										</c:if>
 									</td>
@@ -240,10 +240,11 @@
 									<td>${item.noteNo }</td>
 									<td>${item.model }</td>
 									<td>
-										<c:if test="${item.status!=null && item.status==1}">待申请</c:if>
-										<c:if test="${item.status!=null && item.status==2}">审核中</c:if>
-										<c:if test="${item.status!=null && item.status==3}">批准</c:if>
-										<c:if test="${item.status!=null && item.status==4}">驳回</c:if>
+										<%--<c:if test="${item.status!=null && item.status==1}">待申请</c:if>--%>
+										<c:if test="${item.status!=null && item.status==2}">已申请</c:if>
+										<c:if test="${item.status!=null && item.status==3}">审核中</c:if>
+										<c:if test="${item.status!=null && item.status==4}">批准</c:if>
+										<c:if test="${item.status!=null && item.status==5}">驳回</c:if>
 									</td>
 									<td>
 										<c:choose>
@@ -265,10 +266,10 @@
 											<ul class="dropdown-menu" role="menu">
 												<li><a href="${ctx }/civilAviation/reply.action?noteId=${item.noteId }">回复</a></li>
 												<!-- 状态是待申请并且状态已经回复，可以导出 -->
-												<c:if test="${item.status!=null && item.status==1 && not empty item.permitNumber}">
+												<c:if test="${item.status!=null && item.status==2 && not empty item.permitNumber}">
 													<li><a href="javascript:void(0);" onclick="doExport('${item.noteId }')">导出</a></li>
 												</c:if>
-												<c:if test="${item.status!=null && item.status==1}">
+												<c:if test="${item.status!=null && item.status==2}">
 													<li><a href="javascript:void(0);" onclick="doDelete('${item.noteId }')">删除</a></li>
 												</c:if>
 

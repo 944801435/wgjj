@@ -214,13 +214,13 @@
 				<td class="flyLabel">民航照会号：</td>
 				<td class="flyVal"><input type="text" name="permitNumber" value="${civilAviationVO.noteCivilReply.permitNumber}"  class="wpc95" placeholder="民航照会号"></td>
 				<td class="flyLabel">计划日期（UTC时间）：</td>
-				<td class="flyVal"><input type="text" name="planTime" value="${civilAviationVO.noteCivilReply.planTime}" class="wpc95" placeholder="计划日期（UTC时间）"></td>
+				<td class="flyVal"><input type="text" name="planTime" value="${civilAviationVO.noteCivilReply.planTime}" class="wpc95 Wdate"  onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',readOnly:true})" placeholder="计划日期（UTC时间）"></td>
 			</tr>
 			<tr>
 				<td class="flyLabel">降落机场：</td>
 				<td class="flyVal"><input type="text" name="downAirport" value="${civilAviationVO.noteCivilReply.downAirport}" class="wpc95" placeholder="降落机场"></td>
 				<td class="flyLabel">起飞机场：</td>
-				<td class="flyVal"><input type="text" name="upAirport" value="${civilAviationVO.noteCivilReply.upAirport}" class="wpc95" placeholder="起飞机场"></td>
+				<td class="flyVal"><input type="text" name="upAirport"  value="${civilAviationVO.noteCivilReply.upAirport}" class="wpc95" placeholder="起飞机场"></td>
 			</tr>
 			<tr>
 				<td class="flyLabel">计划航线：</td>
