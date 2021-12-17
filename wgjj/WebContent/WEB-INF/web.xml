@@ -85,7 +85,7 @@
   </mime-mapping>
   <filter>
     <filter-name>adminRoleFilter</filter-name>
-    <filter-class>com.uav.base.listener.AdminRoleFilter</filter-class>
+    <filter-class>com.brilliance.base.listener.AdminRoleFilter</filter-class>
     <init-param>
       <param-name>url</param-name>
       <param-value>/view/login.jsp</param-value>

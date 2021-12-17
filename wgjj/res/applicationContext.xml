@@ -18,7 +18,7 @@
 		http://cxf.apache.org/schemas/jaxws.xsd
 		http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd">
 		
-	<bean id="propertyConfigurer" class="com.uav.base.dataBase.CommonPropertiesUtil">
+	<bean id="propertyConfigurer" class="com.brilliance.base.dataBase.CommonPropertiesUtil">
 		<property name="locations">
 			<list>
 				<value>classpath:common.properties</value>
@@ -60,8 +60,8 @@
 		<property name="dataSource" ref="proxoolDataSource" /> 
 		<property name="packagesToScan">
 			<list>
-				<value>com.uav.base.model</value>
-				<value>com.uav.web.fz.entity</value>
+				<value>com.brilliance.base.model</value>
+				<value>com.brilliance.web.fz.entity</value>
 			</list>
 		</property>
 		<property name="hibernateProperties">
@@ -85,14 +85,14 @@
 	
 	<tx:annotation-driven transaction-manager="transactionManager" />
 	
-	<context:component-scan base-package="com.uav" use-default-filters="true" annotation-config="true" >
+	<context:component-scan base-package="com.brilliance" use-default-filters="true" annotation-config="true" >
 		<!-- <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/> -->
 	</context:component-scan>
 	 
 	<aop:aspectj-autoproxy proxy-target-class="true"></aop:aspectj-autoproxy>
 	
-	<bean id="SpringContextUtil " class="com.uav.base.util.SpringContextUtil" />
-	<bean id="SpringListener " class="com.uav.base.listener.SpringListener" />
+	<bean id="SpringContextUtil " class="com.brilliance.base.util.SpringContextUtil" />
+	<bean id="SpringListener " class="com.brilliance.base.listener.SpringListener" />
 	
 	<!-- 配置任务线性池计划任务配置，用 @Service @Lazy(false)标注类，用@Scheduled(cron = "0 0 2 * * ?")标注方法 -->
 	<task:executor  id="executor" pool-size="10"/> 
@@ -101,7 +101,7 @@
 	
 	<import resource="classpath:META-INF/cxf/cxf.xml" />  
 	
-	<bean id="RedisClientUtil " class="com.uav.base.util.RedisClientUtil" />
+	<bean id="RedisClientUtil " class="com.brilliance.base.util.RedisClientUtil" />
 	
 	<!-- 配置缓存 -->
 	<cache:annotation-driven cache-manager="cacheManager"/>

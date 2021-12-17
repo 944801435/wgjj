@@ -8,7 +8,7 @@
 <head>
 <meta charset="UTF-8" />
 
-<title><%=com.uav.base.common.Constants.SYS_NAME%></title>
+<title><%=com.brilliance.base.common.Constants.SYS_NAME%></title>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta content="width=device-width, initial-scale=1.0" name="viewport" />
 <meta content="" name="description" />
@@ -107,7 +107,7 @@ body{margin:0px;text-align:center;background-color: #fff;
 </head>
 <body onkeydown="keyLogin();">
 <form method="post" action="${pageContext.request.contextPath }/login.action" id="loginForm" class="login-form">
-	<%if(com.uav.base.common.Constants.SYS_SHOW_LOGO){%>
+	<%if(com.brilliance.base.common.Constants.SYS_SHOW_LOGO){%>
 	<img src="${pageContext.request.contextPath }/images/logo_big.png" style="position: absolute; top: 26px; left: 58px; width: 142px; height: 47px;">
 	<%}%>
 	<input type="hidden" name="deptId" value=""/>
@@ -126,13 +126,13 @@ body{margin:0px;text-align:center;background-color: #fff;
 			<button onclick="doSubmit()" type="button" class="btn_sub" id="btn_sub">登&nbsp;&nbsp;&nbsp;&nbsp;录</button>
 		</div>
 		<div class="title" >
-			<div class="fontSize1" style="color: #fff;"><%=com.uav.base.common.Constants.SYS_NAME%></div><br/>
-			<div class="fontSize" style="color:#fff;opacity: 0.6"><%=com.uav.base.common.Constants.SYS_NAME_EN%></div>
+			<div class="fontSize1" style="color: #fff;"><%=com.brilliance.base.common.Constants.SYS_NAME%></div><br/>
+			<div class="fontSize" style="color:#fff;opacity: 0.6"><%=com.brilliance.base.common.Constants.SYS_NAME_EN%></div>
 		</div>
 	</div>
 	<div style="position: absolute;width:100%;text-align: center;color:#ddd;font-size: 0.8rem; bottom:10px;">
-		<span style="padding-right:10px;"><%=com.uav.base.common.Constants.SYS_COPYRIGHT%></span>
-		<a href="https://beian.miit.gov.cn" target="_blank" style="color:#ddd;text-decoration: none;"><%=com.uav.base.common.Constants.SYS_BEIAN%></a>
+		<span style="padding-right:10px;"><%=com.brilliance.base.common.Constants.SYS_COPYRIGHT%></span>
+		<a href="https://beian.miit.gov.cn" target="_blank" style="color:#ddd;text-decoration: none;"><%=com.brilliance.base.common.Constants.SYS_BEIAN%></a>
 	</div>
 </form>
 <%session.removeAttribute("message");%>

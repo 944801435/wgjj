@@ -1,6 +1,6 @@
-<%@page import="com.uav.base.common.Constants"%>
+<%@page import="com.brilliance.base.common.Constants"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8" import="com.uav.base.model.SysUser,com.uav.base.common.Constants"%>
+	pageEncoding="UTF-8" import="com.brilliance.base.model.SysUser,com.brilliance.base.common.Constants"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
@@ -14,7 +14,7 @@
 <head>
 <c:set var="ctx" value="${pageContext.request.contextPath }"></c:set>
 <meta charset="utf-8" />
-<title><%=com.uav.base.common.Constants.SYS_NAME%></title>
+<title><%=com.brilliance.base.common.Constants.SYS_NAME%></title>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta content="width=device-width, initial-scale=1.0" name="viewport" />
 <meta content="" name="description" />

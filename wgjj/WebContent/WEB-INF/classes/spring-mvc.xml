@@ -10,7 +10,7 @@
     <description>Spring MVC Configuration</description>
     
 	<!-- 使用Annotation自动注册Bean,只扫描@Controller -->
-	<context:component-scan base-package="com.uav" use-default-filters="false"><!-- base-package 如果多个，用“,”分隔 -->
+	<context:component-scan base-package="com.brilliance" use-default-filters="false"><!-- base-package 如果多个，用“,”分隔 -->
 		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
 	</context:component-scan>
 	
@@ -57,7 +57,7 @@
 	<mvc:interceptors>
 		<mvc:interceptor>
 			<mvc:mapping path="/**" />
-			<bean class="com.uav.base.listener.LoginInterceptor" />
+			<bean class="com.brilliance.base.listener.LoginInterceptor" />
 		</mvc:interceptor>
 	</mvc:interceptors>
 	

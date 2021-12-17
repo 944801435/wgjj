@@ -8,7 +8,7 @@
   <uri>lg</uri>
   <tag>
 		<name>errors</name>
-		<tagclass>com.uav.base.util.ErrorsTag</tagclass>
+		<tagclass>com.brilliance.base.util.ErrorsTag</tagclass>
 		<bodycontent>empty</bodycontent>
  </tag>
   

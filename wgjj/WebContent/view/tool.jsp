@@ -1,4 +1,4 @@
-<%@ page language="java" import="java.util.*,com.uav.base.common.Constants,com.uav.base.util.ConstantsUtil" pageEncoding="UTF-8"%>
+<%@ page language="java" import="java.util.*,com.brilliance.base.common.Constants,com.brilliance.base.util.ConstantsUtil" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
