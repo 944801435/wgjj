@@ -13,21 +13,18 @@ function search(){
 function reset(){
 	$("input[type='text']").val("");
 }
-var noteId;
-function goDelete() {
-	var hasChecked = 0;
-	var frm = document.forms[1];
-	if(frm.status!=null&&frm.status!='1'){
-		alert("只能删除待申请状态信息！");
-	}
-	if (frm.noteIds != null) {
-		if (frm.noteIds.checked) {
-			hasChecked = 1;
-		} else {
-			for ( var i = 0; i < frm.noteIds.length; i++) {
-				if (frm.noteIds[i].checked == 1) {
-					hasChecked = 1;
-					break;
+	function goDelete() {
+		var hasChecked = 0;
+		var frm = document.forms[1];
+		if (frm.noteIds != null) {
+			if (frm.noteIds.checked) {
+				hasChecked = 1;
+			} else {
+				for ( var i = 0; i < frm.noteIds.length; i++) {
+					if (frm.noteIds[i].checked == 1) {
+						hasChecked = 1;
+						break;
+					}
 				}
 			}
 		}
@@ -78,6 +75,7 @@ function goDelete() {
 					url : "${ctx}/noteInfoApply.action?noteId="+id,
 					dataType:"json",
 					success : function(result) {
+						alert(1);
 						console.log(result);
 						let resp =eval(result);
 						console.log(resp.message);
