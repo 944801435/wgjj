@@ -28,6 +28,7 @@ import com.brilliance.base.model.internetModel.NoteReport;
 import com.brilliance.base.util.DateUtil;
 import com.brilliance.base.util.FanyiV3Util;
 import com.brilliance.base.util.FileUtil;
+import com.brilliance.base.util.MessageUtil;
 import com.brilliance.base.util.OcrV3Util;
 import com.brilliance.base.util.PropertiesUtil;
 import com.brilliance.web.view.civilaviation.CivilAviationService;
@@ -242,9 +243,15 @@ public class NoteManageService {
 		}
 	}*/
 	public boolean apply(Integer noteId) {
-		if(noteId!=null){
-			noteManageDao.executeHql("update NotePlanInfo set status=2 where noteId=? ", new Object[] {noteId });
-			return true;
+		String[] id = {"0000000000"};
+		try {
+			if(noteId!=null){
+				noteManageDao.executeHql("update NotePlanInfo set status=2 where noteId=? ", new Object[] {noteId });
+				return true;
+			}
+			MessageUtil.createMessage(noteManageDao, "1", id, "照会信息已申请提交给民航，请注意查收！", "民航信息管理", "/civilAviation/list.action");
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return false;
 	}

@@ -35,6 +35,7 @@ import com.brilliance.base.model.internetModel.NotePlanFlight;
 import com.brilliance.base.model.internetModel.NotePlanInfo;
 import com.brilliance.base.model.internetModel.NoteReport;
 import com.brilliance.base.util.DateUtil;
+import com.brilliance.base.util.MessageUtil;
 import com.brilliance.base.util.flight.FlightException;
 
 /**
@@ -315,9 +316,9 @@ public class NoteManageAction extends BaseAction {
 	@RequestMapping("/noteInfoApply.action")
 	@SystemWebLog(methodName = "申请照会信息")
 	@ResponseBody
-	public Map apply(Integer noteId, HttpServletRequest request) throws FlightException {
+	public Map<String,Object> apply(Integer noteId, HttpServletRequest request) throws FlightException {
 		Map<String,Object> result=new HashMap<String,Object>();
-		boolean flag=noteManageService.apply(noteId);;
+		boolean flag=noteManageService.apply(noteId);
 		if(flag){
 			result.put("code",10001);
 			result.put("message","申请照会信息成功！");

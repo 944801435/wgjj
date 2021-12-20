@@ -34,7 +34,6 @@ function reset(){
 			alert("请选择要删除的信息！");
 		}
 	}
-}
 	function goExport() {
 	var chekLength=$("input:checkbox[name='noteIds']:checked").length;
 	if(chekLength<1){
@@ -69,23 +68,22 @@ function reset(){
 	}
 	function goApply(id) {
 		if (id != null) {
-			Confirm("确定申请此照会？",(function(){
+			Confirm('确认申请照会信息吗？',()=>{
 				$.ajax( {
 					type : "POST",
 					url : "${ctx}/noteInfoApply.action?noteId="+id,
 					dataType:"json",
+					cache:false,
+					async:false,
 					success : function(result) {
-						alert(1);
-						console.log(result);
 						let resp =eval(result);
-						console.log(resp.message);
-						window.alert(resp.message);
 						if(resp.code=10001){
-							search();
+						window.alert(resp.message);
+						location.reload();
 						}
 					}
 				});
-			}));
+			});
 		}else{
 			return;
 		}
@@ -169,7 +167,7 @@ function reset(){
 				<div onclick="javascript:goExport()"
 					class="right_content_btnbox_btn right_content_btnbox_delete2"
 					style="cursor:pointer;">
-					<img src="${pageContext.request.contextPath }/images/delete2_btn.png" />
+					<img src="${pageContext.request.contextPath }/images/file_icon.png" />
 					<span>导出</span>
 				</div>
 				<div class="right_content_btnbox_btn right_content_btnbox_add"
@@ -231,7 +229,7 @@ function reset(){
 										<a href="${pageContext.request.contextPath }/to_edit_Plan.action?noteId=${item.noteId}">编辑</a>
 										<a href="${pageContext.request.contextPath }/to_detail_Plan.action?noteId=${item.noteId}">详情</a>
 										<c:if test="${item.status!=null && item.status==1}">
-										<a href="" onclick="goApply(${item.noteId});">申请</a>
+										<a onclick="goApply(${item.noteId});">申请</a>
 										</c:if>
 									</td>
 								</tr>
