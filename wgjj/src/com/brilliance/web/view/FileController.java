@@ -28,7 +28,7 @@ import java.util.Map;
 @Slf4j
 public class FileController {
     //本地使用,上传位置
-    String rootPath = PropertiesUtil.getPropertyValue("file.upload.path.windows","");
+    String rootPath = PropertiesUtil.getPropertyValue("file.upload.path","");
     //上传文件会自动绑定到MultipartFile中
     @RequestMapping("/upload")
     @ResponseBody
