@@ -5,6 +5,14 @@
 <title>照会文书管理</title>
 <%@ include file="../../tool.jsp"%>
  <script type="text/javascript" src="${pageContext.request.contextPath }/js/validate.js"></script>
+ <style type="text/css">
+	.thead_tr_ths tr th {
+		text-align: center;
+	}
+	.tr_tds td {
+		text-align: center;
+	}
+</style>
 <script type="text/javascript">
 function search(){
 	$("#myNoteInfoform").submit();
@@ -106,7 +114,7 @@ function reset(){
 			<form id="myNoteInfoform" action="${pageContext.request.contextPath }/noteInfoManageList.action" method="post">
 			<div class="right_content_select">
 					<div style="width: 23%;float: left;" class="span4 right_content_select_box">
-						<span class="right_content_select_name">照会号：</span> 
+						<span class="right_content_select_name">&nbsp;照&nbsp;会&nbsp;号：</span> 
 						<input style="width: 120px;" class="right_content_select_ctt right_content_select_cttt"
 							placeholder="请输入照会号" type="text" id="noteNo" name="noteNo" value="${planInfo.noteNo }" />
 					</div>
@@ -126,7 +134,7 @@ function reset(){
 							placeholder="请输入呼号" type="text" id="callNumber" name="callNumber" value="${planInfo.callNumber }" />
 					</div>
 					<div style="width: 23%;float: left;" class="span4 right_content_select_box">
-						<span class="right_content_select_name">&nbsp;&nbsp;&nbsp;入境点：</span> 
+						<span class="right_content_select_name">&nbsp;入&nbsp;境&nbsp;点：</span> 
 						<input style="width: 120px;" class="right_content_select_ctt right_content_select_cttt"
 							placeholder="请输入入境点名称" type="text" id="entryName" name="entryName" value="${planInfo.entryName }" />
 					</div>
@@ -189,11 +197,11 @@ function reset(){
 			<form action="">
 				<div class="right_content_table">
 					<table class="table table-bordered table_list table-striped">
-						<thead>
-							<tr class="active blue_active_op">
+						<thead class="thead_tr_ths">
+							<tr class="active blue_active_op" >
 								<th width="4%"></th>
 								<th width="10%">照会号</th>
-								<th width="11%">国家</th>
+								<th width="10%">国家</th>
 								<th width="10%">机型</th>
 								<th width="11%">来电来函单位</th>
 								<th width="10%">姓名</th>
@@ -205,7 +213,7 @@ function reset(){
 						</thead>
 						<tbody>
 							<c:forEach var="item" items="${noteList }">
-								<tr>
+								<tr class="tr_tds">
 									<td width="10px">
 <%-- 									<c:if test="${item.status==fns:findKey('sys_default_yes') }"> --%>
 									<input value="${item.noteId }" name="noteIds" type="checkbox">

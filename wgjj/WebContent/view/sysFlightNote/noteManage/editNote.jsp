@@ -108,7 +108,7 @@ label{
 						<tr>
 							<td>
 								<div class="control-group">
-									<label class="control-label">来函单位：</label>
+									<label class="control-label">来电来函单位：</label>
 									<div class="controls">
 									<input id="noteId" name="noteId"
 											v-model="notePlanInfo.noteId" type="hidden" class="required"
@@ -123,7 +123,7 @@ label{
 							</td>
 							<td>
 								<div class="control-group">
-									<label class="control-label">联系人：</label>
+									<label class="control-label">姓名：</label>
 									<div class="controls">
 										<input id="personName" name="personName"
 											v-model="notePlanInfo.personName" autocomplete="off"
