@@ -472,7 +472,7 @@ CREATE TABLE `note_files` (
   `id` int(10) NOT NULL AUTO_INCREMENT COMMENT 'id',
   `file_name_cn` varchar(100) NOT NULL COMMENT '文件中文名',
   `file_name_en` varchar(100) DEFAULT NULL COMMENT '文件英文名',
-  `file_size` int(11) DEFAULT NULL COMMENT '文件大小 单位 MB',
+  `file_size` decimal(20,2) DEFAULT '0.00' COMMENT '文件大小 单位 MB',
   `file_path` varchar(200) DEFAULT NULL COMMENT '文件存储地址',
   `file_sort` int(3) DEFAULT NULL COMMENT '文件顺序',
   `file_type` tinyint(4) DEFAULT NULL COMMENT '文件应用类型 1：照会原件 2：外交部文件',
