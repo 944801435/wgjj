@@ -52,6 +52,14 @@
 	});
 </script>
 </head>
+<style>
+	.right_content_table tbody tr td{
+		text-align: center!important;
+	}
+	.right_content_table thead th{
+		text-align: center!important;
+	}
+</style>
 <body>
 	<div class="right_content">
 		<lg:errors />
