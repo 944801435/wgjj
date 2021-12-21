@@ -102,7 +102,7 @@ public class NoteManageDao extends BaseDAO{
 		if(!StringUtils.isBlank(planInfo.getEndTime())){
 			sb.append(" and npi.createTime<=:endTime");
 		}*/
-		if (!StringUtils.isBlank(planInfo.getDocumentNum())) {
+		if (!StringUtils.isBlank(planInfo.getNoteNo())) {
 			sb.append(" and npi.note_no=:noteNo");  //文书编号
 		}
 		if (!StringUtils.isBlank(planInfo.getNationality())) {
@@ -131,8 +131,8 @@ public class NoteManageDao extends BaseDAO{
 		if(!StringUtils.isBlank(planInfo.getEndTime())){
 			query.setParameter("endTime", planInfo.getEndTime());
 		}*/
-		if (!StringUtils.isBlank(planInfo.getDocumentNum())) {
-			query.setParameter("documentNum",planInfo.getDocumentNum());  //文书编号
+		if (!StringUtils.isBlank(planInfo.getNoteNo())) {
+			query.setParameter("noteNo",planInfo.getNoteNo());  //照会号
 		}
 		if (!StringUtils.isBlank(planInfo.getNationality())) {
 			query.setParameter("nationality",planInfo.getNationality());  //国籍
