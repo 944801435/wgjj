@@ -103,7 +103,7 @@ public class NoteManageDao extends BaseDAO{
 			sb.append(" and npi.createTime<=:endTime");
 		}*/
 		if (!StringUtils.isBlank(planInfo.getDocumentNum())) {
-			sb.append(" and npi.document_num=:documentNum");  //文书编号
+			sb.append(" and npi.note_no=:noteNo");  //文书编号
 		}
 		if (!StringUtils.isBlank(planInfo.getNationality())) {
 			sb.append(" and npi.nationality=:nationality");  //国籍

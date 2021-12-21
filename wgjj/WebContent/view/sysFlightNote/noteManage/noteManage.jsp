@@ -106,14 +106,14 @@ function reset(){
 			<form id="myNoteInfoform" action="${pageContext.request.contextPath }/noteInfoManageList.action" method="post">
 			<div class="right_content_select">
 					<div style="width: 23%;float: left;" class="span4 right_content_select_box">
-						<span class="right_content_select_name">照会编号：</span> 
+						<span class="right_content_select_name">照会号：</span> 
 						<input style="width: 120px;" class="right_content_select_ctt right_content_select_cttt"
-							placeholder="请输入文书编号" type="text" id="documentNum" name="documentNum" value="${planInfo.documentNum }" />
+							placeholder="请输入照会号" type="text" id="noteNo" name="noteNo" value="${planInfo.noteNo }" />
 					</div>
 					<div style="width: 23%;float: left;" class="span4 right_content_select_box">
-						<span class="right_content_select_name">&nbsp;&nbsp;&nbsp;国籍：</span> 
+						<span class="right_content_select_name">&nbsp;&nbsp;&nbsp;国家：</span> 
 						<input style="width: 120px;" class="right_content_select_ctt right_content_select_cttt"
-							placeholder="请输入国籍" type="text" id="nationality" name="nationality" value="${planInfo.nationality }" />
+							placeholder="请输入国家" type="text" id="nationality" name="nationality" value="${planInfo.nationality }" />
 					</div>
 					<div style="width: 23%;float: left;" class="span4 right_content_select_box">
 						<span class="right_content_select_name">机型：</span> 
@@ -192,13 +192,13 @@ function reset(){
 						<thead>
 							<tr class="active blue_active_op">
 								<th width="4%"></th>
-								<th width="11%">照会编号</th>
-								<th width="11%">所属单位</th>
+								<th width="10%">照会号</th>
+								<th width="11%">国家</th>
+								<th width="10%">机型</th>
+								<th width="11%">来电来函单位</th>
 								<th width="10%">姓名</th>
 								<th width="11%">电话</th>
-								<th width="11%">国家</th>
-								<th width="10%">照会号</th>
-								<th width="10%">机型</th>
+								<th width="11%">照会编号</th>
 								<th width="10%">状态</th>
 								<th width="12%">操作</th>
 							</tr>
@@ -211,13 +211,13 @@ function reset(){
 									<input value="${item.noteId }" name="noteIds" type="checkbox">
 <%-- 									</c:if> --%>
 									</td>
-									<td>${item.documentNum }</td>
+									<td>${item.noteNo }</td>
+									<td>${item.nationality }</td>
+									<td>${item.model }</td>
 									<td>${item.letterUnit }</td>
 									<td>${item.personName }</td>
 									<td>${item.telNo }</td>
-									<td>${item.nationality }</td>
-									<td>${item.noteNo }</td>
-									<td>${item.model }</td>
+									<td>${item.documentNum }</td>
 									<td>
 										<c:if test="${item.status!=null && item.status==1}">待申请</c:if>
 										<c:if test="${item.status!=null && item.status==2}">已申请</c:if>

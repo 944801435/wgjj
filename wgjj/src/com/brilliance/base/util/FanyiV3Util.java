@@ -38,7 +38,7 @@ public class FanyiV3Util {
         Map<String,String> params = new HashMap<String,String>();
         String q = ocrResult;
         String salt = String.valueOf(System.currentTimeMillis());
-        params.put("from", "auto");
+        params.put("from", "en");
         params.put("to", "zh-CHS");
         params.put("signType", "v3");
         String curtime = String.valueOf(System.currentTimeMillis() / 1000);
@@ -53,8 +53,12 @@ public class FanyiV3Util {
         /** 处理结果 */
         String transResult = requestForHttp(YOUDAO_URL,params);
         JSONObject jsonObject = JSONObject.parseObject(transResult);
+        String errorCode = jsonObject.getString("errorCode");
         String result = jsonObject.getString("translation");
-        if(result!=null){
+        if(errorCode!=null&&"0".equals(errorCode)){
+        	return result;
+        }else if(errorCode!=null&&"103".equals(errorCode)){
+        	result="翻译文本过长";
         	return result;
         }
         return null;

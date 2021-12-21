@@ -89,6 +89,18 @@ input[type="text"]{
 .fileBox_item img{
 	border: 1px;
 }
+label{
+    position: relative;
+}
+#fileinp{
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+}
+#btn{
+    margin-right: 5px;
+}
 </style>
 </head>
 <body>
@@ -104,7 +116,7 @@ input[type="text"]{
 						<tr>
 							<td>
 								<div class="control-group">
-									<label class="control-label">来函单位：</label>
+									<label class="control-label">来电来函单位：</label>
 									<div class="controls">
 										<input id="letterUnit" name="letterUnit" v-model="notePlanInfo.letterUnit" autocomplete="off" type="text" dataType="Require,Limit" len="50" msg="请输入(1~50)个字符的来函单位！" maxlength="50" class="required" value=""/>
 									</div>
@@ -112,7 +124,7 @@ input[type="text"]{
 							</td>
 							<td>
 								<div class="control-group">
-									<label class="control-label">联系人：</label>
+									<label class="control-label">姓名：</label>
 									<div class="controls">
 										<input id="personName" name="personName" v-model="notePlanInfo.personName" autocomplete="off" type="text" dataType="Require,Limit" len="100" msg="请输入(1~100)个字符的联系人！" maxlength="100" class="required" value=""/>
 									</div>
@@ -158,7 +170,7 @@ input[type="text"]{
 								<div class="control-group">
 									<label class="control-label">架数：</label>
 									<div class="controls">
-										<input style="width: 140px;" placeholder="请输入数字" id="airNumber" name="airNumber" v-model="notePlanInfo.airNumber" autocomplete="off" type="number" dataType="Require,Limit" len="11" msg="请输入11位数字的架数！" maxlength="11" class="required" value=""/>
+										<input style="width: 140px;" placeholder="请输入数字" id="airNumber" name="airNumber" v-model="notePlanInfo.airNumber" autocomplete="off" type="number" dataType="Require,Limit" len="11" msg="请输入11位内的数字！" min = 0 maxlength="11" class="required" value=""/>
 									</div>
 								</div>
 							</td>
@@ -174,7 +186,7 @@ input[type="text"]{
 								<div class="control-group">
 									<label class="control-label">机组人数：</label>
 									<div class="controls">
-										<input style="width: 140px;" placeholder="请输入数字" id="personNumber" name="personNumber" v-model="notePlanInfo.personNumber" autocomplete="off" type="number" dataType="Require,Limit" len="11" msg="请输入11位数字的架数！" maxlength="11" class="required" value=""/>
+										<input style="width: 140px;" placeholder="请输入数字" id="personNumber" name="personNumber" v-model="notePlanInfo.personNumber" autocomplete="off" type="number" dataType="Require,Limit" len="11" msg="请输入11位内的数字！" min = 0 maxlength="11" class="required" value=""/>
 									</div>
 								</div>
 							</td>
@@ -221,8 +233,11 @@ input[type="text"]{
 							<td colspan="3">
 								<div class="control-group">
 								<label class="control-label">照会文件：</label>
-								<input type="file" id='files' name="file" multiple="multiple" @change='fileChangeback($event)'>
+								<label for="fileinp">
+								    <input type="button" id="btn"  value="选择文件"><span id="text">请上传文件(jpg,png,bmp,gif等图片类型)</span>
+									<input type="file" title="" id='fileinp' accept="image/*" name="file" multiple="multiple" @change='fileChangeback($event)'>
 							        <label for="files"></label>
+								 </label>
 								<div v-if='imgsback.length>0' class="fileBox">
 								    <div class="fileBox_item" v-for="(item, i) in imgsback" >
 								    <img :id="item.id" :src="item.img" alt="" width="100px" height="100px">
@@ -318,6 +333,14 @@ input[type="text"]{
 			goSave() {
 				Confirm('确认保存外交照会吗？',()=>{
 					var formData = new FormData($("#inputForm")[0]);
+					if(!Validator.Validate($('#inputForm')[0],3)){
+						return;
+					}
+					var files = $("file").val();
+					if(vm.imgsback.length<=0){
+						layer.msg("请上传照会文件!");
+						return;
+					}
 					var url='${pageContext.request.contextPath }/addNote.action';
 					$.ajax({
 						type : 'POST',

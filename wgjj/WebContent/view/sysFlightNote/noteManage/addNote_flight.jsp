@@ -261,7 +261,7 @@ ul { list-style:none;margin: 0px;padding: 0px;text-align: left;}
 		},
 		methods: {
 			init(){
-				alert(noteIdAc);
+// 				alert(noteIdAc);
 				var dddd  = "${noteIdAc}";
 				alert(dddd);
 				$.ajax({

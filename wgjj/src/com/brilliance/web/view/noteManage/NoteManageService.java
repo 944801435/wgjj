@@ -142,7 +142,7 @@ public class NoteManageService {
 	}
 	public String addNoteInfo(NotePlanInfo obj, MultipartFile[] file) {
 		List<NoteFiles> list = new ArrayList<>();
-		String deposeFilesDir = Constants.readValue("noteFilesDir")+getYYYYMM()+"\\"+getOrderID()+"\\";
+		String deposeFilesDir = Constants.readValue("file.upload.path.windows")+getYYYYMM()+File.separator+getOrderID()+File.separator;
 		if(file!=null){
 		for (MultipartFile multipartFile : file) {
 			try {
@@ -152,7 +152,7 @@ public class NoteManageService {
 				long fileSize = multipartFile.getSize();
 				noteFiles.setFilePath(url);
 				noteFiles.setFileNameCn(fileName);
-				noteFiles.setFileSize(Integer.parseInt(String.valueOf(fileSize))/1024/1024);//单位M
+				noteFiles.setFileSize(Double.valueOf(fileSize)/1024/1024);//单位M
 				noteFiles.setCreateTime(DateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
 				list.add(noteFiles);
 			} catch (IOException e) {
@@ -214,7 +214,7 @@ public class NoteManageService {
 	}
 	public String editNoteInfo(NotePlanInfo obj, MultipartFile[] file) {
 		List<NoteFiles> list = new ArrayList<>();
-		String deposeFilesDir = Constants.readValue("noteFilesDir")+getYYYYMM()+"/"+getOrderID()+"/";
+		String deposeFilesDir = Constants.readValue("file.upload.path.windows")+getYYYYMM()+File.separator+getOrderID()+File.separator;
 		if(file!=null){
 		for (MultipartFile multipartFile : file) {
 			try {
@@ -224,7 +224,7 @@ public class NoteManageService {
 				long fileSize = multipartFile.getSize();
 				noteFiles.setFilePath(url);
 				noteFiles.setFileNameCn(fileName);
-				noteFiles.setFileSize(Integer.parseInt(String.valueOf(fileSize))/1024/1024);//单位M
+				noteFiles.setFileSize(Double.valueOf(fileSize)/1024/1024);//单位M
 				noteFiles.setCreateTime(DateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
 				list.add(noteFiles);
 			} catch (IOException e) {

@@ -40,7 +40,7 @@ public class NoteFiles implements Serializable {
 	private String fileNameEn;// 文件英文名
 	
 	@Column(name = "file_size")
-	private int fileSize;// 文件大小
+	private Double fileSize;// 文件大小
 	
 	@Column(name = "file_path")
 	private String filePath;//文件存储地址

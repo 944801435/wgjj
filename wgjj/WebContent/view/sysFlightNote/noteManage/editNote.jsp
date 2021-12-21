@@ -81,6 +81,18 @@ ul { list-style:none;margin: 0px;padding: 0px;text-align: left;}
 .product_ls h3 { font-size:18px; text-align:center }
 .product_ls h4 { font-size:14px; text-align:center }
 .product_ls p { margin:10px 10px 0; font-size:12px; line-height:20px; text-indent:2em }
+label{
+    position: relative;
+}
+#fileinp{
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+}
+#btn{
+    margin-right: 5px;
+}
 </style>
 </head>
 <body>
@@ -262,8 +274,13 @@ ul { list-style:none;margin: 0px;padding: 0px;text-align: left;}
 							<td colspan="3">
 								<div class="control-group">
 								<label class="control-label">照会文件：</label>
-								<input type="file" id='files' name="file" multiple="multiple" @change='fileChangeback($event)'>
+								<label for="fileinp">
+								    <input type="button" id="btn"  value="选择文件"><span id="text">请上传文件(jpg,png,bmp,gif等图片类型)</span>
+									<input type="file" title="" id='fileinp' name="file" accept="image/*" multiple="multiple" @change='fileChangeback($event)'>
 							        <label for="files"></label>
+								 </label>
+<!-- 								<input type="file" id='files' name="file" multiple="multiple" @change='fileChangeback($event)'> -->
+<!-- 							        <label for="files"></label> -->
 								<div v-if='imgsback.length>0' class="fileBox">
 								    <div class="fileBox_item" v-for="(item, i) in imgsback" >
 								    <img :id="item.id" :src="item.img" alt="" width="100px" height="100px">
