@@ -6,10 +6,14 @@ import java.io.Serializable;
 
 @Data
 public class CivilAviationDTO implements Serializable {
-    //文书编号
+    //照会编号
     private String documentNum;
-    //照会号
+    //文书编号号
     private String noteNo;
     //状态
     private Integer status;
+    //国家
+    private String nationality;
+    //飞行时间
+    private String flightTime;
 }

@@ -132,6 +132,14 @@
 	});
 </script>
 </head>
+<style>
+	.right_content_table tbody tr td{
+		text-align: center!important;
+	}
+	.right_content_table thead th{
+		text-align: center!important;
+	}
+</style>
 <body>
 	<div class="right_content">
 		<lg:errors />
@@ -142,19 +150,24 @@
 			</div>
 			<div class="right_content_select">
 			<form id="myNoteform" action="${ctx }/civilAviation/list.action" method="post">
-					<div style="width: 46%;float: left;" class="span8 right_content_select_box">
-						<span class="right_content_select_name">文书编号：</span>
-						<input style="width: 80%;" class="right_content_select_ctt right_content_select_cttt"
-							   placeholder="请输入文书编号" type="text" id="documentNum" name="documentNum" value="${civilAviationParam.documentNum }" />
-					</div>
-					<div style="width: 23%;float: left;" class="span4 right_content_select_box">
+					<div style="width: 38%;float: left;" class="span6 right_content_select_box">
 						<span class="right_content_select_name">照会号：</span>
-						<input style="width: 120px;" class="right_content_select_ctt right_content_select_cttt"
-							placeholder="请输入照会号" type="text" id="noteNo" name="noteNo" value="${civilAviationParam.noteNo }" />
+						<input style="width: 80%;" class="right_content_select_ctt right_content_select_cttt"
+							   placeholder="请输入照会编号" type="text" id="noteNo" name="noteNo" value="${civilAviationParam.noteNo }" />
 					</div>
-					<div style="width: 24%;float: left;" class="span4">
-						<span >状态：</span>
-						<select class="form-control select"  style="width: 150px;" id="status" name="status">
+					<div style="width: 20%;float: left;" class="span5 right_content_select_box">
+						<span class="right_content_select_name">国家：</span>
+						<input style="width: 65%;" class="right_content_select_ctt right_content_select_cttt"
+							placeholder="请输入国家名称" type="text" name="nationality" value="${civilAviationParam.nationality }" />
+					</div>
+					<div style="width: 20%;float: left;" class="span5 right_content_select_box">
+						<span class="right_content_select_name">时间：</span>
+						<input style="width: 65%;" class="right_content_select_ctt right_content_select_cttt"
+							   placeholder="请输入时间" type="text" class="wpc95 Wdate"  onclick="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})" name="flightTime" value="${civilAviationParam.flightTime }" />
+					</div>
+					<div style="width: 10%;float: left;display: flex" class="span6">
+						<span style="width: 80px;margin-top:5px">状态：</span>
+						<select class="form-control select"  style="width: 140px;" id="status" name="status">
 							<option value="0">请选择</option>
 							<option value="2">已申请</option>
 							<option value="3">审核中</option>
@@ -208,44 +221,38 @@
 								<th width="2%">
 									<input type="checkbox" name="all">
 								</th>
-								<th width="10%">文书编号</th>
-								<th width="12%">民航许可号</th>
+								<th width="12%">照会号</th>
+								<th width="7%">民航许可号</th>
 								<th width="14%">航线信息</th>
-								<th width="4%">单位</th>
+								<th width="11%">国家</th>
+								<th width="9%">机型</th>
+								<th width="9%">来电来函单位</th>
 								<th width="5%">姓名</th>
 								<th width="7%">电话</th>
-								<th width="11%">国家</th>
-								<th width="11%">照会号</th>
-								<th width="9%">机型</th>
-								<th width="5%">状态</th>
+								<th width="6%">照会编号</th>
 								<th width="2%">民航是否回复</th>
-								<th width="9%">操作</th>
+								<th width="4%">状态</th>
+
+								<th width="11%">操作</th>
 							</tr>
 						</thead>
 						<tbody>
 							<c:forEach var="item" items="${pagerVO.items }">
-								<tr>
+								<tr  style="text-align: center;">
 									<td>
 										<c:if test="${item.status!=null && item.status==2 && not empty item.permitNumber }">
 											<input type="checkbox" name="noteId" value="${item.noteId }" onclick="userCheck(this)">
 										</c:if>
 									</td>
-									<td>${item.documentNum }</td>
-									<td>${item.letterUnit }</td>
+									<td>${item.noteNo }</td>
 									<td>${item.permitNumber }</td>
 									<td>${item.routeInfo }</td>
+									<td>${item.nationality }</td>
+									<td>${item.model }</td>
+									<td>${item.letterUnit }</td>
 									<td>${item.personName }</td>
 									<td>${item.telNo }</td>
-									<td>${item.nationality }</td>
-									<td>${item.noteNo }</td>
-									<td>${item.model }</td>
-									<td>
-										<%--<c:if test="${item.status!=null && item.status==1}">待申请</c:if>--%>
-										<c:if test="${item.status!=null && item.status==2}">已申请</c:if>
-										<c:if test="${item.status!=null && item.status==3}">审核中</c:if>
-										<c:if test="${item.status!=null && item.status==4}">批准</c:if>
-										<c:if test="${item.status!=null && item.status==5}">驳回</c:if>
-									</td>
+									<td>${item.documentNum }</td>
 									<td>
 										<c:choose>
 											<c:when test="${empty item.permitNumber}">
@@ -255,8 +262,28 @@
 										</c:choose>
 									</td>
 									<td>
-										<div class="btn-group">
-											<%--<button type="button" class="btn btn-default btn-sm" >详情</button>--%>
+										<%--<c:if test="${item.status!=null && item.status==1}">待申请</c:if>--%>
+										<c:if test="${item.status!=null && item.status==2}">已申请</c:if>
+										<c:if test="${item.status!=null && item.status==3}">审核中</c:if>
+										<c:if test="${item.status!=null && item.status==4}">批准</c:if>
+										<c:if test="${item.status!=null && item.status==5}">驳回</c:if>
+									</td>
+
+									<td>
+										<a href="${ctx}/civilAviation/detail.action?noteId=${item.noteId }">详情</a>
+										<c:if test="${item.status!=null && item.status!=4}">
+											<a href="${ctx }/civilAviation/reply.action?noteId=${item.noteId }">回复</a>
+										</c:if>
+										<!-- 状态是待申请并且状态已经回复，可以导出 -->
+										<c:if test="${item.status!=null && item.status==2 && not empty item.permitNumber}">
+											<a href="javascript:void(0);" onclick="doExport('${item.noteId }')">导出</a>
+										</c:if>
+										<c:if test="${item.status!=null && item.status==2}">
+											<a href="javascript:void(0);" onclick="doDelete('${item.noteId }')">删除</a>
+										</c:if>
+
+										<%--<div class="btn-group">
+											&lt;%&ndash;<button type="button" class="btn btn-default btn-sm" >详情</button>&ndash;%&gt;
 											<a class="btn btn-default  btn-sm" href="${ctx}/civilAviation/detail.action?noteId=${item.noteId }">详情</a>
 											<button type="button" class="btn btn-default dropdown-toggle btn-sm"
 													data-toggle="dropdown">
@@ -264,7 +291,9 @@
 												<span class="sr-only">切换下拉菜单</span>
 											</button>
 											<ul class="dropdown-menu" role="menu">
-												<li><a href="${ctx }/civilAviation/reply.action?noteId=${item.noteId }">回复</a></li>
+												<c:if test="${item.status!=null && item.status!=4}">
+													<li><a href="${ctx }/civilAviation/reply.action?noteId=${item.noteId }">回复</a></li>
+												</c:if>
 												<!-- 状态是待申请并且状态已经回复，可以导出 -->
 												<c:if test="${item.status!=null && item.status==2 && not empty item.permitNumber}">
 													<li><a href="javascript:void(0);" onclick="doExport('${item.noteId }')">导出</a></li>
@@ -274,7 +303,7 @@
 												</c:if>
 
 											</ul>
-										</div>
+										</div>--%>
 
 									</td>
 								</tr>

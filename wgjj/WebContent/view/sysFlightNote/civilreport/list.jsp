@@ -62,26 +62,31 @@
 			</div>
 			<div class="right_content_select">
 			<form id="myNoteform" action="${ctx }/civilReport/list.action" method="post">
-					<div style="width: 46%;float: left;" class="span8 right_content_select_box">
-						<span class="right_content_select_name">文书编号：</span>
-						<input style="width: 80%;" class="right_content_select_ctt right_content_select_cttt"
-							   placeholder="请输入文书编号" type="text" id="documentNum" name="documentNum" value="${civilReportParam.documentNum }" />
-					</div>
-					<div style="width: 23%;float: left;" class="span4 right_content_select_box">
-						<span class="right_content_select_name">照会号：</span>
-						<input style="width: 120px;" class="right_content_select_ctt right_content_select_cttt"
-							placeholder="请输入照会号" type="text" id="noteNo" name="noteNo" value="${civilReportParam.noteNo }" />
-					</div>
-					<div style="width: 24%;float: left;" class="span4">
-						<span >状态：</span>
-						<select class="form-control select"  style="width: 150px;" id="status" name="status">
-							<option value="0">请选择</option>
-							<option value="2">已申请</option>
-							<option value="3">审核中</option>
-							<option value="4">批准</option>
-							<option value="5">驳回</option>
-						</select>
-					</div>
+				<div style="width: 38%;float: left;" class="span6 right_content_select_box">
+					<span class="right_content_select_name">照会号：</span>
+					<input style="width: 80%;" class="right_content_select_ctt right_content_select_cttt"
+						   placeholder="请输入照会编号" type="text" id="noteNo" name="noteNo" value="${civilReportParam.noteNo }" />
+				</div>
+				<div style="width: 20%;float: left;" class="span5 right_content_select_box">
+					<span class="right_content_select_name">国家：</span>
+					<input style="width: 65%;" class="right_content_select_ctt right_content_select_cttt"
+						   placeholder="请输入国家名称" type="text" name="nationality" value="${civilReportParam.nationality }" />
+				</div>
+				<div style="width: 20%;float: left;" class="span5 right_content_select_box">
+					<span class="right_content_select_name">时间：</span>
+					<input style="width: 65%;" class="right_content_select_ctt right_content_select_cttt"
+						   placeholder="请输入时间" type="text" class="wpc95 Wdate"  onclick="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})" name="flightTime" value="${civilReportParam.flightTime }" />
+				</div>
+				<div style="width: 10%;float: left;display: flex" class="span6">
+					<span style="width: 80px;margin-top:5px">状态：</span>
+					<select class="form-control select"  style="width: 140px;" id="status" name="status">
+						<option value="0">请选择</option>
+						<option value="2">已申请</option>
+						<option value="3">审核中</option>
+						<option value="4">批准</option>
+						<option value="5">驳回</option>
+					</select>
+				</div>
 					<%--<div style="width: 46%;float: left;" class="span8 right_content_select_box">
 						<span class="right_content_select_name">操作时间：</span> 
 						<input style="width: 120px;" class="span3 right_content_select_ctt right_content_select_cttt"
@@ -126,13 +131,14 @@
 					<table class="table table-bordered table_list table-striped">
 						<thead>
 							<tr class="active blue_active_op">
-								<th width="10%">文书编号</th>
-								<th width="22%">国家/照会号</th>
+								<th width="11%">照会号</th>
+								<th width="11%">国家</th>
+								<th width="9%">机型</th>
+								<th width="16%">来电来函单位</th>
 								<th width="12%">民航许可号</th>
-								<th width="16%">单位</th>
 								<th width="5%">姓名</th>
 								<th width="11%">电话</th>
-								<th width="9%">机型</th>
+								<th width="10%">照会编号</th>
 								<th width="5%">状态</th>
 								<th width="9%">操作</th>
 							</tr>
@@ -140,14 +146,15 @@
 						<tbody>
 							<c:forEach var="item" items="${pagerVO.items }">
 								<tr>
-									<td>${item.planInfo.documentNum }</td>
-									<td>${item.planInfo.nationality }/${item.planInfo.noteNo }</td>
+									<td>${item.planInfo.noteNo }</td>
+									<td>${item.planInfo.nationality }</td>
+									<td>${item.planInfo.model }</td>
 									<td>${item.planInfo.letterUnit }</td>
 									<td>${item.planInfo.permitNumber }</td>
 									<td>${item.planInfo.personName }</td>
 									<td>${item.planInfo.telNo }</td>
+									<td>${item.planInfo.documentNum }</td>
 
-									<td>${item.planInfo.model }</td>
 									<td>
 										<c:if test="${item.planInfo.status!=null && item.planInfo.status==2}">已申请</c:if>
 										<c:if test="${item.planInfo.status!=null && item.planInfo.status==3}">审核中</c:if>
@@ -155,13 +162,17 @@
 										<c:if test="${item.planInfo.status!=null && item.planInfo.status==5}">驳回</c:if>
 									</td>
 									<td>
-										<div class="btn-group">
-											<%--<button type="button" class="btn btn-default btn-sm" >详情</button>--%>
+										<c:if test="${not empty item.noteReport.filePath}">
+											<a  onclick="window.open('${ctx}/onlinePreview.action?path=${item.noteReport.filePath}')">详情</a>
+											<a  onclick="window.location='${ctx}/preview.action?path=${item.noteReport.filePath}'">下载</a>
+										</c:if>
+										<%--<div class="btn-group">
+											&lt;%&ndash;<button type="button" class="btn btn-default btn-sm" >详情</button>&ndash;%&gt;
 											<c:if test="${not empty item.noteReport.filePath}">
 											<a class="btn btn-default  btn-sm" onclick="window.open('${ctx}/onlinePreview.action?path=${item.noteReport.filePath}')">详情</a>
 											<a class="btn btn-default  btn-sm" onclick="window.location='${ctx}/preview.action?path=${item.noteReport.filePath}'">下载</a>
 											</c:if>
-										</div>
+										</div>--%>
 
 									</td>
 								</tr>

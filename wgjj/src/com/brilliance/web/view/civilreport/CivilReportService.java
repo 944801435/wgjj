@@ -86,6 +86,15 @@ public class CivilReportService {
 				hql.append(" and note.noteNo like ? ");
 				params.add("%" + entityParam.getNoteNo() + "%");
 			}
+			if (StringUtils.isNotBlank(entityParam.getNationality())) {
+				hql.append(" and note.nationality like ? ");
+				params.add("%" + entityParam.getNationality() + "%");
+			}
+			if(StringUtils.isNotBlank(entityParam.getFlightTime())){
+				hql.append(" and str_to_date(note.flightTime, '%Y-%m-%d' )  =  str_to_date(?,'%Y-%m-%d') ");
+				params.add( entityParam.getFlightTime());
+
+			}
 			if (entityParam.getStatus()!=null&&entityParam.getStatus()!=0) {
 				hql.append(" and note.status= ? ");
 				params.add(entityParam.getStatus());

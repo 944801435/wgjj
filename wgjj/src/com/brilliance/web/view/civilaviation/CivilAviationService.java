@@ -72,6 +72,15 @@ public class CivilAviationService {
 				hql.append(" and note.noteNo like ? ");
 				params.add("%" + pagerVO.getParams().get("noteNo") + "%");
 			}
+			if (StringUtils.isNotBlank((String)pagerVO.getParams().get("nationality"))) {
+				hql.append(" and note.nationality like ? ");
+				params.add("%" + pagerVO.getParams().get("nationality") + "%");
+			}
+			if(StringUtils.isNotBlank((String)pagerVO.getParams().get("flightTime"))){
+				hql.append(" and str_to_date(note.flightTime, '%Y-%m-%d' )  =  str_to_date(?,'%Y-%m-%d') ");
+				params.add(  pagerVO.getParams().get("flightTime") );
+
+			}
 			if (pagerVO.getParams().get("status")!=null&&(Integer)pagerVO.getParams().get("status")!=0) {
 				hql.append(" and note.status= ? ");
 				params.add(pagerVO.getParams().get("status"));
