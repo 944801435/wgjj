@@ -142,7 +142,7 @@ public class NoteManageService {
 	}
 	public String addNoteInfo(NotePlanInfo obj, MultipartFile[] file) {
 		List<NoteFiles> list = new ArrayList<>();
-		String deposeFilesDir = Constants.readValue("file.upload.path.windows")+getYYYYMM()+File.separator+getOrderID()+File.separator;
+		String deposeFilesDir = Constants.readValue("file.upload.path.windows")+File.separator+getYYYYMM()+File.separator+getOrderID();
 		if(file!=null){
 		for (MultipartFile multipartFile : file) {
 			try {
@@ -214,7 +214,7 @@ public class NoteManageService {
 	}
 	public String editNoteInfo(NotePlanInfo obj, MultipartFile[] file) {
 		List<NoteFiles> list = new ArrayList<>();
-		String deposeFilesDir = Constants.readValue("file.upload.path.windows")+getYYYYMM()+File.separator+getOrderID()+File.separator;
+		String deposeFilesDir = Constants.readValue("file.upload.path.windows")+File.separator+getYYYYMM()+File.separator+getOrderID();
 		if(file!=null){
 		for (MultipartFile multipartFile : file) {
 			try {
