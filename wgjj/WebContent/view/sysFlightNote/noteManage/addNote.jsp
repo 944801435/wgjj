@@ -118,7 +118,7 @@ label{
 								<div class="control-group">
 									<label class="control-label">来电来函单位：</label>
 									<div class="controls">
-										<input id="letterUnit" name="letterUnit" v-model="notePlanInfo.letterUnit" autocomplete="off" type="text" dataType="Require,Limit" len="50" msg="请输入(1~50)个字符的来函单位！" maxlength="50" class="required" value=""/>
+										<input id="letterUnit" name="letterUnit" v-model="notePlanInfo.letterUnit" autocomplete="off" type="text" dataType="Require,Limit" len="50" msg="请输入(1~50)个字符的来电来函单位！" maxlength="50" class="required" value=""/>
 									</div>
 								</div>
 							</td>

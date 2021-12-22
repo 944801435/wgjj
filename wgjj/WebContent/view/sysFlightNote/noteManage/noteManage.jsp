@@ -20,6 +20,7 @@ function search(){
 
 function reset(){
 	$("input[type='text']").val("");
+	$('#status').val(0).trigger('change');
 }
 	function goDelete() {
 		var hasChecked = 0;
@@ -48,7 +49,7 @@ function reset(){
 		window.alert("请选择要导出的信息！");
 		return;
 	}
-	Confirm("确定导出？",(function(){
+	Confirm("确定要导出所选记录吗？",(function(){
 		var noteIds = "";
 		$('input:checkbox[name=noteIds]:checked').each(function(i){
 			if(0==i){
@@ -179,7 +180,7 @@ function reset(){
 					<span>导出</span>
 				</div>
 				<div class="right_content_btnbox_btn right_content_btnbox_add"
-					style="cursor:pointer;"
+					style="cursor:pointer;" 
 					onclick="javascript:window.location.href='${ctx }/to_note_info_add.action?userId=${userId}';">
 					<img src="${pageContext.request.contextPath }/images/add_btn.png" />
 					<span>添加</span>

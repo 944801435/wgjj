@@ -89,7 +89,7 @@ input[type="text"] {
 										<input readonly="readonly" id="letterUnit" name="letterUnit"
 											v-model="notePlanInfo.letterUnit" autocomplete="off"
 											type="text" dataType="Require,Limit" len="50"
-											msg="请输入(1~50)个字符的来函单位！" maxlength="50" class="required"
+											msg="请输入(1~50)个字符的来电来函单位！" maxlength="50" class="required"
 											value="" />
 									</div>
 								</div>
