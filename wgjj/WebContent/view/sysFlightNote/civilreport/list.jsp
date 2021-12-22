@@ -172,8 +172,8 @@
 									</td>
 									<td>
 										<c:if test="${not empty item.noteReport.filePath}">
-											<a  onclick="window.open(encodeURI('${ctx}/onlinePreview.action?path=${item.noteReport.filePath}'))">详情</a>
-											<a  onclick="window.open(encodeURI('${ctx}/preview.action?path=${item.noteReport.filePath}'))">下载</a>
+											<a  href="${ctx}/onlinePreview.action?path=${item.noteReport.filePath}" target="_blank" >详情</a>
+											<a  href="${ctx}/preview.action?path=${item.noteReport.filePath}" target="_blank" >下载</a>
 										</c:if>
 										<%--<div class="btn-group">
 											&lt;%&ndash;<button type="button" class="btn btn-default btn-sm" >详情</button>&ndash;%&gt;

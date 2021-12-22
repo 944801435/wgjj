@@ -41,29 +41,32 @@
 
 	}
 	function upload(){
-		let formData = new FormData();
-		let file=$("input[name='file']")[0].files[0];
-		if(!file){
-			window.alert("文件不能为空!")
-			return
-		}
-		formData.append("file",file);
-		$.ajax({
-			type : 'POST',
-			url : '${ctx}/upload.action',
-			data : formData,
-			cache : false,
-			processData : false,
-			contentType : false,
-		}).success(function(result) {
-			let resp = eval(result);
-			window.alert(resp.message);
-			if(resp.code == 10001){
-				$("input[name='fileUrl']").val(resp.data.fileUrl);
-				$("input[name='fileName']").val(resp.data.fileName);
-			}else{
-				$("#uploadForm")[0].reset()
+		$("input[name='file']").trigger("click");
+		$("input[name='file']").change(function(){
+			let file=$(this)[0].files[0];
+			if(!file){
+				window.alert("文件不能为空!")
+				return
 			}
+			let formData = new FormData();
+			formData.append('file',file); //上传压缩包
+			$.ajax({
+				type : 'POST',
+				url : '${ctx}/civilAviation/uploadFile.action',
+				data : formData,
+				cache : false,
+				processData : false,
+				contentType : false,
+			}).success(function(result) {
+				let resp = eval(result);
+				window.alert(resp.message);
+				if(resp.code == 10001){
+					$("input[name='fileUrl']").val(resp.data.fileUrl);
+					$("input[name='fileName']").val(resp.data.fileName);
+				}else{
+					$("#uploadForm")[0].reset()
+				}
+			});
 		});
 	}
 </script>
@@ -212,7 +215,7 @@
 			<input type="hidden" name="noteId"  value="${civilAviationVO.planInfo.noteId }">
 			<tr>
 				<td class="flyLabel">民航许可号：</td>
-				<td class="flyVal"><input type="text" name="permitNumber" value="${civilAviationVO.noteCivilReply.permitNumber}"  class="wpc95" placeholder="民航照会号"></td>
+				<td class="flyVal"><input type="text" name="permitNumber" value="${civilAviationVO.noteCivilReply.permitNumber}"  class="wpc95" placeholder="民航许可号"></td>
 				<td class="flyLabel">计划日期（UTC时间）：</td>
 				<td class="flyVal"><input type="text" name="planTime" value="${civilAviationVO.noteCivilReply.planTime}" class="wpc95 Wdate"  onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',readOnly:true})" placeholder="计划日期（UTC时间）"></td>
 			</tr>
@@ -237,10 +240,10 @@
 					<input type="hidden" name="fileName" value="${civilAviationVO.noteCivilReply.fileName}" class="wpc95" placeholder="附件地址">
 				</td>
 				<td class="flyVal" colspan="2" style="text-align:left!important;">
-					<input type="file" value="浏览" name="file">
-					<input type="button" value="上传" onclick="upload()">
+					<input type="file" hidden value="浏览" name="file" />
+					<input type="button" value="浏览" onclick="upload()">
 					<c:if test="${not empty civilAviationVO.noteCivilReply.fileUrl}">
-					<input type="button" value="下载" onclick="window.open(encodeURI('${ctx}/preview.action?path=${civilAviationVO.noteCivilReply.fileUrl}'))">
+					<input type="button" value="下载" onclick="window.open(encodeURI(encodeURI('${ctx}/preview.action?path=${civilAviationVO.noteCivilReply.fileUrl}')))">
 					</c:if>
 				</td>
 			</tr>

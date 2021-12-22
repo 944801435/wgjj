@@ -30,7 +30,7 @@ public class FileController {
     //本地使用,上传位置
     String rootPath = PropertiesUtil.getPropertyValue("file.upload.path","");
     //上传文件会自动绑定到MultipartFile中
-    @RequestMapping("/upload")
+    /*@RequestMapping("/upload")
     @ResponseBody
     public Map upload(@RequestParam("file") MultipartFile file){
         Map<String,Object> result=new HashMap<String,Object>();
@@ -65,7 +65,7 @@ public class FileController {
             //将内存中的数据写入磁盘
             file.transferTo(descFile);
             //完整的url
-            String fileUrl =  "/upload/"+dateDirs+ "/"+newFilename;
+            String fileUrl =  File.separator+"upload"+File.separator+dateDirs+ File.separator +newFilename;
 
             Map<String,Object> dataMap=new HashMap<String,Object>();
                 dataMap.put("fileUrl",fileUrl);
@@ -80,13 +80,13 @@ public class FileController {
             result.put("data","");
         }
         return result;
-    }
+    }*/
 
     /**
      * 文件下载/预览
      */
     @RequestMapping("preview")
-    public void preview(HttpServletResponse response, String path) throws IOException {
+    public void preview(String path, HttpServletResponse response) throws IOException {
         //本地使用,上传位置
         File file = new File(rootPath, path);
         if (!file.exists()) {

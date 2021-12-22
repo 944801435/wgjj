@@ -2,6 +2,7 @@ package com.brilliance.web.view.civilaviation;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateUtil;
+import com.brilliance.base.util.PropertiesUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.util.StringUtil;
@@ -22,6 +23,7 @@ import com.brilliance.base.model.internetModel.NotePlanInfo;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,6 +37,7 @@ import java.util.Map;
 public class CivilAviationAction extends BaseAction {
 	@Autowired
     private CivilAviationService civilAviationService;
+	String rootPath = PropertiesUtil.getPropertyValue("file.upload.path","");
 	/**
 	 * 
 	 * 描述 获取照会信息列表
@@ -202,6 +205,59 @@ public class CivilAviationAction extends BaseAction {
 		}else{
 			result.put("code",10000);
 			result.put("message","民航信息导出失败！");
+			result.put("data","");
+		}
+		return result;
+	}
+
+	//上传文件会自动绑定到MultipartFile中
+	@RequestMapping("/uploadFile")
+	@ResponseBody
+	public Map upload(@RequestParam("file") MultipartFile file){
+		Map<String,Object> result=new HashMap<String,Object>();
+		try {
+
+			//String rootPath ="/www/uploads/";
+			//文件的完整名称,如spring.jpeg
+			String filename = file.getOriginalFilename();
+			//文件名,如spring
+			String name = filename.substring(0,filename.indexOf("."));
+			//文件后缀,如.jpeg
+			String suffix = filename.substring(filename.lastIndexOf("."));
+			//创建年月文件夹
+			Calendar date = Calendar.getInstance();
+			File dateDirs = new File(date.get(Calendar.YEAR)
+					+ File.separator + (date.get(Calendar.MONTH)+1));
+			//目标文件
+			File descFile = new File(rootPath+File.separator+"upload"+File.separator+dateDirs+File.separator+filename);
+			int i = 1;
+			//若文件存在重命名
+			String newFilename = filename;
+			while(descFile.exists()) {
+				newFilename = name+"("+i+")"+suffix;
+				descFile = new File(rootPath+File.separator+"upload"+File.separator+dateDirs+File.separator+newFilename);
+				i++;
+			}
+			//判断目标文件所在的目录是否存在
+			if(!descFile.getParentFile().exists()) {
+				//如果目标文件所在的目录不存在，则创建父目录
+				descFile.getParentFile().mkdirs();
+			}
+			//将内存中的数据写入磁盘
+			file.transferTo(descFile);
+			//完整的url
+			String fileUrl =  File.separator+"upload"+File.separator+dateDirs+ File.separator +newFilename;
+
+			Map<String,Object> dataMap=new HashMap<String,Object>();
+			dataMap.put("fileUrl",fileUrl);
+			dataMap.put("fileName",filename);
+			result.put("code",10001);
+			result.put("message","上传成功！");
+			result.put("data",dataMap);
+			return result;
+		}catch (Exception e){
+			result.put("code",10000);
+			result.put("message","上传失败！");
 			result.put("data","");
 		}
 		return result;
