@@ -8,6 +8,7 @@ import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -41,6 +42,7 @@ import java.util.regex.Pattern;
  */
 @Service
 @Transactional(rollbackFor={RuntimeException.class,Exception.class})
+@Slf4j
 @SuppressWarnings("unchecked")
 public class CivilAviationService {
 	//本地文件夹操作位置
@@ -238,8 +240,10 @@ public class CivilAviationService {
 					if(StringUtils.isNotBlank(replyFileName)){
 						Pattern filePattern = Pattern.compile("[\\\\/:*?\"<>|《》（）\n]");
 						replyFileName=filePattern.matcher(replyFileName).replaceAll("");
-						File replyFile = new File(rootPath + replyFileUrl);
-						if (replyFile.exists()) {
+						File replyFile = new File(rootPath , replyFileUrl);
+						log.info("==> replyFile exists:"+replyFile.getAbsoluteFile().exists());
+						log.info("==> replyFile exists:"+replyFile.exists());
+						if (replyFile.getAbsoluteFile().exists()) {
 							FileOutputStream replyOut = new FileOutputStream(new File(civilFilePath + File.separator + replyFileName));
 							FileUtils.copyFile(replyFile, replyOut);
 							replyOut.close();

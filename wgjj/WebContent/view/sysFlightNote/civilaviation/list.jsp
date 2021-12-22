@@ -11,6 +11,7 @@
 
 	function reset(){
 		$("#myNoteform")[0].reset();
+		$("#myNoteform input[type='text']").val("");
 		$('#status').val(0).trigger('change');
 	}
 	function goDelete() {
@@ -150,24 +151,24 @@
 			</div>
 			<div class="right_content_select">
 			<form id="myNoteform" action="${ctx }/civilAviation/list.action" method="post">
-					<div style="width: 38%;float: left;" class="span6 right_content_select_box">
+					<div style="width: 25%;float: left;" class="span6 right_content_select_box">
 						<span class="right_content_select_name">照会号：</span>
-						<input style="width: 80%;" class="right_content_select_ctt right_content_select_cttt"
+						<input style="width: 65%;" class="right_content_select_ctt right_content_select_cttt"
 							   placeholder="请输入照会编号" type="text" id="noteNo" name="noteNo" value="${civilAviationParam.noteNo }" />
 					</div>
-					<div style="width: 20%;float: left;" class="span5 right_content_select_box">
+					<div style="width: 25%;float: left;" class="span5 right_content_select_box">
 						<span class="right_content_select_name">国家：</span>
 						<input style="width: 65%;" class="right_content_select_ctt right_content_select_cttt"
 							placeholder="请输入国家名称" type="text" name="nationality" value="${civilAviationParam.nationality }" />
 					</div>
-					<div style="width: 20%;float: left;" class="span5 right_content_select_box">
+					<div style="width: 25%;float: left;" class="span5 right_content_select_box">
 						<span class="right_content_select_name">时间：</span>
 						<input style="width: 65%;" class="right_content_select_ctt right_content_select_cttt"
 							   placeholder="请输入时间" type="text" class="wpc95 Wdate"  onclick="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})" name="flightTime" value="${civilAviationParam.flightTime }" />
 					</div>
-					<div style="width: 10%;float: left;display: flex" class="span6">
+					<div style="width: 20%;float: left;display: flex" class="span6">
 						<span style="width: 80px;margin-top:5px">状态：</span>
-						<select class="form-control select"  style="width: 140px;" id="status" name="status">
+						<select class="form-control select"  style="width: 100%;" id="status" name="status">
 							<option value="0">请选择</option>
 							<option value="2">已申请</option>
 							<option value="3">审核中</option>
