@@ -48,7 +48,7 @@ public class FileController {
             File dateDirs = new File(date.get(Calendar.YEAR)
                     + File.separator + (date.get(Calendar.MONTH)+1));
             //目标文件
-            File descFile = new File(rootPath+File.separator+dateDirs+File.separator+filename);
+            File descFile = new File(rootPath+File.separator+"upload"+File.separator+dateDirs+File.separator+filename);
             int i = 1;
             //若文件存在重命名
             String newFilename = filename;
