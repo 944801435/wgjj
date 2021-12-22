@@ -581,7 +581,7 @@ CREATE TABLE `note_plan_info` (
   `create_time` varchar(19) CHARACTER SET utf8mb4 DEFAULT NULL COMMENT '创建时间',
   `note_no` varchar(30) CHARACTER SET utf8mb4 DEFAULT NULL COMMENT '照会号',
   `flight_plan` varchar(500) CHARACTER SET utf8mb4 DEFAULT NULL COMMENT '飞行计划',
-  `status` int(3) DEFAULT NULL COMMENT '状态，1：待申请 2：审核中 3：批准 4：驳回',
+  `status` int(3) DEFAULT NULL COMMENT '状态，1：待申请 2：已申请(提交给大队和民航) 3：审核中 4：批准 5：驳回 ',
   `del_status` int(3) DEFAULT '1' COMMENT '照会删除状态 1正常 0删除',
   PRIMARY KEY (`note_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8;

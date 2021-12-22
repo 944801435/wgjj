@@ -81,6 +81,36 @@ ul { list-style:none;margin: 0px;padding: 0px;text-align: left;}
 .product_ls h3 { font-size:18px; text-align:center }
 .product_ls h4 { font-size:14px; text-align:center }
 .product_ls p { margin:10px 10px 0; font-size:12px; line-height:20px; text-indent:2em }
+.fileBox{
+	width: 100%;
+	float: left;
+}
+.file_i{
+	width: 200px;
+	height: 20px;
+	float: left;
+	margin-top: -20px;
+	background-color: rgb(0 0 0 / 20%);
+	position: absolute;
+}
+.fileBox_item{
+	float: left;
+	margin-right: 10px;
+}
+.fileBox img{
+	width: 200px;
+	height: 200px;
+	z-index: -1;
+}
+.fileBox i{
+	float: right;
+}
+.table td i {
+	margin: 4px;
+}
+.fileBox_item img{
+	border: 1px;
+}
 label{
     position: relative;
 }
