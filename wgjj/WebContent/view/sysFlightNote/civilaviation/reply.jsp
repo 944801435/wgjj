@@ -241,9 +241,9 @@
 				</td>
 				<td class="flyVal" colspan="2" style="text-align:left!important;">
 					<input type="file" hidden value="浏览" name="file" />
-					<input type="button" value="浏览" onclick="upload()">
+					<input class="btn" type="button" value="浏览" onclick="upload()">
 					<c:if test="${not empty civilAviationVO.noteCivilReply.fileUrl}">
-					<input type="button" value="下载" onclick="window.open(encodeURI(encodeURI('${ctx}/preview.action?path=${civilAviationVO.noteCivilReply.fileUrl}')))">
+						<a class="btn" href="${ctx}/preview.action?path=${civilAviationVO.noteCivilReply.fileUrl}" target="_blank">下载</a>
 					</c:if>
 				</td>
 			</tr>
