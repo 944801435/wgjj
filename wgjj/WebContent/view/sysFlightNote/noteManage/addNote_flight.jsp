@@ -89,15 +89,13 @@ ul { list-style:none;margin: 0px;padding: 0px;text-align: left;}
 						<td width="18%">上传时间</td>
 						<td width="18%">操作</td>
 					</tr>
-					<c:forEach var="item" items="${noteFilesList }">
-					<tr>
-						<td>${item.fileNameCn }</td>
-						<td>${item.fileSize }<span>MB</span></td>
-						<td>${item.createTime }</td>
+					<tr v-for="item in noteFilesList">
+						<td>{{item.fileNameCn }}</td>
+						<td>{{item.fileSize }}<span>MB</span></td>
+						<td>{{item.createTime }}</td>
 						<td><a @click="ocrDistinguish(item)">识别</a>
 						 <a @click="noteTranslate(item)">翻译</a></td>
 					</tr>
-					</c:forEach>
 				</table>
 			</div>
 		</div>
@@ -246,10 +244,10 @@ ul { list-style:none;margin: 0px;padding: 0px;text-align: left;}
 		el: "#app",
 		data: {
 			ctx: ctx,
-			note: {},
+			notePlanInfo: {},
 			flight: {},
 			flightList: [],
-			noteFileList: [],
+			noteFilesList: [],
 			panelId1: new Date().getTime()+"_1",
 			panelId2: new Date().getTime()+"_2",
 			panelId3: new Date().getTime()+"_3",
@@ -262,12 +260,11 @@ ul { list-style:none;margin: 0px;padding: 0px;text-align: left;}
 		methods: {
 			init(){
 // 				alert(noteIdAc);
-				var dddd  = "${noteIdAc}";
-				alert(dddd);
+				var noteIdAc  = "${noteIdAc}";
 				$.ajax({
 					url: ctx + "/detail_plan_flight_info.action",
 					data: {
-						noteId: noteIdAc,
+						'noteId':noteIdAc
 					},
 					type: "post",
 					dataType: "json",
@@ -276,6 +273,8 @@ ul { list-style:none;margin: 0px;padding: 0px;text-align: left;}
 							alert(data.errMsg);
 							return;
 						}
+						this.notePlanInfo = data.data.notePlanInfo;
+						this.noteFilesList = data.data.noteFilesList;
 						this.flightList = data.data.flightList;
 					}
 				});
