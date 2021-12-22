@@ -211,7 +211,7 @@
 			<form id="replyForm">
 			<input type="hidden" name="noteId"  value="${civilAviationVO.planInfo.noteId }">
 			<tr>
-				<td class="flyLabel">民航照会号：</td>
+				<td class="flyLabel">民航许可号：</td>
 				<td class="flyVal"><input type="text" name="permitNumber" value="${civilAviationVO.noteCivilReply.permitNumber}"  class="wpc95" placeholder="民航照会号"></td>
 				<td class="flyLabel">计划日期（UTC时间）：</td>
 				<td class="flyVal"><input type="text" name="planTime" value="${civilAviationVO.noteCivilReply.planTime}" class="wpc95 Wdate"  onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',readOnly:true})" placeholder="计划日期（UTC时间）"></td>
@@ -237,10 +237,10 @@
 					<input type="hidden" name="fileName" value="${civilAviationVO.noteCivilReply.fileName}" class="wpc95" placeholder="附件地址">
 				</td>
 				<td class="flyVal" colspan="2" style="text-align:left!important;">
-					<input type="file" name="file">
+					<input type="file" value="浏览" name="file">
 					<input type="button" value="上传" onclick="upload()">
 					<c:if test="${not empty civilAviationVO.noteCivilReply.fileUrl}">
-					<input type="button" value="下载" onclick="window.location='${ctx}/preview.action?path=${civilAviationVO.noteCivilReply.fileUrl}'">
+					<input type="button" value="下载" onclick="window.open(encodeURI('${ctx}/preview.action?path=${civilAviationVO.noteCivilReply.fileUrl}'))">
 					</c:if>
 				</td>
 			</tr>
