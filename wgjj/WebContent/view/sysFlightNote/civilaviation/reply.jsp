@@ -247,7 +247,7 @@
 			</form>
 			<tr>
 				<td colspan="4" style="text-align: center">
-					<button class="btn"  onclick="submitReply()">提交回复</button>
+					<button class="btn"  onclick="submitReply()">保存并提交</button>
 
 					<button class="btn" onclick="window.location='${ctx}/civilAviation/list.action'">返回</button>
 
