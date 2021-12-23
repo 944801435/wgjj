@@ -57,10 +57,12 @@ public class OcrV3Util {
         String result = requestForHttp(YOUDAO_URL,params);
         /** 处理结果 */
         StringBuilder stringBuilder = new StringBuilder();
+        logger.info("OCR处理结果："+result);
         try {
             JSONObject jsonObject = JSONObject.parseObject(result);
             JSONObject jsonArray = jsonObject.getJSONObject("Result");
             JSONArray jsonArray2 = jsonArray.getJSONArray("regions");
+            if(jsonArray2!=null){
             for (int i = 0; i <jsonArray2.size(); i++) {
                 JSONObject jsonArrayObjectItem = JSONObject.parseObject(jsonArray2.get(i).toString());
                 JSONArray jsonTwoObj = jsonArrayObjectItem.getJSONArray("lines");
@@ -70,6 +72,9 @@ public class OcrV3Util {
                 	stringBuilder.append(jsonObjectItem.get("text"));
                 }
                 }
+            }
+            }else{
+            	stringBuilder.append("暂无结果，请稍后再试!");
             }
         } catch (Exception e) {
             e.printStackTrace();

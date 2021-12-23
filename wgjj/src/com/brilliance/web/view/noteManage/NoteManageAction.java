@@ -259,6 +259,7 @@ public class NoteManageAction extends BaseAction {
 				planInfo = new NotePlanInfo();
 			}
 			PagerVO pv = noteManageService.findNoteInfoList(planInfo, curPage, pageSize);
+			model.addAttribute("planInfo", planInfo);
 			model.addAttribute("noteList", pv.getItems());
 			model.addAttribute("totalCount", pv.getCounts());
 			model.addAttribute("curPage", curPage);
