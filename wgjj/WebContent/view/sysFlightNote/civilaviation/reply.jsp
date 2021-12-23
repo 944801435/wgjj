@@ -4,6 +4,7 @@
 <head>
 <title>民航信息详情</title>
 <%@ include file="../../tool.jsp"%>
+<script type="text/javascript" src="${ctx }/js/validate.js"></script>
 <script type="text/javascript">
 	function previewImg(url){
 		if(url!=""&&url!=undefined){
@@ -14,6 +15,9 @@
 	function submitReply(){
 		// $("#replyForm").submit();
 		let params=$("#replyForm").serialize();
+		if(!Validator.Validate($('#replyForm')[0])){
+			return;
+		}
 		$.ajax( {
 			type : "POST",
 			url : "${ctx}/civilAviation/submitJsonReply.action",
@@ -215,7 +219,7 @@
 			<input type="hidden" name="noteId"  value="${civilAviationVO.planInfo.noteId }">
 			<tr>
 				<td class="flyLabel">民航许可号：</td>
-				<td class="flyVal"><input type="text" name="permitNumber" value="${civilAviationVO.noteCivilReply.permitNumber}"  class="wpc95" placeholder="民航许可号"></td>
+				<td class="flyVal"><input type="text" name="permitNumber" value="${civilAviationVO.noteCivilReply.permitNumber}"  class="wpc95 required" style="width: 90%" dataType="Require,Limit" len="100" msg="请输入(1~100)个字符的民航许可号！" maxlength="100" placeholder="民航许可号"></td>
 				<td class="flyLabel">计划日期（UTC时间）：</td>
 				<td class="flyVal"><input type="text" name="planTime" value="${civilAviationVO.noteCivilReply.planTime}" class="wpc95 Wdate"  onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',readOnly:true})" placeholder="计划日期（UTC时间）"></td>
 			</tr>
