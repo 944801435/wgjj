@@ -14,6 +14,14 @@
 	}
 </style>
 <script type="text/javascript">
+/* var vm=new Vue({
+	el:'#app',
+	data:{
+		optFlagdd:'${fns:hasPms(pmsIds,"50101")}'=='true',
+		optFlag:'${fns:hasPms(pmsIds,"50102")}'=='true'
+	}
+	
+}); */
 function search(){
 	$("#myNoteInfoform").submit();
 }
@@ -22,6 +30,7 @@ function reset(){
 	$("input[type='text']").val("");
 	$('#status').val(0).trigger('change');
 }
+let statusVal=[];
 	function goDelete() {
 		var hasChecked = 0;
 		var frm = document.forms[1];
@@ -32,13 +41,21 @@ function reset(){
 				for ( var i = 0; i < frm.noteIds.length; i++) {
 					if (frm.noteIds[i].checked == 1) {
 						hasChecked = 1;
+						statusVal.push(frm.status[i].value);
 						break;
 					}
 				}
 			}
 		}
 		if (hasChecked) {
-			Confirm("确定要删除选中的信息吗？", doDelete);
+			for (var i = 0;i < statusVal.length; i++) {
+				console.log(statusVal);
+	        if(statusVal[i]=='1'){
+				Confirm("确定要删除选中的信息吗？", doDelete);
+	        }else{
+	        	alert("已选择信息中包含不可以删除信息！");
+	        }	
+			}
 		} else {
 			alert("请选择要删除的信息！");
 		}
@@ -105,7 +122,7 @@ function reset(){
 </script>
 </head>
 <body>
-	<div class="right_content">
+	<div id="app" class="right_content">
 		<lg:errors />
 		<div class="right_content_all">
 			<%--列表展示--%>
@@ -167,17 +184,20 @@ function reset(){
 			</div>
 			</form>
 			<div class="right_content_btnbox">
-				<div onclick="javascript:goDelete()"
-					class="right_content_btnbox_btn right_content_btnbox_delete2"
-					style="cursor:pointer;">
-					<img src="${pageContext.request.contextPath }/images/delete2_btn.png" />
-					<span>删除</span>
-				</div>
+			<c:if test="${'true'==fns:hasPms(pmsIds,'50101') }">
 				<div onclick="javascript:goExport()"
 					class="right_content_btnbox_btn right_content_btnbox_delete2"
 					style="cursor:pointer;">
 					<img src="${pageContext.request.contextPath }/images/file_icon.png" />
 					<span>导出</span>
+				</div>
+			</c:if>
+			<c:if test="${'true'==fns:hasPms(pmsIds,'50102') }">
+				<div onclick="javascript:goDelete()"
+					class="right_content_btnbox_btn right_content_btnbox_delete2"
+					style="cursor:pointer;">
+					<img src="${pageContext.request.contextPath }/images/delete2_btn.png" />
+					<span>删除</span>
 				</div>
 				<div class="right_content_btnbox_btn right_content_btnbox_add"
 					style="cursor:pointer;" 
@@ -185,6 +205,7 @@ function reset(){
 					<img src="${pageContext.request.contextPath }/images/add_btn.png" />
 					<span>添加</span>
 				</div>
+			</c:if>
 				<div onclick="reset()" class="right_content_btnbox_btn right_content_btnbox_resize">
 					<img src="${ctx }/images/resize_btn.png"/>
 					<span>清空</span>
@@ -218,6 +239,7 @@ function reset(){
 									<td width="10px">
 <%-- 									<c:if test="${item.status==fns:findKey('sys_default_yes') }"> --%>
 									<input value="${item.noteId }" name="noteIds" type="checkbox">
+									<input value="${item.status }" name="status" type="hidden">
 <%-- 									</c:if> --%>
 									</td>
 									<td>${item.noteNo }</td>
@@ -235,11 +257,15 @@ function reset(){
 										<c:if test="${item.status!=null && item.status==5}">驳回</c:if>
 									</td>
 									<td>
+									<c:if test="${'true'==fns:hasPms(pmsIds,'50102') }">
 										<a href="${pageContext.request.contextPath }/to_edit_Plan.action?noteId=${item.noteId}">编辑</a>
+									</c:if>
 										<a href="${pageContext.request.contextPath }/to_detail_Plan.action?noteId=${item.noteId}">详情</a>
+									<c:if test="${'true'==fns:hasPms(pmsIds,'50102') }">
 										<c:if test="${item.status!=null && item.status==1}">
 										<a onclick="goApply(${item.noteId});">申请</a>
 										</c:if>
+									</c:if>
 									</td>
 								</tr>
 							</c:forEach>
