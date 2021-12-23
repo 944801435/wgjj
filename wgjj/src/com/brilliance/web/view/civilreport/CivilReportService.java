@@ -76,7 +76,7 @@ public class CivilReportService {
 		
 		List<Object> params = new ArrayList<Object>();
 		
-		StringBuffer hql = new StringBuffer("select DISTINCT note.noteId from NotePlanInfo note  WHERE note.delStatus=1 and note.status in (2,3,4,5) ");
+		StringBuffer hql = new StringBuffer("select DISTINCT note.noteId from NotePlanInfo note , NoteReport nr WHERE note.noteId=nr.noteId AND note.delStatus=1 and note.status in (2,3,4,5) ");
 		if(entityParam!=null){
 			if (!StringUtils.isBlank(entityParam.getDocumentNum())) {
 				hql.append(" and note.documentNum = ? ");

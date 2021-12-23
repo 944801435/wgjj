@@ -187,12 +187,14 @@
 	      		</form>	
 			</div>
 			<div class="right_content_btnbox">
-				<div onclick="javascript:doBatchExport()"
-					 class="right_content_btnbox_btn right_content_btnbox_delete2"
-					 style="cursor:pointer;">
-					<img src="${ctx }/images/file_icon.png" />
-					<span>导出民航意见</span>
-				</div>
+				<c:if test="${'true'==fns:hasPms(pmsIds,'50201')}">
+					<div onclick="javascript:doBatchExport()"
+						 class="right_content_btnbox_btn right_content_btnbox_delete2"
+						 style="cursor:pointer;">
+						<img src="${ctx }/images/file_icon.png" />
+						<span>导出民航意见</span>
+					</div>
+				</c:if>
 				<%--<div onclick="javascript:goDelete()"
 					class="right_content_btnbox_btn right_content_btnbox_delete2"
 					style="cursor:pointer;">
@@ -275,7 +277,9 @@
 									<td>
 										<a href="${ctx}/civilAviation/detail.action?noteId=${item.noteId }">详情</a>
 										<c:if test="${item.status!=null && item.status!=4}">
-											<a href="${ctx }/civilAviation/reply.action?noteId=${item.noteId }">回复</a>
+											<c:if test="${'true'==fns:hasPms(pmsIds,'50202')}">
+												<a href="${ctx }/civilAviation/reply.action?noteId=${item.noteId }">回复</a>
+											</c:if>
 										</c:if>
 										<!-- 状态是待申请并且状态已经回复，可以导出 -->
 										<%--<c:if test="${item.status!=null && item.status==2 && not empty item.permitNumber}">

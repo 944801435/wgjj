@@ -107,12 +107,14 @@
 	      		</form>	
 			</div>
 			<div class="right_content_btnbox">
-				<div onclick="upload();"
-					 class="right_content_btnbox_btn right_content_btnbox_delete2"
-					 style="cursor:pointer;">
-					<img src="${ctx }/images/file_icon.png" />
-					<span>导入审批许可</span>
-				</div>
+				<c:if test="${'true'==fns:hasPms(pmsIds,'50301')}">
+					<div onclick="upload();"
+						 class="right_content_btnbox_btn right_content_btnbox_delete2"
+						 style="cursor:pointer;">
+						<img src="${ctx }/images/file_icon.png" />
+						<span>导入审批许可</span>
+					</div>
+				</c:if>
 				<input type="file" hidden name="zipFile"  id="uploadFile" />
 				<%--<div onclick="javascript:goDelete()"
 					class="right_content_btnbox_btn right_content_btnbox_delete2"
