@@ -110,7 +110,7 @@
 				<div onclick="upload();"
 					 class="right_content_btnbox_btn right_content_btnbox_delete2"
 					 style="cursor:pointer;">
-					<img src="${ctx }/images/resize_btn.png" />
+					<img src="${ctx }/images/file_icon.png" />
 					<span>导入审批许可</span>
 				</div>
 				<input type="file" hidden name="zipFile"  id="uploadFile" />
@@ -140,14 +140,15 @@
 					<table class="table table-bordered table_list table-striped">
 						<thead>
 							<tr class="active blue_active_op">
-								<th width="11%">照会号</th>
-								<th width="11%">国家</th>
+								<th width="10%">照会号</th>
+								<th width="10%">国家</th>
 								<th width="9%">机型</th>
-								<th width="16%">来电来函单位</th>
-								<th width="12%">民航许可号</th>
+								<th width="15%">来电来函单位</th>
+								<th width="11%">民航许可号</th>
 								<th width="5%">姓名</th>
 								<th width="11%">电话</th>
-								<th width="10%">照会编号</th>
+								<th width="6%">照会编号</th>
+								<th width="8%">时间</th>
 								<th width="5%">状态</th>
 								<th width="9%">操作</th>
 							</tr>
@@ -163,6 +164,7 @@
 									<td>${item.planInfo.personName }</td>
 									<td>${item.planInfo.telNo }</td>
 									<td>${item.planInfo.documentNum }</td>
+									<td>${item.planInfo.flightTime }</td>
 
 									<td>
 										<c:if test="${item.planInfo.status!=null && item.planInfo.status==2}">已申请</c:if>

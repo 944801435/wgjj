@@ -190,8 +190,8 @@
 				<div onclick="javascript:doBatchExport()"
 					 class="right_content_btnbox_btn right_content_btnbox_delete2"
 					 style="cursor:pointer;">
-					<img src="${ctx }/images/resize_btn.png" />
-					<span>导出民航信息</span>
+					<img src="${ctx }/images/file_icon.png" />
+					<span>导出民航意见</span>
 				</div>
 				<%--<div onclick="javascript:goDelete()"
 					class="right_content_btnbox_btn right_content_btnbox_delete2"
@@ -224,12 +224,13 @@
 								</th>
 								<th width="12%">照会号</th>
 								<th width="7%">民航许可号</th>
-								<th width="14%">航线信息</th>
-								<th width="11%">国家</th>
-								<th width="9%">机型</th>
-								<th width="9%">来电来函单位</th>
+								<th width="10%">航线信息</th>
+								<th width="8%">飞行时间</th>
+								<th width="10%">国家</th>
+								<th width="8%">机型</th>
+								<th width="8%">来电来函单位</th>
 								<th width="5%">姓名</th>
-								<th width="7%">电话</th>
+								<th width="6%">电话</th>
 								<th width="6%">照会编号</th>
 								<th width="2%">民航是否回复</th>
 								<th width="4%">状态</th>
@@ -248,6 +249,7 @@
 									<td>${item.noteNo }</td>
 									<td>${item.permitNumber }</td>
 									<td>${item.routeInfo }</td>
+									<td>${item.flightTime }</td>
 									<td>${item.nationality }</td>
 									<td>${item.model }</td>
 									<td>${item.letterUnit }</td>
@@ -276,9 +278,9 @@
 											<a href="${ctx }/civilAviation/reply.action?noteId=${item.noteId }">回复</a>
 										</c:if>
 										<!-- 状态是待申请并且状态已经回复，可以导出 -->
-										<c:if test="${item.status!=null && item.status==2 && not empty item.permitNumber}">
+										<%--<c:if test="${item.status!=null && item.status==2 && not empty item.permitNumber}">
 											<a href="javascript:void(0);" onclick="doExport('${item.noteId }')">导出</a>
-										</c:if>
+										</c:if>--%>
 										<c:if test="${item.status!=null && item.status==2}">
 											<a href="javascript:void(0);" onclick="doDelete('${item.noteId }')">删除</a>
 										</c:if>
