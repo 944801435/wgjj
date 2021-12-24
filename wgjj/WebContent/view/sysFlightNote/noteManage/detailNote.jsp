@@ -257,14 +257,30 @@ input[type="text"] {
 						<td width="18%">文件名</td>
 						<td width="18%">文件大小</td>
 						<td width="18%">上传时间</td>
+						<td width="18%">操作</td>
 					</tr>
 					<tr v-for="item in noteFilesList">
 						<td>{{item.fileNameCn }}</td>
 						<td>{{item.fileSize }}<span>MB</span></td>
 						<td>{{item.createTime }}</td>
+						<td >
+							<button type="button"   @click="previewImg('${ctx}/detail_online_preview.action?id='+item.id)">预览</button>
+						</td>
 					</tr>
 				</table>
 			</div>
+		</div>
+		<div id="myModal" style="margin-top: -30px;" class="modal hide fade" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				<h6 id="myModalLabel">照会文件预览</h6>
+			</div>
+			<div class="modal-body" >
+				<img src="${ctx}/images/hkfwz_login.png" id="previewImg" height="460px" class="img-responsive" alt="Cinque Terre" width="100%">
+			</div>
+<!-- 			<div class="modal-footer"> -->
+<!-- 				<button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button> -->
+<!-- 			</div> -->
 		</div>
 		<div class="right_content_all">
 			<div class="right_content_all_top my-collapse" :href="'#'+panelId3">
@@ -308,6 +324,13 @@ input[type="text"] {
 	</div>
 </body>
 <script type="text/javascript">
+function previewImg(url){
+	console.log(url);
+	if(url!=""&&url!=undefined){
+		$("#previewImg").attr("src",url);
+	}
+	$('#myModal').modal('toggle');
+}
 	var vm = new Vue({
 		el: "#app",
 		data: {

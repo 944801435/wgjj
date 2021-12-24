@@ -22,6 +22,12 @@
 	}
 	
 }); */
+$(function(){
+	var status='${planInfo.status}';
+	if(status){
+		$('#status').val('${planInfo.status}').trigger('change');
+	}
+});
 function search(){
 	$("#myNoteInfoform").submit();
 }
@@ -163,7 +169,7 @@ let statusVal=[];
 					</div>
 					<div style="width: 24%;float: left;" class="span4 right_content_select_box">
 						<span class="right_content_select_name">状态：</span> 
-						<select style="width: 138px;" id="status" name="status" >
+						<select style="width: 138px;" id="status" name="status" value="${planInfo.status }" >
 							<option value="0">请选择</option>
 							<option value="1">待申请</option>
 							<option value="2">已申请</option>

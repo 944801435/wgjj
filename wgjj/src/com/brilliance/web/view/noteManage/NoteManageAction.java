@@ -1,5 +1,11 @@
 package com.brilliance.web.view.noteManage;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -7,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -36,6 +43,7 @@ import com.brilliance.base.model.internetModel.NotePlanInfo;
 import com.brilliance.base.model.internetModel.NoteReport;
 import com.brilliance.base.util.DateUtil;
 import com.brilliance.base.util.MessageUtil;
+import com.brilliance.base.util.PropertiesUtil;
 import com.brilliance.base.util.flight.FlightException;
 
 /**
@@ -53,11 +61,42 @@ import com.brilliance.base.util.flight.FlightException;
 //@RestController
 //@RequestMapping("/noteInfo")
 public class NoteManageAction extends BaseAction {
-
+	 //本地使用,上传位置
+    String rootPath = PropertiesUtil.getPropertyValue("file.upload.path","");
 	protected static final Logger log = Logger.getLogger(NoteManageAction.class);
 	@Autowired
 	private NoteManageService noteManageService;
-
+	/**
+     * 在线预览
+     * @param path
+     * @param response
+     * @throws IOException
+     */
+    @RequestMapping("detail_online_preview")
+    public void onlinePreview(String id, HttpServletResponse response) throws IOException {
+    	NoteFiles files = noteManageService.findFileById(Integer.parseInt(id));
+        File file = new File(rootPath, files.getFilePath());
+        if (!file.exists()) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, "文件未找到！");
+            return;
+        }
+        BufferedInputStream br = new BufferedInputStream(new FileInputStream(file));
+        byte[] bs = new byte[1024];
+        int len = 0;
+        response.reset(); // 非常重要
+        URL u = new URL("file:///" + file);
+        String contentType = u.openConnection().getContentType();
+        response.setContentType(contentType);
+        response.setHeader("Content-Disposition", "inline;filename="
+                + file.getName());
+        OutputStream out = response.getOutputStream();
+        while ((len = br.read(bs)) > 0) {
+            out.write(bs, 0, len);
+        }
+        out.flush();
+        out.close();
+        br.close();
+    }
 	@RequestMapping("/to_note_info_add")
 	public String toAdd(NotePlanInfo planInfo, Model model, HttpServletRequest request) {
 		return "/view/sysFlightNote/noteManage/addNote";
