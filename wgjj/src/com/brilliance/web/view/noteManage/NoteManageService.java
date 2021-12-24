@@ -59,7 +59,7 @@ public class NoteManageService {
 	@Autowired
 	private CivilAviationService civilAviationService;
 	//本地文件夹操作位置
-		String rootPath = PropertiesUtil.getPropertyValue("file.upload.path.windows","");
+		String rootPath = PropertiesUtil.getPropertyValue("file.upload.path","");
 	/**
 	 * @throws Exception 
 	 * 查询
@@ -142,7 +142,7 @@ public class NoteManageService {
 	}
 	public String addNoteInfo(NotePlanInfo obj, MultipartFile[] file) {
 		List<NoteFiles> list = new ArrayList<>();
-		String deposeFilesDir = Constants.readValue("file.upload.path.windows")+File.separator+getYYYYMM()+File.separator+getOrderID();
+		String deposeFilesDir =Constants.readValue("file.upload.path")+ File.separator+getYYYYMM()+File.separator+getOrderID();
 		if(file!=null){
 		for (MultipartFile multipartFile : file) {
 			try {
@@ -150,7 +150,7 @@ public class NoteManageService {
 				String url = FileUtil.uploadFile(multipartFile,deposeFilesDir);
 				String fileName = multipartFile.getOriginalFilename();
 				long fileSize = multipartFile.getSize();
-				noteFiles.setFilePath(url);
+				noteFiles.setFilePath(File.separator+getYYYYMM()+File.separator+getOrderID()+File.separator+fileName);
 				noteFiles.setFileNameCn(fileName);
 				noteFiles.setFileSize(Double.valueOf(fileSize)/1024/1024);//单位M
 				noteFiles.setCreateTime(DateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
@@ -212,9 +212,12 @@ public class NoteManageService {
 	public NotePlanInfo findById(Integer noteId) {
 		return (NotePlanInfo) noteManageDao.findById(NotePlanInfo.class, noteId);
 	}
+	public NoteFiles findFileById(Integer id) {
+		return (NoteFiles) noteManageDao.findById(NoteFiles.class, id);
+	}
 	public String editNoteInfo(NotePlanInfo obj, MultipartFile[] file) {
 		List<NoteFiles> list = new ArrayList<>();
-		String deposeFilesDir = Constants.readValue("file.upload.path.windows")+File.separator+getYYYYMM()+File.separator+getOrderID();
+		String deposeFilesDir =Constants.readValue("file.upload.path")+ File.separator+getYYYYMM()+File.separator+getOrderID();
 		if(file!=null){
 		for (MultipartFile multipartFile : file) {
 			try {
@@ -222,7 +225,7 @@ public class NoteManageService {
 				String url = FileUtil.uploadFile(multipartFile,deposeFilesDir);
 				String fileName = multipartFile.getOriginalFilename();
 				long fileSize = multipartFile.getSize();
-				noteFiles.setFilePath(url);
+				noteFiles.setFilePath(File.separator+getYYYYMM()+File.separator+getOrderID()+File.separator+fileName);
 				noteFiles.setFileNameCn(fileName);
 				noteFiles.setFileSize(Double.valueOf(fileSize)/1024/1024);//单位M
 				noteFiles.setCreateTime(DateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
@@ -258,7 +261,7 @@ public class NoteManageService {
 	public String ocrDistinguish(NoteFiles obj) {
 		if(obj!=null&&obj.getFilePath()!=null){
 			try {
-				String ocrResult = OcrV3Util.ocrDistinguish(obj.getFilePath());
+				String ocrResult = OcrV3Util.ocrDistinguish(Constants.readValue("file.upload.path")+obj.getFilePath());
 				obj.setOcrText(ocrResult);
 				noteManageDao.executeHql("update NoteFiles set ocrText=? where id=? ", new Object[] {obj.getOcrText(),obj.getId()});
 			} catch (IOException e) {

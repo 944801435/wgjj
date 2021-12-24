@@ -52,6 +52,7 @@ public class FanyiV3Util {
         params.put("vocabId","1");
         /** 处理结果 */
         String transResult = requestForHttp(YOUDAO_URL,params);
+        logger.info("翻译结果："+transResult);
         JSONObject jsonObject = JSONObject.parseObject(transResult);
         String errorCode = jsonObject.getString("errorCode");
         String result = jsonObject.getString("translation");

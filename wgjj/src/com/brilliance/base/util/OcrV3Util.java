@@ -60,9 +60,10 @@ public class OcrV3Util {
         logger.info("OCR处理结果："+result);
         try {
             JSONObject jsonObject = JSONObject.parseObject(result);
+            String errorCode = jsonObject.getString("errorCode");
             JSONObject jsonArray = jsonObject.getJSONObject("Result");
             JSONArray jsonArray2 = jsonArray.getJSONArray("regions");
-            if(jsonArray2!=null){
+            if("0".equals(errorCode)&&jsonArray2!=null){
             for (int i = 0; i <jsonArray2.size(); i++) {
                 JSONObject jsonArrayObjectItem = JSONObject.parseObject(jsonArray2.get(i).toString());
                 JSONArray jsonTwoObj = jsonArrayObjectItem.getJSONArray("lines");
