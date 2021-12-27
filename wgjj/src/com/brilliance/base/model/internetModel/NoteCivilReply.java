@@ -13,7 +13,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @author gl
@@ -22,6 +25,9 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "note_civil_reply")
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class NoteCivilReply implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
@@ -60,7 +66,7 @@ public class NoteCivilReply implements Serializable {
 
 	@Column(name = "create_time")
 	private String createTime;// 创建时间
-	
+
 	@ManyToOne(targetEntity = NotePlanInfo.class)
 	@JoinColumn(name = "note_id", insertable = false, updatable = false)
 	private NotePlanInfo notePlanInfo;

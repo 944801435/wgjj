@@ -55,7 +55,7 @@ public class CivilAviationAction extends BaseAction {
 		try {
 			Map queryParams=BeanUtil.beanToMap(civilAviationParam);
 			pagerVO.setParams(queryParams);
-			pagerVO = civilAviationService.findList(pagerVO);
+			pagerVO = civilAviationService.findListBySql(pagerVO);
 			for (NotePlanInfo temp : pagerVO.getItems()) {
 				NotePlanInfo planInfo2 = temp;
 				NoteCivilReply message = civilAviationService.findCivilReplyByNoteId(planInfo2.getNoteId());

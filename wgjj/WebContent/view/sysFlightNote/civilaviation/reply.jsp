@@ -127,7 +127,7 @@
 							</td>
 							<td>${noteFile.createTime}</td>
 							<td >
-								<button type="button"  onclick="previewImg('${noteFile.filePath}')">预览</button>
+								<button type="button"  onclick="previewImg('${ctx}/detail_online_preview.action?id=${noteFile.id}')">预览</button>
 							</td>
 						</tr>
 					</c:forEach>
@@ -221,7 +221,7 @@
 				<td class="flyLabel">民航许可号：</td>
 				<td class="flyVal"><input type="text" name="permitNumber" value="${civilAviationVO.noteCivilReply.permitNumber}"  class="wpc95 required" style="width: 90%" dataType="Require,Limit" len="100" msg="请输入(1~100)个字符的民航许可号！" maxlength="100" placeholder="民航许可号"></td>
 				<td class="flyLabel">计划日期（UTC时间）：</td>
-				<td class="flyVal"><input type="text" name="planTime" value="${civilAviationVO.noteCivilReply.planTime}" class="wpc95 Wdate"  onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',readOnly:true})" placeholder="计划日期（UTC时间）"></td>
+				<td class="flyVal"><input type="text" name="planTime" value="${civilAviationVO.noteCivilReply.planTime}" class="wpc95 Wdate required" style="width: 90%" msg="请输入计划时间"  onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',readOnly:true})" dataType="Require" placeholder="计划日期（UTC时间）"></td>
 			</tr>
 			<tr>
 				<td class="flyLabel">降落机场：</td>
@@ -265,7 +265,7 @@
 		</table>
 
 		<!-- Modal -->
-		<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div id="myModal" class="modal hide fade" style="width:62%" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 				<h6 id="myModalLabel">照会文件预览</h6>

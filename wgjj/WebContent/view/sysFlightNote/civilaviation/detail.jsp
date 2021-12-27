@@ -66,7 +66,7 @@
 						</td>
 						<td>${noteFile.createTime}</td>
 						<td >
-							<button type="button"  onclick="previewImg('${noteFile.filePath}')">预览</button>
+							<button type="button"  onclick="previewImg('${ctx}/detail_online_preview.action?id=${noteFile.id}')">预览</button>
 						</td>
 					</tr>
 					</c:forEach>
@@ -151,12 +151,53 @@
 
 			</tbody>
 		</table>
-
-		<div style="text-align: center"><button class="btn" type="submit" onclick="window.history.back()">返回</button></div>
+		<table class="table table-bordered mt15">
+			<caption class="baseHead">民航回复信息</caption>
+			<tbody>
+			<form id="replyForm">
+				<input type="hidden" name="noteId"  value="${civilAviationVO.planInfo.noteId }">
+				<tr>
+					<td class="flyLabel">民航许可号：</td>
+					<td class="flyVal"><input type="text" disabled name="permitNumber" value="${civilAviationVO.noteCivilReply.permitNumber}"  class="wpc95 required" style="width: 90%" dataType="Require,Limit" len="100" msg="请输入(1~100)个字符的民航许可号！" maxlength="100" placeholder="民航许可号"></td>
+					<td class="flyLabel">计划日期（UTC时间）：</td>
+					<td class="flyVal"><input type="text" disabled name="planTime" value="${civilAviationVO.noteCivilReply.planTime}" class="wpc95 Wdate"  onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',readOnly:true})" placeholder="计划日期（UTC时间）"></td>
+				</tr>
+				<tr>
+					<td class="flyLabel">降落机场：</td>
+					<td class="flyVal"><input type="text" disabled name="downAirport" value="${civilAviationVO.noteCivilReply.downAirport}" class="wpc95" placeholder="降落机场"></td>
+					<td class="flyLabel">起飞机场：</td>
+					<td class="flyVal"><input type="text" disabled name="upAirport"  value="${civilAviationVO.noteCivilReply.upAirport}" class="wpc95" placeholder="起飞机场"></td>
+				</tr>
+				<tr>
+					<td class="flyLabel">计划航线：</td>
+					<td class="flyVal" colspan="3"><textarea  disabled name="planRoute" type="text" class="wpc98" >${civilAviationVO.noteCivilReply.planRoute}</textarea> </td>
+				</tr>
+				<tr>
+					<td class="flyLabel">备用航线：</td>
+					<td class="flyVal" colspan="3"><textarea  disabled name="bakRoute" type="text" class="wpc98" >${civilAviationVO.noteCivilReply.bakRoute}</textarea></td>
+				</tr>
+				<tr>
+					<td class="flyLabel">添加附件：</td>
+					<td class="flyVal">
+						<input type="text" name="fileUrl"  disabled value="${civilAviationVO.noteCivilReply.fileUrl}" class="wpc95" placeholder="附件地址">
+						<input type="hidden" name="fileName" value="${civilAviationVO.noteCivilReply.fileName}" class="wpc95" placeholder="附件地址">
+					</td>
+					<td class="flyVal" colspan="2" style="text-align:left!important;">
+						<input type="file" hidden value="浏览" name="file" />
+						<input class="btn" type="button" value="浏览" onclick="upload()">
+						<c:if test="${not empty civilAviationVO.noteCivilReply.fileUrl}">
+							<a class="btn" href="${ctx}/preview.action?path=${civilAviationVO.noteCivilReply.fileUrl}" target="_blank">下载</a>
+						</c:if>
+					</td>
+				</tr>
+			</form>
+			</tbody>
+		</table>
+		<div style="text-align: center"><button class="btn" type="button" onclick="window.history.back()">返回</button></div>
 
 
 		<!-- Modal -->
-		<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div id="myModal" class="modal hide fade" style="width:62%" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 				<h6 id="myModalLabel">照会文件预览</h6>

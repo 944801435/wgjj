@@ -16,4 +16,6 @@ public class CivilAviationDTO implements Serializable {
     private String nationality;
     //飞行时间
     private String flightTime;
+    //回复时间
+    private String replyCreateTime;
 }

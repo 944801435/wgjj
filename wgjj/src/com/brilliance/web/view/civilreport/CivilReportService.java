@@ -95,6 +95,10 @@ public class CivilReportService {
 				params.add( entityParam.getFlightTime());
 
 			}
+			if(StringUtils.isNotBlank(entityParam.getCreateTime())){
+				hql.append(" and str_to_date(note.createTime, '%Y-%m-%d' )  =  str_to_date(?,'%Y-%m-%d') ");
+				params.add( entityParam.getCreateTime());
+			}
 			if (entityParam.getStatus()!=null&&entityParam.getStatus()!=0) {
 				hql.append(" and note.status= ? ");
 				params.add(entityParam.getStatus());

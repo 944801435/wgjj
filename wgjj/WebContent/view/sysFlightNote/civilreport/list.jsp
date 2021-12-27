@@ -84,7 +84,7 @@
 				<div style="width: 25%;float: left;" class="span5 right_content_select_box">
 					<span class="right_content_select_name">时间：</span>
 					<input style="width: 65%;" class="right_content_select_ctt right_content_select_cttt"
-						   placeholder="请输入时间" type="text" class="wpc95 Wdate"  onclick="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})" name="flightTime" value="${civilReportParam.flightTime }" />
+						   placeholder="请输入时间" type="text" class="wpc95 Wdate"  onclick="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})" name="createTime" value="${civilReportParam.createTime }" />
 				</div>
 				<div style="width: 20%;float: left;display: flex" class="span6">
 					<span style="width: 80px;margin-top:5px">状态：</span>
@@ -150,7 +150,7 @@
 								<th width="5%">姓名</th>
 								<th width="11%">电话</th>
 								<th width="6%">照会编号</th>
-								<th width="8%">时间</th>
+								<th width="8%">创建时间</th>
 								<th width="5%">状态</th>
 								<th width="9%">操作</th>
 							</tr>
@@ -166,7 +166,7 @@
 									<td>${item.planInfo.personName }</td>
 									<td>${item.planInfo.telNo }</td>
 									<td>${item.planInfo.documentNum }</td>
-									<td>${item.planInfo.flightTime }</td>
+									<td>${item.planInfo.createTime }</td>
 
 									<td>
 										<c:if test="${item.planInfo.status!=null && item.planInfo.status==2}">已申请</c:if>

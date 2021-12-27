@@ -164,7 +164,7 @@
 					<div style="width: 25%;float: left;" class="span5 right_content_select_box">
 						<span class="right_content_select_name">时间：</span>
 						<input style="width: 65%;" class="right_content_select_ctt right_content_select_cttt"
-							   placeholder="请输入时间" type="text" class="wpc95 Wdate"  onclick="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})" name="flightTime" value="${civilAviationParam.flightTime }" />
+							   placeholder="请输入时间" type="text" class="wpc95 Wdate"  onclick="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})" name="replyCreateTime" value="${civilAviationParam.replyCreateTime }" />
 					</div>
 					<div style="width: 20%;float: left;display: flex" class="span6">
 						<span style="width: 80px;margin-top:5px">状态：</span>
@@ -227,7 +227,7 @@
 								<th width="12%">照会号</th>
 								<th width="7%">民航许可号</th>
 								<th width="10%">航线信息</th>
-								<th width="8%">飞行时间</th>
+								<th width="8%">回复时间</th>
 								<th width="10%">国家</th>
 								<th width="8%">机型</th>
 								<th width="8%">来电来函单位</th>
@@ -251,7 +251,7 @@
 									<td>${item.noteNo }</td>
 									<td>${item.permitNumber }</td>
 									<td>${item.routeInfo }</td>
-									<td>${item.flightTime }</td>
+									<td>${item.replyCreateTime }</td>
 									<td>${item.nationality }</td>
 									<td>${item.model }</td>
 									<td>${item.letterUnit }</td>
@@ -286,7 +286,9 @@
 											<a href="javascript:void(0);" onclick="doExport('${item.noteId }')">导出</a>
 										</c:if>--%>
 										<c:if test="${item.status!=null && item.status==2}">
-											<a href="javascript:void(0);" onclick="doDelete('${item.noteId }')">删除</a>
+											<c:if test="${'true'==fns:hasPms(pmsIds,'50201')}">
+												<a href="javascript:void(0);" onclick="doDelete('${item.noteId }')">删除</a>
+											</c:if>
 										</c:if>
 
 										<%--<div class="btn-group">

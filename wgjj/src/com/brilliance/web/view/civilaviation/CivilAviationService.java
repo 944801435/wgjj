@@ -30,7 +30,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
@@ -99,11 +101,70 @@ public class CivilAviationService {
 		pagerVO.setItems(datas);
 		return pagerVO;
 	}
+	public PagerVO findListBySql(PagerVO<NotePlanInfo> pagerVO) throws Exception{
+
+		List<Object> params = new ArrayList<Object>();
+
+		StringBuffer sql = new StringBuffer("" +
+				" SELECT note.note_id from note_plan_info note left join ( " +
+				" SELECT  " +
+				"  rep.id,  " +
+				"  rep.note_id,  " +
+				"  rep.create_time as replyCreateTime  " +
+				" FROM  " +
+				"  note_civil_reply rep  " +
+				" WHERE  " +
+				"  1=1   " +
+				" group by rep.note_id  " +
+				" ORDER BY  " +
+				"  timestamp(rep.create_time) DESC) t " +
+				" ON t.note_id=note.note_id  " +
+				" where   " +
+				"  note.del_status = 1  " +
+				"  AND note.status IN (2, 3, 4, 5) " +
+				"");
+		if(pagerVO.getParams()!=null){
+			if (!StringUtils.isBlank((String)pagerVO.getParams().get("documentNum"))) {
+				sql.append(" and note.document_num = ? ");
+				params.add(pagerVO.getParams().get("documentNum"));
+			}
+			if (!StringUtils.isBlank((String)pagerVO.getParams().get("noteNo"))) {
+				sql.append(" and note.note_no like ? ");
+				params.add("%" + pagerVO.getParams().get("noteNo") + "%");
+			}
+			if (StringUtils.isNotBlank((String)pagerVO.getParams().get("nationality"))) {
+				sql.append(" and note.nationality like ? ");
+				params.add("%" + pagerVO.getParams().get("nationality") + "%");
+			}
+			if(StringUtils.isNotBlank((String)pagerVO.getParams().get("replyCreateTime"))){
+				sql.append(" and str_to_date(t.replyCreateTime, '%Y-%m-%d' )  =  str_to_date(?,'%Y-%m-%d') ");
+				params.add(  pagerVO.getParams().get("replyCreateTime") );
+
+			}
+			if (pagerVO.getParams().get("status")!=null&&(Integer)pagerVO.getParams().get("status")!=0) {
+				sql.append(" and note.status= ? ");
+				params.add(pagerVO.getParams().get("status"));
+			}
+		}
+
+		sql.append(" order by note.create_time desc");
+		List<Map<String, Object>> resultList = civilAviationDao.findListByPage_Sql_Map(sql.toString(), params.toArray(), pagerVO.getPageNo(), pagerVO.getPageSize());
+		List<NotePlanInfo> datas = new ArrayList<NotePlanInfo>();
+		for(Map<String,Object> o : resultList){
+			Integer noteId = (Integer) o.get("note_id");
+			datas.add(findPlanInfoById(noteId));
+		}
+		pagerVO.setItems(datas);
+		return pagerVO;
+	}
 	/**
 	 * 获取信息
 	 * */
 	public NotePlanInfo findPlanInfoById(Integer noteId){
-		return (NotePlanInfo) civilAviationDao.findById(NotePlanInfo.class, noteId);
+		NotePlanInfo notePlanInfo=(NotePlanInfo) civilAviationDao.findById(NotePlanInfo.class, noteId);
+		NoteCivilReply noteCivilReply=this.findNewCivilReplyByNoteId(noteId);
+		if(noteCivilReply!=null)notePlanInfo.setReplyCreateTime(noteCivilReply.getCreateTime());
+		return notePlanInfo;
 	}
 	/**
 	 * 
@@ -119,7 +180,48 @@ public class CivilAviationService {
 		NoteCivilReply civilMessage = (NoteCivilReply) civilAviationDao.findUnique(hql,  new Object[] {noteId});
 		return civilMessage;
 	}
-
+	public NoteCivilReply findNewCivilReplyByNoteId(Integer noteId) {
+		String sql = "" +
+				"SELECT  " +
+				"  *  " +
+				"FROM  " +
+				"  (  " +
+				"    SELECT  " +
+				"      rep.*  " +
+				"    FROM  " +
+				"      note_civil_reply rep  " +
+				"    WHERE  " +
+				"      1 = 1  " +
+				"    GROUP BY  " +
+				"      rep.note_id  " +
+				"    ORDER BY  " +
+				"      TIMESTAMP (rep.create_time) DESC  " +
+				"  ) t  " +
+				"WHERE  " +
+				"  t.note_id = ?";
+		Object[] civilMessage =  (Object[])civilAviationDao.findUnique_Sql(sql,  new Object[] {noteId});
+		NoteCivilReply noteCivilReply=null;
+		if(civilMessage!=null){
+			noteCivilReply=parseCivilReplyByObjectArray(civilMessage);
+		}
+		return noteCivilReply;
+	}
+	NoteCivilReply parseCivilReplyByObjectArray(Object[] resultArray){
+		NoteCivilReply civilMessage=NoteCivilReply.builder()
+				.id((Integer)resultArray[0])
+				.noteId((Integer)resultArray[1])
+				.permitNumber((String)resultArray[2])
+				.planTime((Date)resultArray[3])
+				.upAirport((String)resultArray[4])
+				.downAirport((String)resultArray[5])
+				.planRoute((String)resultArray[6])
+				.bakRoute((String)resultArray[7])
+				.fileName((String)resultArray[8])
+				.fileUrl((String)resultArray[9])
+				.createTime((String)resultArray[10])
+				.build();
+		return civilMessage;
+	}
 	/**
 	 * 查找飞机飞行计划信息
 	 * @param noteId

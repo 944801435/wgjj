@@ -21,4 +21,7 @@ public class CivilReportDTO {
     private String nationality;
     //飞行时间
     private String flightTime;
+
+    //创建时间
+    private String createTime;
 }
