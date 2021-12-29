@@ -156,6 +156,7 @@ public class CivilReportService {
 			newDirPath.mkdir();
 		}
 		File unzipPath=ZipUtil.unzip(afterRenameZip,newDirPath);
+		log.info("<==解压后的zip路径："+unzipPath.getAbsoluteFile().getPath());
 		//处理解压后的文件
 		File[] listFiles=unzipPath.listFiles();
 
