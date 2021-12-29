@@ -86,7 +86,7 @@ public class FileUtil {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return deposeFilesDir +File.separator+ fileName;
+		return fileName;
 	  }
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static void download(String fileId, HttpServletRequest request, HttpServletResponse response) throws Exception {

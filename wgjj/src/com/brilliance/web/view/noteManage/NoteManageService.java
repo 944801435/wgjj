@@ -147,10 +147,10 @@ public class NoteManageService {
 		for (MultipartFile multipartFile : file) {
 			try {
 				NoteFiles noteFiles = new NoteFiles();
-				String url = FileUtil.uploadFile(multipartFile,deposeFilesDir);
+				String urlFileName = FileUtil.uploadFile(multipartFile,deposeFilesDir);
 				String fileName = multipartFile.getOriginalFilename();
 				long fileSize = multipartFile.getSize();
-				noteFiles.setFilePath(File.separator+getYYYYMM()+File.separator+getOrderID()+File.separator+fileName);
+				noteFiles.setFilePath(File.separator+getYYYYMM()+File.separator+getOrderID()+File.separator+urlFileName);
 				noteFiles.setFileNameCn(fileName);
 				noteFiles.setFileSize(Double.valueOf(fileSize)/1024/1024);//单位M
 				noteFiles.setCreateTime(DateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
@@ -222,10 +222,10 @@ public class NoteManageService {
 		for (MultipartFile multipartFile : file) {
 			try {
 				NoteFiles noteFiles = new NoteFiles();
-				String url = FileUtil.uploadFile(multipartFile,deposeFilesDir);
+				String urlFileName = FileUtil.uploadFile(multipartFile,deposeFilesDir);
 				String fileName = multipartFile.getOriginalFilename();
 				long fileSize = multipartFile.getSize();
-				noteFiles.setFilePath(File.separator+getYYYYMM()+File.separator+getOrderID()+File.separator+fileName);
+				noteFiles.setFilePath(File.separator+getYYYYMM()+File.separator+getOrderID()+File.separator+urlFileName);
 				noteFiles.setFileNameCn(fileName);
 				noteFiles.setFileSize(Double.valueOf(fileSize)/1024/1024);//单位M
 				noteFiles.setCreateTime(DateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
