@@ -196,7 +196,7 @@ label{
 								<div class="control-group">
 									<label class="control-label">呼号：</label>
 									<div class="controls">
-										<input id="callNumber" name="callNumber" v-model="notePlanInfo.callNumber" autocomplete="off" type="text" dataType="Require,Limit" len="100" msg="请输入(1~100)个字符的联系人！" maxlength="100" class="required" value=""/>
+										<input id="callNumber" name="callNumber" v-model="notePlanInfo.callNumber" autocomplete="off" type="text" class="required" value=""/>
 									</div>
 								</div>
 							</td>
@@ -224,7 +224,7 @@ label{
 								<div class="control-group">
 									<label class="control-label">其他：</label>
 									<div class="controls">
-										<input style="width: 93%;" id="other" name="other" v-model="notePlanInfo.other" autocomplete="off" type="text" dataType="Require,Limit" len="100" msg="请输入(1~100)个字符的任务目的！" maxlength="100" class="required" value=""/>
+										<input style="width: 93%;" id="other" name="other" v-model="notePlanInfo.other" autocomplete="off" type="text" class="required" value=""/>
 									</div>
 								</div>
 							</td>
