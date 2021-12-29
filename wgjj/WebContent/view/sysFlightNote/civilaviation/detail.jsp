@@ -35,11 +35,11 @@
 					<td class="tipLabel">架  数：</td>
 					<td class="tipVal"><input type="text" disabled value="${civilAviationVO.planInfo.airNumber}" placeholder="架  数"></td>
 				</tr>
-				<tr>
+				<%--<tr>
 					<td class="tipLabel">飞行日期：</td>
 					<td class="tipVal"><input type="text" disabled value="${civilAviationVO.planInfo.flightTime}" placeholder="飞行日期"></td>
 					<td class="tipLabel" colspan="4"></td>
-				</tr>
+				</tr>--%>
 			</tbody>
 		</table>
 
