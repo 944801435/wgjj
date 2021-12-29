@@ -221,7 +221,7 @@ label{
 											id="airNumber" name="airNumber"
 											v-model="notePlanInfo.airNumber" autocomplete="off"
 											type="number" dataType="Require,Limit" len="11"
-											msg="请输入11位数字的架数！" maxlength="11" class="required" value="" />
+											msg="请输入11位数字的架数！" maxlength="11" min = 1 class="required" value="" />
 									</div>
 								</div>
 							</td>
@@ -244,7 +244,7 @@ label{
 											id="personNumber" name="personNumber"
 											v-model="notePlanInfo.personNumber" autocomplete="off"
 											type="number" dataType="Require,Limit" len="11"
-											msg="请输入11位数字的架数！" maxlength="11" class="required" value="" />
+											msg="请输入11位数字的架数！" maxlength="11" min = 1 class="required" value="" />
 									</div>
 								</div>
 							</td>
@@ -344,10 +344,20 @@ label{
 						<td>{{item.fileNameCn }}</td>
 						<td>{{item.fileSize }}<span>MB</span></td>
 						<td>{{item.createTime }}</td>
-						<td><a @click="ocrDistinguish(item)">识别</a>
+						<td><a @click="previewImg('${ctx}/detail_online_preview.action?id='+item.id)">预览</a>
+						<a @click="ocrDistinguish(item)">识别</a>
 						 <a @click="noteTranslate(item)">翻译</a></td>
 					</tr>
 				</table>
+			</div>
+		</div>
+		<div id="myModal" style="margin-top: -30px;" class="modal hide fade" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				<h6 id="myModalLabel">照会文件预览</h6>
+			</div>
+			<div class="modal-body" >
+				<img src="${ctx}/images/hkfwz_login.png" id="previewImg" height="460px" class="img-responsive" alt="Cinque Terre" width="100%">
 			</div>
 		</div>
 			<div class="right_content_all" style="height:475px">
@@ -517,6 +527,13 @@ label{
 	</div>
 </body>
 <script type="text/javascript">
+function previewImg(url){
+	console.log(url);
+	if(url!=""&&url!=undefined){
+		$("#previewImg").attr("src",url);
+	}
+	$('#myModal').modal('toggle');
+}
 	var vm = new Vue({
 		el: "#app",
 		data: {

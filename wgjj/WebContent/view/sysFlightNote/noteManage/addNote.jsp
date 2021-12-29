@@ -170,7 +170,7 @@ label{
 								<div class="control-group">
 									<label class="control-label">架数：</label>
 									<div class="controls">
-										<input style="width: 140px;" placeholder="请输入数字" id="airNumber" name="airNumber" v-model="notePlanInfo.airNumber" autocomplete="off" type="number" dataType="Require,Limit" len="11" msg="请输入11位内的数字！" min = 0 maxlength="11" class="required" value=""/>
+										<input style="width: 140px;" placeholder="请输入数字" id="airNumber" name="airNumber" v-model="notePlanInfo.airNumber" autocomplete="off" type="number" dataType="Require,Limit" len="11" msg="请输入11位内的数字！" min = 1 maxlength="11" class="required" value=""/>
 									</div>
 								</div>
 							</td>
@@ -186,7 +186,7 @@ label{
 								<div class="control-group">
 									<label class="control-label">机组人数：</label>
 									<div class="controls">
-										<input style="width: 140px;" placeholder="请输入数字" id="personNumber" name="personNumber" v-model="notePlanInfo.personNumber" autocomplete="off" type="number" dataType="Require,Limit" len="11" msg="请输入11位内的数字！" min = 0 maxlength="11" class="required" value=""/>
+										<input style="width: 140px;" placeholder="请输入数字" id="personNumber" name="personNumber" v-model="notePlanInfo.personNumber" autocomplete="off" type="number" dataType="Require,Limit" len="11" msg="请输入11位内的数字！" min = 1 maxlength="11" class="required" value=""/>
 									</div>
 								</div>
 							</td>
