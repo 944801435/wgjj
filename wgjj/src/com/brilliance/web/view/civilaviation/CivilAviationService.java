@@ -1,6 +1,7 @@
 package com.brilliance.web.view.civilaviation;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.ZipUtil;
 import cn.hutool.json.JSON;
@@ -29,10 +30,9 @@ import javax.json.JsonObject;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.regex.Pattern;
 
 /**
@@ -163,7 +163,10 @@ public class CivilAviationService {
 	public NotePlanInfo findPlanInfoById(Integer noteId){
 		NotePlanInfo notePlanInfo=(NotePlanInfo) civilAviationDao.findById(NotePlanInfo.class, noteId);
 		NoteCivilReply noteCivilReply=this.findNewCivilReplyByNoteId(noteId);
-		if(noteCivilReply!=null)notePlanInfo.setReplyCreateTime(noteCivilReply.getCreateTime());
+		if(noteCivilReply!=null){
+			notePlanInfo.setReplyCreateTime(noteCivilReply.getCreateTime());
+			notePlanInfo.setPermitNumber(noteCivilReply.getPermitNumber());
+		}
 		return notePlanInfo;
 	}
 	/**
@@ -283,7 +286,7 @@ public class CivilAviationService {
 		boolean flag=false;
 		NotePlanInfo notePlanInfo=this.findPlanInfoById(noteId);
 		if(notePlanInfo!=null) {
-			notePlanInfo.setDelStatus(1);
+			notePlanInfo.setDelStatus(0);
 			civilAviationDao.update(notePlanInfo);
 			flag=true;
 		}
@@ -395,6 +398,10 @@ public class CivilAviationService {
 	public String exportCivilZip(Integer[] noteIds){
 		String exportZipPath="";
 		String fileDirId=IdUtil.fastSimpleUUID();
+		//创建年月文件夹
+		Calendar date = Calendar.getInstance();
+		DateFormat dateFormat=new SimpleDateFormat("yyyyMMdd");
+		fileDirId = DateUtil.format(date.getTime(), dateFormat);
 		String exportFilePath = getExportFilePath(fileDirId);
 		for(Integer noteId:noteIds) {
 			createCivilFiles(noteId, exportFilePath);

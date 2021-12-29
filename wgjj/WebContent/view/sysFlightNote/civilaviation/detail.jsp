@@ -95,9 +95,9 @@
 			</tr>
 			<tr>
 				<td class="flyLabel">呼  号：</td>
-				<td class="flyVal"><textarea rows="2" disabled value="${civilAviationVO.planInfo.callNumber}"  class="wpc95"></textarea> </td>
+				<td class="flyVal"><textarea rows="2" disabled  class="wpc95">${civilAviationVO.planInfo.callNumber}</textarea> </td>
 				<td class="flyLabel">注册号：</td>
-				<td class="flyVal"><textarea rows="2" disabled value="${civilAviationVO.planInfo.regNo}" class="wpc95"> </textarea> </td>
+				<td class="flyVal"><textarea rows="2" disabled class="wpc95">${civilAviationVO.planInfo.regNo}</textarea> </td>
 			</tr>
 			<tr>
 				<td class="flyLabel">任务目的：</td>

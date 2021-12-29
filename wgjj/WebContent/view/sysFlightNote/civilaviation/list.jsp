@@ -227,7 +227,6 @@
 								<th width="12%">照会号</th>
 								<th width="7%">民航许可号</th>
 								<th width="10%">航线信息</th>
-								<th width="8%">回复时间</th>
 								<th width="10%">国家</th>
 								<th width="8%">机型</th>
 								<th width="8%">来电来函单位</th>
@@ -235,6 +234,7 @@
 								<th width="6%">电话</th>
 								<th width="6%">照会编号</th>
 								<th width="2%">民航是否回复</th>
+								<th width="8%">回复时间</th>
 								<th width="4%">状态</th>
 
 								<th width="11%">操作</th>
@@ -251,7 +251,6 @@
 									<td>${item.noteNo }</td>
 									<td>${item.permitNumber }</td>
 									<td>${item.routeInfo }</td>
-									<td>${item.replyCreateTime }</td>
 									<td>${item.nationality }</td>
 									<td>${item.model }</td>
 									<td>${item.letterUnit }</td>
@@ -266,6 +265,7 @@
 											<c:otherwise>是</c:otherwise>
 										</c:choose>
 									</td>
+									<td>${item.replyCreateTime }</td>
 									<td>
 										<%--<c:if test="${item.status!=null && item.status==1}">待申请</c:if>--%>
 										<c:if test="${item.status!=null && item.status==2}">已申请</c:if>

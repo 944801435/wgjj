@@ -156,9 +156,9 @@
 			</tr>
 			<tr>
 				<td class="flyLabel">呼  号：</td>
-				<td class="flyVal"><textarea rows="2" disabled value="${civilAviationVO.planInfo.callNumber}"  class="wpc95"></textarea> </td>
+				<td class="flyVal"><textarea rows="2" disabled   class="wpc95">${civilAviationVO.planInfo.callNumber}</textarea> </td>
 				<td class="flyLabel">注册号：</td>
-				<td class="flyVal"><textarea rows="2" disabled value="${civilAviationVO.planInfo.regNo}" class="wpc95"> </textarea> </td>
+				<td class="flyVal"><textarea rows="2" disabled  class="wpc95">${civilAviationVO.planInfo.regNo}</textarea> </td>
 			</tr>
 			<tr>
 				<td class="flyLabel">任务目的：</td>
@@ -240,7 +240,7 @@
 			<tr>
 				<td class="flyLabel">添加附件：</td>
 				<td class="flyVal">
-					<input type="text" name="fileUrl" value="${civilAviationVO.noteCivilReply.fileUrl}" class="wpc95" placeholder="附件地址">
+					<input type="text" name="fileUrl" value="${civilAviationVO.noteCivilReply.fileUrl}" class="wpc95 required" style="width: 85%" dataType="Require" msg="请上传文件附件"  placeholder="附件地址">
 					<input type="hidden" name="fileName" value="${civilAviationVO.noteCivilReply.fileName}" class="wpc95" placeholder="附件地址">
 				</td>
 				<td class="flyVal" colspan="2" style="text-align:left!important;">
