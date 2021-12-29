@@ -148,7 +148,7 @@ public class CivilReportService {
 				+ File.separator + (date.get(Calendar.MONTH)+1));
 		String uploadPath = ROOT_FILE_PATH+File.separator+CIVIL_REPORT_PATH+File.separator+dateDirs;
 		String zipFilePath=FileUtil.uploadFile(file,uploadPath);
-		File afterRenameZip=new File(zipFilePath);
+		File afterRenameZip=new File(uploadPath+File.separator+zipFilePath);
 		String zipFileName=afterRenameZip.getName();
 		String newDir= uploadPath+File.separator+zipFileName.substring(0,zipFileName.lastIndexOf("."));
 		File newDirPath=new File(newDir);
