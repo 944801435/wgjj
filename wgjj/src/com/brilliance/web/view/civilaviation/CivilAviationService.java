@@ -2,6 +2,7 @@ package com.brilliance.web.view.civilaviation;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.ZipUtil;
 import cn.hutool.json.JSON;
@@ -22,7 +23,6 @@ import com.brilliance.base.model.internetModel.NoteCivilReply;
 import com.brilliance.base.model.internetModel.NoteFiles;
 import com.brilliance.base.model.internetModel.NotePlanFlight;
 import com.brilliance.base.model.internetModel.NotePlanInfo;
-import com.brilliance.base.util.FileUtil;
 import com.brilliance.base.util.JsonUtil;
 import com.brilliance.base.util.PropertiesUtil;
 
@@ -398,15 +398,18 @@ public class CivilAviationService {
 	public String exportCivilZip(Integer[] noteIds){
 		String exportZipPath="";
 		String fileDirId=IdUtil.fastSimpleUUID();
-		//创建年月文件夹
-		Calendar date = Calendar.getInstance();
-		DateFormat dateFormat=new SimpleDateFormat("yyyyMMdd");
-		fileDirId = DateUtil.format(date.getTime(), dateFormat);
 		String exportFilePath = getExportFilePath(fileDirId);
 		for(Integer noteId:noteIds) {
 			createCivilFiles(noteId, exportFilePath);
 		}
 		exportZipPath=zipCivilFiles(exportFilePath);
+		//创建年月日
+		Calendar date = Calendar.getInstance();
+		DateFormat dateFormat=new SimpleDateFormat("yyyyMMdd");
+		String newFileName = DateUtil.format(date.getTime(), dateFormat)+".zip";
+		File afterRenameFile=FileUtil.rename(new File(rootPath+File.separator+exportZipPath),newFileName,true);
+		exportZipPath=afterRenameFile.getAbsoluteFile().getPath().substring(rootPath.length()+1);
 		return exportZipPath;
 	}
+
 }
