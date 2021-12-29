@@ -38,7 +38,7 @@ public class FanyiV3Util {
         Map<String,String> params = new HashMap<String,String>();
         String q = ocrResult;
         String salt = String.valueOf(System.currentTimeMillis());
-        params.put("from", "en");
+        params.put("from", "auto");
         params.put("to", "zh-CHS");
         params.put("signType", "v3");
         String curtime = String.valueOf(System.currentTimeMillis() / 1000);
